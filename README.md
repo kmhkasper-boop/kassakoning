@@ -7,10 +7,11 @@ Een klant koopt iets, betaalt contant, jij legt het geld in de goede vakjes van 
 **Spelen:** https://kmhkasper-boop.github.io/kassakoning/
 
 ## Zo werkt het
-- **Stap 1 – Geld in de kassa:** tik (of sleep) het geld van de klant naar het goede vakje. Briefjes achterin, munten voorin.
-- **Stap 2 – Wisselgeld:** tik op vakjes om geld in het teruggeef-bakje te leggen. Een tel-lijn laat zien hoe je optelt. Tik op **Geven**.
+- **Geld in de kassa:** tik (of sleep) het geld van de klant naar het goede vakje. Briefjes achterin, munten voorin.
+- **Wisselgeld:** tik op vakjes om geld in het teruggeef-bakje te leggen. Een tel-lijn laat zien hoe je optelt. Tik op **Geven**.
+- **Vrije volgorde:** net als aan een echte kassa mag je eerst het wisselgeld pakken en daarna het geld van de klant in de kassa doen, of andersom, of door elkaar. Het geld van de klant blijft op de toonbank liggen tot je het wegdoet. Geef je het wisselgeld al eerder, dan neemt de klant het aan en herinnert het spel je vriendelijk: *Vergeet het geld van de klant niet in de kassa te doen!* De klant is klaar als het wisselgeld klopt én het geld in de kassa zit. Juf Kassa geeft wel het advies van echte kassiers: doe het geld vaak eerst in de kassa, dan vergeet je niet wat de klant gaf.
 - Fout? Geen probleem: de klant zegt wat er nog mist of wat te veel is, en je verbetert het. Je kunt nooit verliezen. **🪜 Iets makkelijker** kan altijd.
-- Elke goede combinatie telt. Met zo weinig mogelijk munten en briefjes krijg je de bonus **🧠 Slim gewisseld!**
+- Elke goede combinatie telt, ook bij klanten die er muntjes bij geven (je hoeft niets speciaals met die muntjes te doen). Met zo weinig mogelijk munten en briefjes krijg je de bonus **🧠 Slim gewisseld!**, maar dat is alleen een extraatje.
 
 ## Winkels
 1. 🍦 **IJscokar**: hele euro's, daarna 50 cent. Veel hulp van Juf Kassa.

@@ -221,6 +221,8 @@ h1,h2,h3{margin:0}
 .paid .pm{position:relative;border-radius:10px;padding:2px;transition:transform .15s}
 .paid .pm.sel{transform:translateY(-8%) scale(1.08);box-shadow:0 0 0 4px #ff9f1c,0 0 18px #ffd23f}
 .paid .pm.bounce{animation:boing .5s ease}
+.paid .pm.remind{animation:remind 1.1s ease-in-out 3}
+@keyframes remind{0%,100%{transform:none;box-shadow:none}50%{transform:translateY(-10%) scale(1.06);box-shadow:0 0 0 4px #2fb35a,0 0 18px #9be7c4}}
 @keyframes boing{0%,100%{transform:none}30%{transform:translateY(-20%)}60%{transform:translateY(4%)}}
 .paidlbl{position:absolute;right:2cqw;bottom:1cqh;font-size:clamp(10px,3.6cqh,15px);font-weight:700;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.4)}
 .me{position:absolute;right:1.5cqw;top:16cqh;z-index:2;display:none}
@@ -621,7 +623,7 @@ h1,h2,h3{margin:0}
   <div class="card ocard">
     <h2>👪 Voor ouders</h2>
     <div><h3>💶 Wat leert je kind?</h3>
-      <p>Afrekenen zoals een echte kassier: het betaalde geld in de goede vakjes leggen en wisselgeld teruggeven door <b>op te tellen</b> vanaf de prijs (€ 23,45 + 5 ct = € 23,50 + 50 ct = € 24 + € 1 = € 25 + € 5 = € 30). Alle bedragen kloppen tot op de cent, met echte euromunten en -biljetten (zonder € 200/€ 500). Juistheid telt altijd zwaarder dan snelheid; snelheid geeft pas vanaf winkel 3, level 8 een klein extraatje.</p></div>
+      <p>Afrekenen zoals een echte kassier: het betaalde geld in de goede vakjes leggen en wisselgeld teruggeven door <b>op te tellen</b> vanaf de prijs (€ 23,45 + 5 ct = € 23,50 + 50 ct = € 24 + € 1 = € 25 + € 5 = € 30). De volgorde is vrij, net als aan een echte kassa: eerst het geld van de klant in de la of eerst het wisselgeld pakken mag allebei (de klant is klaar als het wisselgeld klopt én het geld in de kassa zit). Elke combinatie die precies klopt telt als goed; zo weinig mogelijk stukken geeft alleen een bonus. Alle bedragen kloppen tot op de cent, met echte euromunten en -biljetten (zonder € 200/€ 500). Juistheid telt altijd zwaarder dan snelheid; snelheid geeft pas vanaf winkel 3, level 8 een klein extraatje.</p></div>
     <div><h3>🗺️ Levels</h3>
       <p>Normaal gaan levels één voor één open en opent level 8 (Drukke dag) de volgende winkel. Snelle route: wie een level perfect speelt (3 sterren) mag één level overslaan, en met de <b>⚡ Sprongtest</b> (5 klanten uit de moeilijkste levels, zonder hulp, 4 goed nodig) gaat de volgende winkel meteen open. Overgeslagen levels blijven speelbaar voor sterren.</p>
       <div class="seg" id="segUnlock" style="margin-top:6px"><button data-v="0">Op volgorde</button><button data-v="1">Alles open</button></div></div>
@@ -859,7 +861,8 @@ const WORLDS = [
         intro: ['De tip komt nu niet meer vanzelf. Tik op <b>💡 Tip</b> als je hulp wilt. Dat mag altijd!'] },
       { t: 'Slimme klanten', s: 'Klant geeft muntjes erbij', customers: 5, items: [1, 2], rule: 5, pmin: 100, pmax: 1500,
         pay: { denoms: D_W2, max: 2, styles: { smart: 3, normal: 1 } }, change: [1, 4], drawer: D_W2, help: h({ tip: 'button' }),
-        intro: ['Sommige klanten zijn slim: ze geven er <b>muntjes bij</b>, zodat ze mooi rond geld terugkrijgen.', 'Kost het € 7,30 en geeft de klant € 10,30? Tel op vanaf € 7,30 tot € 10,30: + € 1 = € 8,30, + € 2 = € 10,30. Je geeft € 3 terug!'] },
+        intro: ['Sommige klanten zijn slim: ze geven er <b>muntjes bij</b>, zodat ze mooi rond geld terugkrijgen.', 'Kost het € 7,30 en geeft de klant € 10,30? Tel op vanaf € 7,30 tot € 10,30: + € 1 = € 8,30, + € 2 = € 10,30. Je geeft € 3 terug!',
+          'Je hoeft niks speciaals met die extra muntjes te doen. Elk wisselgeld dat samen precies klopt, is goed!'] },
       { t: 'Taart bestellen', s: 'Grote bedragen tot € 20', customers: 5, items: [1, 3], rule: 5, pmin: 500, pmax: 1995,
         pay: { denoms: D_W2, max: 2, styles: { normal: 2, smart: 1, big: 1 } }, change: [2, 6], drawer: D_W2, help: h({ tip: 'button', explain: false }) },
       { t: 'Spaarpotgeld', s: 'Betalen met veel munten', customers: 5, items: [1, 2], rule: 5, pmin: 50, pmax: 1000,
@@ -1442,6 +1445,13 @@ function setSound(kind, on) {
 let G = null;
 const alive = tok => G && G.token === tok;
 const slotEl = v => $(`#drawer .slot[data-v="${v}"]`);
+// v3: vrije volgorde. Zodra de klant betaald heeft, mag de speler het geld in de kassa doen én wisselgeld pakken, in elke volgorde.
+//  phase 'stash'  = er ligt nog geld van de klant op de toonbank (wisselgeld pakken/geven mag ook al)
+//  phase 'change' = al het geld zit in de kassa, alleen het wisselgeld nog
+// De klant is pas klaar als het wisselgeld klopt (Geven) én al het geld in de kassa zit.
+const payActive = () => !!G && (G.phase === 'stash' || G.phase === 'change');
+const canChange = () => payActive() && !G.changeGiven;
+const depositMode = () => G.counter.length > 0 && (G.changeGiven || G.tray.length === 0);   // tips gaan dan over het geld van de klant
 function fillTokens(html) { return String(html).replace(/\{m(\d+)\}/g, (m, v) => miniMoney(+v)); }
 
 function startLevel(wid, n, test) {
@@ -1449,7 +1459,8 @@ function startLevel(wid, n, test) {
   if (G) stopGame();
   closeSndMenu();
   G = { world, wid, n: test ? 0 : n, test: !!test, plan: test ? testPlan() : null, lv, help: lv.help, idx: 0, total: lv.customers, results: [], crowns: 0, slim: 0, firstOk: 0, fast: 0,
-    drawer: {}, tray: [], counter: [], phase: 'idle', busy: false, token: {}, used: new Set(), tx: null, scanned: 0, received: 0, tries: 0 };
+    drawer: {}, tray: [], counter: [], phase: 'idle', busy: false, token: {}, used: new Set(), tx: null, scanned: 0, received: 0, tries: 0,
+    sel: null, given: null, changeGiven: false, win: null };
   lv.drawer.forEach(v => G.drawer[v] = STOCK[v]);
   curWorld = wid;
   $$('.overlay.sky').forEach(o => o.classList.remove('show'));
@@ -1501,25 +1512,25 @@ function clearHints() { $$('#drawer .slot.hint, #drawer .slot.wrong').forEach(s 
 /* ---- schermen van de kassa ---- */
 const DISP_INFO = {
   betalen: 'TE BETALEN: zoveel moet de klant betalen. De kassa telt alle prijzen voor je op.',
-  ontvangen: 'ONTVANGEN: zoveel geld heb je van de klant gekregen. De kassa telt mee als je het geld in de la legt.',
+  ontvangen: 'ONTVANGEN: zoveel geld heeft de klant je gegeven. Doe het in de kassa: eerst of straks, dat mag jij kiezen.',
   terug: 'TERUG: zoveel wisselgeld moet je teruggeven. De slimme kassa rekent het uit: ontvangen min te betalen.',
   hand: 'IN JE HAND: zoveel geld ligt er nu in je teruggeef-bakje.',
-  nog: 'NOG TE GEVEN: zoveel moet er nog bij. Staat er € 0,00? Dan is het precies goed en tik je op Geven!',
+  nog: 'NOG TE GEVEN: zoveel moet er nog bij. Staat er € 0,00? Dan is het precies goed en tik je op Geven! Welke munten en briefjes je kiest, mag je zelf weten.',
 };
 function renderLCD() {
   const lcd = $('#lcd'), tx = G.tx, ph = G.phase;
-  const afterStash = ph === 'change' || ph === 'done';
+  const afterStash = !!tx && (ph === 'stash' || ph === 'change' || ph === 'done');   // v3: de kassa weet het bedrag zodra de klant betaald heeft
   if (G.help.displays) {
-    const hand = sum(G.tray), nog = tx ? tx.change - hand : 0;
+    const hand = sum(G.tray), nog = tx ? tx.change - hand - sum(G.given || []) : 0;
     const row = (k, lab, val, cls) => `<div class="row ${cls || ''}" data-disp="${k}" data-info="${k}"><span class="lab">${lab}<span class="info" aria-hidden="true">i</span></span><span class="val">${val}</span></div>`;
     lcd.className = 'lcd multi';
-    lcd.innerHTML = row('betalen', 'TE BETALEN', fmt(G.scanned)) + row('ontvangen', 'ONTVANGEN', fmt(G.received)) +
+    lcd.innerHTML = row('betalen', 'TE BETALEN', fmt(G.scanned)) + row('ontvangen', 'ONTVANGEN', fmt(afterStash ? sum(tx.pay) : 0)) +
       row('terug', 'TERUG', afterStash ? fmt(tx.change) : '—', 'hl') + row('hand', 'IN JE HAND', fmt(hand)) +
       row('nog', 'NOG TE GEVEN', afterStash ? (nog < 0 ? 'te veel ' + fmt(-nog) : fmt(nog)) : '—', afterStash ? (nog < 0 ? 'neg' : nog === 0 ? 'zero' : '') : '');
   } else {
     lcd.className = 'lcd';
     lcd.innerHTML = `<div class="row big"><span class="lab">TOTAAL</span><span class="val">${fmt(G.scanned)}</span></div>` +
-      (tx && (ph === 'stash' || afterStash) ? `<div class="row"><span class="lab">KLANT GEEFT</span><span class="val">${fmt(sum(tx.pay))}</span></div>` : '');
+      (afterStash ? `<div class="row"><span class="lab">KLANT GEEFT</span><span class="val">${fmt(sum(tx.pay))}</span></div>` : '');
   }
 }
 /* ---- tel-lijn ---- */
@@ -1530,11 +1541,11 @@ function renderLine() {
   if (!tx || !(G.phase === 'stash' || G.phase === 'change' || G.phase === 'done')) {
     el.innerHTML = `<div class="ctitle"><span>🔢 Tel-lijn</span><span></span></div><div class="chain"><span class="amt start">prijs</span><span class="ar">→ … →</span><span class="amt goal">🎯 betaald</span></div><div class="bar"><i style="width:0"></i></div>`; return;
   }
-  const P = tx.price, paid = sum(tx.pay), sorted = G.tray.slice().sort((a, b) => a - b);
+  const P = tx.price, paid = sum(tx.pay), sorted = (G.changeGiven ? G.given : G.tray).slice().sort((a, b) => a - b);
   let a = P, parts = `<span class="amt start">${fmt(P)}</span>`;
   for (const v of sorted) { a += v; parts += `<span class="ar">+${miniMoney(v)}</span><span class="amt ${a === paid ? 'done' : a > paid ? 'over' : (a % 100 === 0 ? 'round' : '')}">${fmt(a)}</span>`; }
   if (a < paid) parts += `<span class="ar">→</span><span class="amt goal">🎯 ${fmt(paid)}</span>`;
-  const state = a === paid ? '✔ Precies goed!' : a > paid ? '⚠️ Te veel!' : G.phase === 'change' ? 'nog niet' : '';
+  const state = a === paid ? '✔ Precies goed!' : a > paid ? '⚠️ Te veel!' : sorted.length || G.phase === 'change' ? 'nog niet' : '';
   const pct = Math.max(0, Math.min(1, (a - P) / Math.max(1, paid - P))) * 100;
   el.innerHTML = `<div class="ctitle"><span>🔢 Tel op van ${fmt(P)} tot ${fmt(paid)}</span><span>${state}</span></div><div class="chain ${sorted.length > 3 ? 'long' : ''}">${parts}</div><div class="bar ${a > paid ? 'over' : ''}"><i style="width:${pct}%"></i></div>`;
 }
@@ -1543,16 +1554,16 @@ function renderTray() {
   const t = $('#tray'), sorted = G.tray.slice().sort((a, b) => a - b), showSum = G.help.line || G.help.displays;
   t.innerHTML = `<span class="tlab">🤲 Teruggeef-bakje</span>${showSum && sorted.length ? `<span class="tsum">${fmt(sum(sorted))}</span>` : ''}` +
     (sorted.length ? sorted.map(v => `<button class="tm" data-src="tray" data-tv="${v}" aria-label="${label(v)} terugleggen">${moneyHTML(v)}</button>`).join('')
-      : `<span class="empty">${G.phase === 'change' ? 'Tik op een vakje in de kassa' : ''}</span>`);
-  $('#btnGive').disabled = G.phase !== 'change';
+      : `<span class="empty">${G.changeGiven ? '✔ Wisselgeld gegeven' : G.phase === 'change' ? 'Tik op een vakje in de kassa' : G.phase === 'stash' ? 'Hier komt het wisselgeld' : ''}</span>`);
+  $('#btnGive').disabled = !canChange();
 }
 function renderAll() { renderLCD(); renderLine(); renderTray(); syncTipBtn(); }
 function syncTipBtn() {
   const b = $('#btnTip'), mode = G.help.tip;
-  if (G.tries >= 3 && G.phase === 'change') { b.style.display = ''; b.textContent = '🙋 Help mij'; b.dataset.mode = 'show'; return; }
+  if (G.tries >= 3 && canChange()) { b.style.display = ''; b.disabled = false; b.textContent = '🙋 Help mij'; b.dataset.mode = 'show'; return; }
   b.dataset.mode = 'tip'; b.textContent = '💡 Tip';
-  b.style.display = (mode === 'button' || (mode === 'auto' && G.phase === 'stash')) ? '' : 'none';
-  b.disabled = !(G.phase === 'stash' || G.phase === 'change');
+  b.style.display = (mode === 'button' || mode === 'auto') ? '' : 'none';
+  b.disabled = !payActive();
 }
 
 /* ---- tips ---- */
@@ -1565,14 +1576,15 @@ function nextSuggestion() { // volgende munt/briefje volgens 'optellen zoals een
 }
 function showTip() {
   const el = $('#tip'); clearHints();
-  if (G.phase === 'stash') {
-    const p = G.counter[G.sel || 0]; if (!p) return;
-    el.innerHTML = `💡 Tip: dit is ${nameOf(p.v)} ${miniMoney(p.v)}. Leg het in het vakje <b>${label(p.v)}</b>.`; el.classList.add('show');
-    slotEl(p.v) && slotEl(p.v).classList.add('hint'); return;
+  if (!payActive()) return;
+  if (depositMode()) {   // advies, nooit verplicht: wisselgeld pakken mag ook eerst
+    const p = G.counter[G.sel != null ? G.sel : 0]; if (!p) return;
+    el.innerHTML = (G.changeGiven ? '💡 Nu nog het geld van de klant: ' : '💡 Handig: doe eerst het geld van de klant in de kassa, dan vergeet je niet wat je kreeg. ') +
+      `Dit is ${nameOf(p.v)} ${miniMoney(p.v)}: dat hoort in het vakje <b>${label(p.v)}</b>.`; el.classList.add('show');
+    slotEl(p.v) && slotEl(p.v).classList.add('hint'); G.tipShown = true; return;
   }
-  if (G.phase !== 'change') return;
   const s = nextSuggestion(), A = G.tx.price + sum(G.tray);
-  if (s.rem === 0) el.innerHTML = '💡 Je bent precies bij het betaalde bedrag. Tik op <b>Geven</b>!';
+  if (s.rem === 0) el.innerHTML = '💡 Je bent precies bij het betaalde bedrag. Tik op <b>Geven</b>!' + (G.counter.length ? ' En vergeet het geld van de klant niet in de kassa te doen.' : '');
   else if (s.rem < 0) el.innerHTML = `💡 Je geeft ${words(-s.rem)} te veel. Tik op geld in het bakje om het terug in de kassa te leggen.`;
   else if (s.none) el.innerHTML = '💡 Dat lukt zo niet. Leg wat geld terug en probeer andere munten.';
   else {
@@ -1583,7 +1595,7 @@ function showTip() {
   el.classList.add('show'); G.tipShown = true;
 }
 function hideTip() { $('#tip').classList.remove('show'); G && (G.tipShown = false); clearHints(); }
-function refreshTip() { if (G.help.tip === 'auto' || (G.tipShown && G.tries > 0)) showTip(); else hideTip(); }
+function refreshTip() { if ((G.help.tip === 'auto' && !depositMode()) || (G.tipShown && G.tries > 0)) showTip(); else hideTip(); }
 
 /* ---- vliegend geld ---- */
 function fly(v, fromEl, toEl, ms) {
@@ -1644,7 +1656,7 @@ async function runLevel(tok) {
     await coach('Hier zie je de klant. Die koopt iets en betaalt. Daarna geef jij het <b>wisselgeld</b> terug.', '#scene', 'Beginnen!'); if (!alive(tok)) return;
   } else if (G.test) {
     if (!S.seen.tut && !S.seen.ctl) {   // via 'Kies je start': nog nooit de uitleg gezien -> alleen de knoppen uitleggen
-      await coach('Zo werkt de kassa: leg het geld van de klant in het goede <b>vakje</b> van de kassalade. Tik daarna op vakjes om het <b>wisselgeld</b> in het bakje te leggen, en tik op <b>Geven</b>.', '#drawer', 'Snap ik!'); if (!alive(tok)) return;
+      await coach('Zo werkt de kassa: leg het geld van de klant in het goede <b>vakje</b> van de kassalade. Tik op vakjes om het <b>wisselgeld</b> in het bakje te leggen, en tik op <b>Geven</b>. Wat je eerst doet, mag je zelf kiezen.', '#drawer', 'Snap ik!'); if (!alive(tok)) return;
       S.seen.ctl = 1; save();
     }
   } else {
@@ -1689,7 +1701,8 @@ function orderText(items) {
 }
 async function serveCustomer(tok) {
   if (!alive(tok)) return;
-  G.phase = 'enter'; G.tray = []; G.tries = 0; G.scanned = 0; G.received = 0; G.tx = null; G.sel = 0; hideTip(); clearCounter();
+  G.phase = 'enter'; G.tray = []; G.tries = 0; G.scanned = 0; G.received = 0; G.tx = null; G.sel = null; G.given = null; G.changeGiven = false; G.win = null; G.earlyGive = false; G.tutChange = false;
+  hideTip(); clearCounter();
   if (restock() && G.idx > 0) toast('🧑‍💼 De chef heeft de kassa bijgevuld.');
   const txLv = G.test ? testTxLevel() : G.lv;
   const tx = makeTransaction(G.world, txLv, G.drawer) || fallbackTx(txLv);
@@ -1726,36 +1739,73 @@ async function serveCustomer(tok) {
   startStash(tok);
 }
 async function startStash(tok) {
-  G.phase = 'stash'; renderAll(); selectPiece(0); SFX.drawer(true);
+  G.phase = 'stash'; G.sel = null; G.t0 = performance.now(); renderAll(); guide(); SFX.drawer(true);
   if (G.lv.tutorial && !S.seen.tut && G.idx === 0) {
-    await coach(`De klant geeft je ${words(sum(G.tx.pay))}. Eerst leg je het geld <b>in de kassa</b>. Tik op het vakje waar het hoort. Of sleep het geld erheen.`, '#counter'); if (!alive(tok)) return;
+    await coach(`De klant geeft je ${words(sum(G.tx.pay))}. Doe het geld <b>in de kassa</b>: tik op het vakje waar het hoort. Of sleep het geld erheen.`, '#counter'); if (!alive(tok)) return;
+    await coach('Je mag ook eerst het <b>wisselgeld</b> pakken: jij kiest de volgorde! Echte kassiers doen het geld van de klant vaak eerst in de kassa. Dan vergeten ze niet wat de klant gaf.', '#drawer', 'Snap ik!'); if (!alive(tok)) return;
   }
+  if (G.lv.displayIntro && !S.seen.disp && G.idx === 0) {   // v3: de schermen werken al zodra de klant betaald heeft
+    await coach('Dit is de <b>slimme kassa</b>! Die heeft hulpschermen. Ik laat ze even zien.', '#lcd'); if (!alive(tok)) return;
+    for (const k of ['betalen', 'ontvangen', 'terug', 'hand', 'nog']) { await coach(DISP_INFO[k], `#lcd [data-disp="${k}"]`); if (!alive(tok)) return; }
+    await coach('Tik op het <b>i</b>-knopje als je het nog eens wilt horen. Succes!'); if (!alive(tok)) return;
+    S.seen.disp = 1; save();
+  }
+  if (payActive()) { refreshTip(); syncTipBtn(); }
 }
+// Stapbalk: zegt wat er nog moet gebeuren. Een advies, nooit een verplichte volgorde.
+function guide() {
+  if (!payActive()) return;
+  const tx = G.tx, P = fmt(tx.price), paid = fmt(sum(tx.pay));
+  if (G.counter.length && G.changeGiven) return stepbar('Bijna klaar!', 'Vergeet het geld van de klant niet in de kassa te doen!');
+  if (G.counter.length && !G.tray.length) {
+    const p = G.counter[G.sel != null ? G.sel : 0];
+    return stepbar('💶 Geld in de kassa', `Waar hoort ${nameOf(p.v)}? Tik op het goede vakje. Wisselgeld pakken mag ook eerst.`);
+  }
+  const how = G.help.line ? `Tik op de vakjes en tel op van <b>${P}</b> tot <b>${paid}</b>.` : G.help.displays ? 'Geef het wisselgeld. Kijk naar de slimme kassa!' : 'Geef het wisselgeld terug.';
+  stepbar('🤲 Wisselgeld', how + (G.counter.length ? ' Het geld van de klant gaat straks ook in de kassa.' : ''));
+}
+// Geld op de toonbank 'oppakken' (tikken) of weer neerleggen (nog eens tikken).
 function selectPiece(i) {
-  if (!G.counter.length) return;
+  if (i == null || !G.counter.length) { G.sel = null; G.counter.forEach(p => p.el.classList.remove('sel')); guide(); syncTipBtn(); return; }
   G.sel = Math.max(0, Math.min(i, G.counter.length - 1));
   G.counter.forEach((p, k) => p.el.classList.toggle('sel', k === G.sel));
   const v = G.counter[G.sel].v;
-  stepbar('Stap 1 · Geld in de kassa', `Waar hoort ${nameOf(v)}? Tik op het goede vakje.`);
-  if (G.help.tip === 'auto' && G.idx === 0 && G.n <= 2) { /* de eerste keren: alleen het vakje laten oplichten bij een fout */ }
+  stepbar('💶 Geld in de kassa', `Waar hoort ${nameOf(v)}? Tik op het goede vakje.`);
   syncTipBtn();
 }
+// Tik op een vakje: geld van de klant erin, of wisselgeld eruit.
+//  - geld van de klant 'in je hand' (aangetikt/gesleept) of wisselgeld al gegeven -> erin (met fout-vakje-hulp)
+//  - anders: een vakje dat te groot is om nog als wisselgeld te helpen -> dat is het geld van de klant wegleggen
+//    (betaald geld is altijd groter dan het wisselgeld, behalve de extra muntjes van een slimme klant)
+//  - anders -> wisselgeld pakken
+function slotTap(v) {
+  if (!payActive() || G.busy) return;
+  if (G.counter.length) {
+    const match = G.counter.findIndex(p => p.v === v);
+    if (G.sel != null) return placeAttempt(G.sel, v);
+    if (G.changeGiven || v > G.tx.change - sum(G.tray)) return placeAttempt(match >= 0 ? match : 0, v);
+  }
+  takeFromSlot(v);
+}
 async function placeAttempt(idx, v) {
-  if (G.phase !== 'stash' || G.busy) return;
+  if (!payActive() || G.busy) return;
   const p = G.counter[idx]; if (!p) return;
   const tok = G.token;
   if (p.v === v) {
     G.busy = true; clearHints(); hideTip();
-    p.el.classList.remove('sel');
+    p.el.classList.remove('sel', 'remind');
     const slot = slotEl(v); p.el.style.visibility = 'hidden';
     const f = fly(v, p.el, slot, 360);
-    G.counter.splice(idx, 1);
+    G.counter.splice(idx, 1); G.sel = null; G.counter.forEach(q => q.el.classList.remove('sel'));
     await f; if (!alive(tok)) return;
     p.el.remove(); G.drawer[v]++; G.received += v; updateSlot(v); SFX.money(v); renderLCD();
     G.busy = false;
-    if (!G.counter.length) startChange(tok); else selectPiece(0);
+    if (G.counter.length) { guide(); renderTray(); refreshTip(); syncTipBtn(); return; }
+    if (G.changeGiven) return finishTx(tok);   // wisselgeld was al gegeven: nu is de klant klaar
+    startChange(tok);
   } else {
     SFX.oops(); vibrate(40);
+    selectPiece(idx);   // dit geld heb je nu 'in je hand'
     const s = slotEl(v); s && (s.classList.remove('wrong'), void s.offsetWidth, s.classList.add('wrong'));
     p.el.classList.remove('bounce'); void p.el.offsetWidth; p.el.classList.add('bounce');
     p.wrong = (p.wrong || 0) + 1;
@@ -1764,42 +1814,47 @@ async function placeAttempt(idx, v) {
   }
 }
 async function startChange(tok) {
-  G.phase = 'change'; G.t0 = performance.now(); $('#paidLbl').textContent = '';
-  stepbar('Stap 2 · Wisselgeld', G.help.line ? `Tik op de vakjes en tel op van <b>${fmt(G.tx.price)}</b> tot <b>${fmt(sum(G.tx.pay))}</b>.` :
-    G.help.displays ? 'Geef het wisselgeld. Kijk naar de slimme kassa!' : 'Geef het wisselgeld terug.');
-  renderAll(); refreshTip();
-  if (G.lv.tutorial && !S.seen.tut && G.idx === 0) {
-    await coach(`Nu het <b>wisselgeld</b>. Echte kassiers tellen <b>óp</b>: vanaf de prijs tot het geld dat de klant gaf. ${fmt(G.tx.price)} … tot ${fmt(sum(G.tx.pay))}. Hoeveel is dat?`, '#cline'); if (!alive(tok)) return;
-    await coach('De <b>tip</b> helpt je: tik op het vakje dat oplicht. Het geld komt in het <b>teruggeef-bakje</b>. Klopt het? Tik dan op <b>Geven</b>. Een munt terugleggen? Tik erop in het bakje.', '#side', 'Ik ga het proberen!'); if (!alive(tok)) return;
-    refreshTip();
-  }
-  if (G.lv.displayIntro && !S.seen.disp && G.idx === 0) {
-    await coach('Dit is de <b>slimme kassa</b>! Die heeft hulpschermen. Ik laat ze even zien.', '#lcd'); if (!alive(tok)) return;
-    for (const k of ['betalen', 'ontvangen', 'terug', 'hand', 'nog']) { await coach(DISP_INFO[k], `#lcd [data-disp="${k}"]`); if (!alive(tok)) return; }
-    await coach('Tik op het <b>i</b>-knopje als je het nog eens wilt horen. Succes!'); if (!alive(tok)) return;
-    S.seen.disp = 1; save();
-  }
+  G.phase = 'change'; $('#paidLbl').textContent = '';
+  guide(); renderAll(); refreshTip();
+  await tutChange(tok);
+}
+// Tutorial-uitleg over wisselgeld: één keer, bij het eerste wisselgeld óf als al het geld in de kassa zit.
+async function tutChange(tok) {
+  if (!(G.lv.tutorial && !S.seen.tut && G.idx === 0) || G.tutChange) return;
+  G.tutChange = true;
+  await coach(`Nu het <b>wisselgeld</b>. Echte kassiers tellen <b>óp</b>: vanaf de prijs tot het geld dat de klant gaf. ${fmt(G.tx.price)} … tot ${fmt(sum(G.tx.pay))}. Hoeveel is dat?`, '#cline'); if (!alive(tok)) return;
+  await coach('De <b>tip</b> helpt je: tik op het vakje dat oplicht. Het geld komt in het <b>teruggeef-bakje</b>. Klopt het? Tik dan op <b>Geven</b>. Een munt terugleggen? Tik erop in het bakje.', '#side', 'Ik ga het proberen!'); if (!alive(tok)) return;
+  refreshTip();
 }
 function takeFromSlot(v) {
-  if (G.phase !== 'change' || G.busy) return;
-  if (!(G.drawer[v] > 0)) { toast('Dit vakje is leeg!'); SFX.oops(); return; }
+  if (!canChange() || G.busy) return;
+  if (!(G.drawer[v] > 0)) {
+    SFX.oops();
+    toast(G.counter.some(p => p.v === v) ? 'Dit vakje is leeg. Doe eerst het geld van de klant in de kassa, dan kun je het pakken.' : 'Dit vakje is leeg!', 2600);
+    return;
+  }
+  if (G.sel != null) selectPiece(null);
   G.drawer[v]--; G.tray.push(v); updateSlot(v); SFX.money(v);
   const tok = G.token; renderTray(); renderLine(); renderLCD();
   const tm = $(`#tray .tm[data-tv="${v}"]`); if (tm) { tm.style.visibility = 'hidden'; fly(v, slotEl(v), tm, 300).then(() => { if (alive(tok)) { tm.style.visibility = ''; SFX.drop(v); } }); }
   refreshTip(); hideBubbleSoon();
+  if (G.phase === 'stash') { guide(); tutChange(tok); }
 }
 function returnFromTray(v) {
-  if (G.phase !== 'change' || G.busy) return;
+  if (!canChange() || G.busy) return;
   const i = G.tray.indexOf(v); if (i < 0) return;
   const from = $(`#tray .tm[data-tv="${v}"]`);
   G.tray.splice(i, 1); G.drawer[v]++;
   fly(v, from, slotEl(v), 300).then(() => G && updateSlot(v));
   SFX.money(v); renderTray(); renderLine(); renderLCD(); refreshTip();
+  if (G.phase === 'stash') guide();
 }
 function hideBubbleSoon() { if ($('#bubble').classList.contains('warn')) { clearTimeout(hideBubbleSoon.t); hideBubbleSoon.t = setTimeout(() => G && $('#bubble').classList.contains('warn') && hideBubble(), 2500); } }
 
+// Geven mag altijd (ook als het geld van de klant nog op de toonbank ligt).
+// Elke combinatie die samen precies het wisselgeld is, is goed. Zo weinig mogelijk stukken = alleen een bonus.
 async function give() {
-  if (!G || G.phase !== 'change' || G.busy) return;
+  if (!canChange() || G.busy) return;
   const tok = G.token, tx = G.tx, given = sum(G.tray), diff = given - tx.change;
   if (diff !== 0) {
     G.tries++; SFX.oops(); vibrate([30, 40, 30]);
@@ -1809,12 +1864,30 @@ async function give() {
     if (G.help.tip !== 'off') showTip();
     syncTipBtn(); return;
   }
-  // goed!
-  G.phase = 'done'; G.busy = true; hideTip(); syncTipBtn();
+  // goed! Het wisselgeld gaat naar de klant.
+  hideTip(); clearHints(); if (G.sel != null) selectPiece(null);
   const first = G.tries === 0, avail = Object.assign({}, G.drawer); G.tray.forEach(v => avail[v] = (avail[v] || 0) + 1);
   const best = optimalChange(tx.change, avail, G.lv.drawer) || G.tray, slim = G.tray.length <= best.length;
+  G.win = { first, slim, best }; G.given = G.tray.slice(); G.changeGiven = true;
+  const cu = $('#cust');
+  $$('#tray .tm').forEach(el => { const v = +el.dataset.tv; el.style.visibility = 'hidden'; fly(v, el, cu, 420); });
+  G.tray = []; renderTray(); renderLine(); renderLCD(); syncTipBtn();
+  if (!G.counter.length) return finishTx(tok);
+  // Het wisselgeld klopt, maar het geld van de klant ligt nog op de toonbank: vriendelijk herinneren; de klant wacht even.
+  G.earlyGive = true; SFX.star(0);
+  bubble((first ? '' : 'Ja, nu klopt het! ') + 'Dankjewel, mijn wisselgeld klopt!');
+  guide();
+  $('#paidLbl').textContent = '⬆ Nog in de kassa doen!';
+  G.counter.forEach(p => { p.el.classList.remove('remind'); void p.el.offsetWidth; p.el.classList.add('remind'); });
+  if (G.help.tip === 'auto') showTip();
+}
+async function finishTx(tok) {
+  if (!alive(tok)) return;
+  const tx = G.tx, { first, slim, best } = G.win, n = G.given.length;
+  G.phase = 'done'; G.busy = true; hideTip(); syncTipBtn(); renderTray(); $('#paidLbl').textContent = '';
+  // snelheid: vanaf het betalen tot alles klaar is (geld in de kassa + wisselgeld)
   const secs = (performance.now() - G.t0) / 1000 * SNEL;
-  const fast = !!(G.lv.speed && first && secs <= 8 + 3 * best.length);
+  const fast = !!(G.lv.speed && first && secs <= 8 + 3 * best.length + 2 * tx.pay.length);
   // Sprongtest: geen fooi per klant (de beloning is de sprong zelf), voortgang blijft onaangeroerd.
   let gain = G.test ? 0 : (first ? 2 : 1) + (slim ? 1 : 0) + (fast ? 1 : 0);
   G.results[G.idx] = first ? 'ok' : 'meh'; if (first) G.firstOk++; if (slim) G.slim++; if (fast) G.fast++;
@@ -1824,12 +1897,10 @@ async function give() {
   if (G.lv.tutorial && G.idx === 0) S.seen.tut = 1;
   save(); renderDots();
   SFX.kaching(); const cu = $('#cust'); cu.className = 'cust happy';
-  bubble((first ? '' : 'Ja, nu klopt het! ') + G.cust.bye);
-  const trayEls = $$('#tray .tm');
-  trayEls.forEach((el, i) => { const v = +el.dataset.tv; el.style.visibility = 'hidden'; setTimeout(() => fly(v, el, $('#cust'), 420), i * 70 / SNEL); });
+  bubble((first || G.earlyGive ? '' : 'Ja, nu klopt het! ') + G.cust.bye);
   stepbar('Kaching!', first ? (slim ? '🧠 Slim gewisseld! Precies goed in één keer.' : '✅ Precies goed!') : '👍 Gelukt!');
-  if (gain) crownsFly(gain, $('#cust'));
-  if (slim && G.tray.length > 1) setTimeout(() => G && floatText('🧠 Slim gewisseld!'), 200 / SNEL);
+  if (gain) crownsFly(gain, cu);
+  if (slim && n > 1) setTimeout(() => G && floatText('🧠 Slim gewisseld!'), 200 / SNEL);
   if (fast) setTimeout(() => G && floatText('⚡ Bliksemsnel!'), 900 / SNEL);
   if (isNew) setTimeout(() => toast(`📖 Nieuwe sticker: ${G ? G.cust.name : ''}!`), 1200 / SNEL);
   await wait(900); if (!alive(tok)) return;
@@ -1849,12 +1920,13 @@ function chainHTML(price, pieces) {
 }
 function showResult(first, slim, best, gain, fast) {
   return new Promise(res => {
-    const tx = G.tx, n = G.tray.length;
+    const tx = G.tx, mine = G.given || [], n = mine.length;
     const title = first ? (slim ? '🧠 Slim gewisseld!' : '✅ Goed zo!') : '👍 Gelukt!';
-    let tip = slim ? `Je gaf zo weinig mogelijk munten en briefjes: <b>${n} ${n === 1 ? 'stuk' : 'stuks'}</b>. Zo doet een echte kassier het!`
-      : `Goed! Het kan ook met minder: <b>${best.length}</b> in plaats van ${n} stuks.<div class="rowc" style="margin-top:6px">${best.slice().sort((a, b) => a - b).map(miniMoney).join('')}</div>`;
+    // 'Slim gewisseld' is alleen een bonus: elk wisselgeld dat precies klopt is goed.
+    let tip = slim ? `Knap: zo weinig mogelijk munten en briefjes (<b>${n} ${n === 1 ? 'stuk' : 'stuks'}</b>). Dat geeft een 🧠 bonus-kroontje!`
+      : `Precies goed, dus helemaal goed! 👍 Wil je ook het 🧠 bonus-kroontje? Dat krijg je met zo weinig mogelijk stukken. Hier kon het ook met <b>${best.length}</b> in plaats van ${n}:<div class="rowc" style="margin-top:6px">${best.slice().sort((a, b) => a - b).map(miniMoney).join('')}</div>`;
     $('#resultCard').innerHTML = `<h2>${title}</h2>
-      <div class="explain"><b>Zo tel je op:</b>${chainHTML(tx.price, G.tray)}<div style="margin-top:4px">Wisselgeld: <b>${fmt(tx.change)}</b>. Controle: ${fmt(tx.price)} + ${fmt(tx.change)} = ${fmt(sum(tx.pay))} ✔</div></div>
+      <div class="explain"><b>Zo heb jij opgeteld:</b>${chainHTML(tx.price, mine)}<div style="margin-top:4px">Wisselgeld: <b>${fmt(tx.change)}</b>. Controle: ${fmt(tx.price)} + ${fmt(tx.change)} = ${fmt(sum(tx.pay))} ✔</div></div>
       <div>${tip}</div>${first ? '' : '<div class="small-note">De volgende keer in één keer goed? Dan krijg je een ster!</div>'}
       <div class="gain">👑 +${gain} fooi${fast ? ' (⚡ snel!)' : ''}</div>
       <button class="btn green big" id="btnNextCust">${G.idx + 1 < G.total ? 'Volgende klant ▶' : 'Klaar! 🎉'}</button>`;
@@ -1902,25 +1974,27 @@ function levelDone() {
   if ($('#dSprong')) $('#dSprong').onclick = () => { close(); curWorld = wid; show('scrLevels'); sprongIntro(wid); };
 }
 async function helpMe() { // na 3 pogingen: Juf Kassa legt de beste combinatie klaar
-  if (G.phase !== 'change' || G.busy) return;
+  if (!canChange() || G.busy) return;
   G.busy = true;
   for (const v of G.tray.slice()) { G.drawer[v]++; updateSlot(v); }
   G.tray = []; const best = optimalChange(G.tx.change, G.drawer, G.lv.drawer) || [];
   best.forEach(v => { G.drawer[v]--; G.tray.push(v); updateSlot(v); });
   renderTray(); renderLine(); renderLCD(); G.busy = false;
-  await coach(`Kijk, zo kan het: ${chainHTML(G.tx.price, best)} Tik nu op <b>Geven</b>.`, '#tray');
+  await coach(`Kijk, zo kan het bijvoorbeeld: ${chainHTML(G.tx.price, best)} Tik nu op <b>Geven</b>.` + (G.counter.length ? ' En vergeet het geld van de klant niet in de kassa te doen.' : ''), '#tray');
 }
 function helpNow() {
   if (!G) return;
   if (G.test) return helpNowTest();
-  const ph = G.phase;
-  if (ph === 'stash') coach('Leg het geld van de klant in de kassalade. Briefjes achterin, munten voorin. Op elk vakje staat wat erin hoort. Tik eerst op het geld (als je wilt) en dan op het vakje.', '#drawer');
-  else if (ph === 'change') coach(G.help.displays && !G.help.line ? `Geef samen <b>TERUG</b>: ${fmt(G.tx.change)}. Kijk bij <b>NOG TE GEVEN</b> hoeveel er nog bij moet.` :
-    `Tel op zoals een kassier: begin bij de prijs <b>${fmt(G.tx.price)}</b> en leg geld in het bakje tot je bij <b>${fmt(sum(G.tx.pay))}</b> bent. Maak eerst een mooi rond bedrag, dan grotere stappen.`, G.help.line ? '#cline' : '#lcd');
-  else coach('Wacht even tot de klant betaald heeft. Daarna leg je het geld in de kassa en geef je wisselgeld terug.');
+  const order = ' Wat je eerst doet, mag je zelf kiezen. Handig: echte kassiers doen het geld van de klant vaak eerst in de kassa, dan vergeten ze niet wat de klant gaf.';
+  if (payActive() && G.changeGiven) coach('Het wisselgeld heb je al gegeven. 👍 Doe nu nog het geld van de klant in de kassa: tik op het goede vakje, of sleep het erheen.', '#counter');
+  else if (payActive() && depositMode()) coach('Doe het geld van de klant in de kassalade. Briefjes achterin, munten voorin. Op elk vakje staat wat erin hoort: tik op het vakje of sleep het geld erheen. Je mag ook eerst het wisselgeld pakken.' + order, '#drawer');
+  else if (payActive()) coach((G.help.displays && !G.help.line ? `Geef samen <b>TERUG</b>: ${fmt(G.tx.change)}. Kijk bij <b>NOG TE GEVEN</b> hoeveel er nog bij moet.` :
+    `Tel op zoals een kassier: begin bij de prijs <b>${fmt(G.tx.price)}</b> en leg geld in het bakje tot je bij <b>${fmt(sum(G.tx.pay))}</b> bent. Eerst een mooi rond bedrag maken is handig.`) +
+    ' Elke combinatie die samen precies klopt, is goed!' + (G.counter.length ? ' Vergeet daarna het geld van de klant niet in de kassa te doen.' : ''), G.help.line ? '#cline' : '#lcd');
+  else coach('Wacht even tot de klant betaald heeft. Daarna doe je het geld in de kassa en geef je het wisselgeld terug, in de volgorde die jij wilt.');
 }
 function helpNowTest() {
-  coach('Dit is de <b>⚡ Sprongtest</b>: nu even zonder tips. Leg het geld in de kassa en geef het wisselgeld terug. Tel op vanaf de prijs tot het betaalde bedrag. Jij kunt dit!');
+  coach('Dit is de <b>⚡ Sprongtest</b>: nu even zonder tips. Doe het geld van de klant in de kassa en geef het wisselgeld terug, in de volgorde die jij wilt. Tel op vanaf de prijs tot het betaalde bedrag: elke combinatie die precies klopt, is goed. Jij kunt dit!');
 }
 
 /* =========================================================
@@ -2098,10 +2172,12 @@ function info(html, buttons) {
 function howItWorks() {
   info(`<h2>❓ Hoe werkt Kassakoning?</h2>
     <div class="explain" style="text-align:left">1️⃣ Een klant koopt iets. De kassa scant alles en laat het <b>totaal</b> zien.<br>
-    2️⃣ De klant betaalt. Leg het geld in het goede vakje van de <b>kassalade</b>: briefjes achterin, munten voorin.<br>
+    2️⃣ De klant betaalt. Doe het geld in het goede vakje van de <b>kassalade</b>: briefjes achterin, munten voorin.<br>
     3️⃣ Geef het <b>wisselgeld</b> terug. Tel óp vanaf de prijs tot het bedrag dat de klant gaf, zoals een echte kassier:</div>
     <div class="explain">${chainHTML(2345, [5, 50, 100, 500])}<div class="small-note" style="margin-top:4px">€ 23,45 + 5 ct = € 23,50 → + 50 ct = € 24 → + € 1 = € 25 → + € 5 = € 30</div></div>
-    <div>⭐ Goed in één keer = sterren. 🧠 Zo weinig mogelijk munten = extra fooi. 👑 Met fooi koop je spullen voor <b>Mijn winkel</b>.<br>Te moeilijk? Tik op <b>🪜 Iets makkelijker</b>. Je kunt nooit verliezen!</div>`, [['ok', 'Begrepen!', 'green']]);
+    <div class="explain" style="text-align:left">🔀 Stap 2 en 3 mag je in <b>elke volgorde</b> doen, of door elkaar. Echte kassiers doen het geld van de klant vaak eerst in de kassa: dan vergeten ze niet wat de klant gaf. De klant is klaar als het wisselgeld klopt én het geld in de kassa zit.<br>
+    ✅ Elke combinatie die samen precies klopt, is goed. Ook als de klant er muntjes bij gaf: jij kiest hoe je teruggeeft.</div>
+    <div>⭐ Goed in één keer = sterren. 🧠 Zo weinig mogelijk munten = extra fooi (een bonus, hoeft niet). 👑 Met fooi koop je spullen voor <b>Mijn winkel</b>.<br>Te moeilijk? Tik op <b>🪜 Iets makkelijker</b>. Je kunt nooit verliezen!</div>`, [['ok', 'Begrepen!', 'green']]);
 }
 
 /* ---------------- slepen & tikken ---------------- */
@@ -2110,8 +2186,8 @@ const scr = $('#scrGame');
 scr.addEventListener('pointerdown', e => {
   if (!G || G.busy) return;
   const src = e.target.closest('[data-src]'); if (!src) return;
-  if (src.dataset.src === 'slot' && G.phase !== 'change') return;
-  if (src.dataset.src === 'counter' && G.phase !== 'stash') return;
+  if ((src.dataset.src === 'slot' || src.dataset.src === 'tray') && !canChange()) return;   // v3: wisselgeld mag ook vóór het geld van de klant
+  if (src.dataset.src === 'counter' && !(payActive() && G.counter.length)) return;
   drag = { src, id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false, ghost: null, v: +(src.dataset.v || src.dataset.tv || (src.querySelector('.money') || {}).dataset?.v) };
 });
 window.addEventListener('pointermove', e => {
@@ -2148,9 +2224,9 @@ window.addEventListener('pointercancel', e => { if (drag) { drag.ghost && drag.g
 scr.addEventListener('click', e => {
   if (!G || performance.now() < noClickUntil) return;
   const info = e.target.closest('[data-info]'); if (info) { e.stopPropagation(); coach(DISP_INFO[info.dataset.info], info); return; }
-  const pm = e.target.closest('.pm'); if (pm && G.phase === 'stash') { const i = G.counter.findIndex(p => p.el === pm); if (i >= 0) { SFX.click(); selectPiece(i); } return; }
+  const pm = e.target.closest('.pm'); if (pm && payActive()) { const i = G.counter.findIndex(p => p.el === pm); if (i >= 0) { SFX.click(); selectPiece(G.sel === i ? null : i); } return; }   // oppakken / weer neerleggen
   const slot = e.target.closest('.slot');
-  if (slot) { const v = +slot.dataset.v; if (G.phase === 'stash') placeAttempt(G.sel || 0, v); else if (G.phase === 'change') takeFromSlot(v); return; }
+  if (slot) { slotTap(+slot.dataset.v); return; }
   const tm = e.target.closest('.tm'); if (tm) { returnFromTray(+tm.dataset.tv); return; }
 });
 $('#btnGive').onclick = () => give();

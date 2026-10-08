@@ -6,7 +6,7 @@
    Verhoog VERSION alleen als iconen/manifest veranderen of als er losse bestanden (js/afbeeldingen) bijkomen
    die later nog wijzigen: die worden 'eerst cache' geserveerd. */
 const ID = 'kassakoning';
-const VERSION = 'v2';  // v2: muziek, geluidseffecten en sprongtest
+const VERSION = 'v3';  // v2: muziek, geluidseffecten en sprongtest; v3: vrije volgorde bij afrekenen
 const CORE = ID + '-core-' + VERSION;
 const FONTS = ID + '-fonts-' + VERSION;
 const PAGE = new URL('./', self.registration.scope).href;
