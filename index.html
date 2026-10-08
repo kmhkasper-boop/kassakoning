@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#4cc3ff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="Kassakoning: jij bent de kassier! Leer afrekenen en wisselgeld teruggeven met echt euro-geld. Voor groep 5.">
+<title>Kassakoning – leer afrekenen met echt euro-geld</title>
+<link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kassakoning">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1f2a44; --ink2:#3b4767; --bg1:#bfe9ff; --bg2:#fff4d1;
+  --blue:#1d5fd1; --green:#157a3a; --purple:#6a3bd6; --yellow:#ffd23f; --orange:#b9430a; --pink:#d6336c; --red:#d63b3b;
+  --shadow:0 6px 0 rgba(31,42,68,.18); --radius:24px;
+  --font:'Fredoka','Baloo 2','Nunito','Comic Sans MS','Trebuchet MS',system-ui,sans-serif;
+  --shop:#ff6fa8; --shop2:#ffe3ef;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none}
+body{font-family:var(--font);color:var(--ink);font-size:clamp(16px,.7vw + .6vh + 9px,23px);line-height:1.3;
+  background:linear-gradient(180deg,var(--bg1) 0%,#e3f6ff 45%,var(--bg2) 100%);
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:none}
+button{font-family:inherit;color:inherit;cursor:pointer;border:none;touch-action:manipulation;-webkit-user-select:none;user-select:none;background:none}
+button:focus-visible{outline:4px solid #ff9f1c;outline-offset:3px}
+h1,h2,h3{margin:0}
+.clouds{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.cloud{position:absolute;background:#fff;border-radius:999px;opacity:.75;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:55%;height:150%;left:15%;top:-60%}
+.cloud::after{width:40%;height:120%;left:50%;top:-40%}
+@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4em;font-size:1.1em;font-weight:600;
+  padding:.55em 1.2em;min-height:60px;border-radius:999px;background:var(--blue);color:#fff;box-shadow:var(--shadow);
+  transition:transform .1s, box-shadow .1s, filter .2s}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(31,42,68,.18)}
+.btn:disabled{filter:grayscale(.7);opacity:.6;cursor:not-allowed}
+.btn.big{font-size:1.4em;min-height:76px;padding:.5em 1.5em}
+.btn.green{background:var(--green)} .btn.purple{background:var(--purple)} .btn.orange{background:var(--orange)}
+.btn.yellow{background:var(--yellow);color:var(--ink)} .btn.white{background:#fff;color:var(--ink)} .btn.pink{background:var(--pink)}
+.btn.small{font-size:.9em;min-height:48px;padding:.4em 1em}
+.iconbtn{width:52px;height:52px;min-width:52px;border-radius:50%;background:#fff;font-size:24px;display:inline-flex;align-items:center;justify-content:center;box-shadow:var(--shadow);padding:0}
+.iconbtn:active{transform:translateY(3px)}
+.card{background:#fff;border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+.btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.pill{background:#fff;border-radius:999px;padding:.25em .75em;font-weight:700;box-shadow:var(--shadow);white-space:nowrap;display:inline-flex;align-items:center;gap:.3em}
+.crownpill{background:linear-gradient(180deg,#7b3fe4,#5a26c2);color:#fff7c2}
+.crownpill b{color:#fff}
+.small-note{font-size:.8em;color:var(--ink2)}
+.star-on{color:#f5a600;text-shadow:0 2px 0 #b97800} .star-off{color:#c7cdd8}
+
+/* ---------- overlays / screens ---------- */
+.overlay{position:fixed;inset:0;z-index:30;display:none;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.overlay.show{display:block;animation:fadein .3s ease}
+.overlay.sky{background:linear-gradient(180deg,var(--bg1) 0%,#e3f6ff 45%,var(--bg2) 100%)}
+.overlay.dim{background:rgba(31,42,68,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:45}
+.overlay.dim.show{display:flex}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:max(12px,env(safe-area-inset-top)) 14px max(18px,env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;min-height:100%}
+.topbar{display:flex;align-items:center;gap:10px;width:100%}
+.topbar .title{flex:1;text-align:center;font-weight:700;font-size:1.15em;background:#fff;border-radius:999px;padding:.35em .8em;box-shadow:var(--shadow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topright{position:absolute;right:14px;top:max(12px,env(safe-area-inset-top));z-index:2;display:flex;gap:8px;align-items:center}
+
+/* ---------- menu ---------- */
+.logo{font-size:clamp(44px,9vw,90px);font-weight:700;line-height:1;margin:58px 0 0;color:#fff;letter-spacing:1px;
+  text-shadow:0 4px 0 #c2410c,0 8px 0 rgba(31,42,68,.25);-webkit-text-stroke:2px #c2410c;paint-order:stroke fill}
+.logo .k2{color:#ffd23f}
+.logo .crown{display:inline-block;-webkit-text-stroke:0;animation:bob 2.2s ease-in-out infinite;font-size:.8em;vertical-align:.12em}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.tagline{font-size:1.15em;font-weight:500;margin:0}
+.menureg{width:min(300px,62vw,30vh);height:auto}
+.menugrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:min(100%,760px)}
+.menugrid .btn{width:100%}
+.menugrid .btn.span2{grid-column:1/-1}
+.menugrid .btn.sm3{font-size:1.15em;padding:.4em .6em}
+@media (max-width:560px){.menugrid{grid-template-columns:1fr} .menureg{width:min(240px,22vh)} .menugrid .btn.big{min-height:60px;font-size:1.2em} .logo{margin-top:52px}}
+.parent-gate{position:relative;overflow:hidden;background:#fff;color:var(--ink);font-size:.85em;min-height:50px;margin-top:auto}
+.parent-gate .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:#ffd23f;z-index:0}
+.parent-gate span{position:relative;z-index:1}
+.menumsg{background:#fff3c4;border:3px solid #f2c94c;border-radius:999px;padding:.3em 1em;font-weight:600;min-height:2em}
+@media (orientation:landscape) and (max-height:620px){
+  .logo{margin-top:8px;font-size:clamp(38px,9vh,64px)}
+  .menureg{width:min(170px,30vh)}
+  .menugrid{grid-template-columns:repeat(4,1fr);width:min(100%,900px)}
+  .menugrid .btn.span2{grid-column:auto}
+  .menugrid .btn.big{font-size:1.1em;min-height:62px;padding:.4em .8em}
+  .wrap{gap:8px}
+}
+
+/* ---------- world map ---------- */
+.worlds{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;width:100%;padding-bottom:8px}
+.wcard{display:flex;align-items:center;gap:14px;background:#fff;border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow);text-align:left;font-size:1em;position:relative;transition:transform .15s;width:100%;min-height:104px}
+.wcard:active{transform:translateY(4px)}
+.wcard .wi{width:76px;height:76px;min-width:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.18)}
+.wcard .wn{font-weight:700;font-size:1.1em;line-height:1.15}
+.wcard .ws{font-size:.8em;color:var(--ink2);line-height:1.25;margin-top:2px}
+.wcard .wst{font-size:.95em;font-weight:700;margin-top:3px}
+.wcard .wnum{position:absolute;left:10px;top:-10px;background:var(--ink);color:#fff;font-size:.72em;font-weight:700;border-radius:999px;padding:.1em .6em}
+.wcard.locked{background:#eef1f6;color:#4b5468}
+.wcard.locked .wi{filter:grayscale(1);opacity:.6}
+.wcard.soon{background:repeating-linear-gradient(135deg,#f3f5f9 0 18px,#e9edf3 18px 36px);color:#4b5468}
+.wcard.soon .wi{filter:grayscale(.85);opacity:.7}
+.wcard .badge{position:absolute;right:12px;top:-10px;background:#7a3bd6;color:#fff;font-size:.72em;font-weight:700;border-radius:999px;padding:.1em .7em}
+.wcard.soon .badge{background:#8a93a6}
+
+/* ---------- level select ---------- */
+.lvlhead{display:flex;align-items:center;gap:14px;background:#fff;border-radius:var(--radius);padding:10px 16px;box-shadow:var(--shadow);width:100%;text-align:left}
+.lvlhead .wi{font-size:44px}
+.lvls{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%}
+@media (orientation:portrait){.lvls{grid-template-columns:repeat(2,1fr)}}
+.lvl{background:#fff;border-radius:22px;box-shadow:var(--shadow);padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:118px;position:relative;transition:transform .15s}
+.lvl:active{transform:translateY(4px)}
+.lvl .ln{width:52px;height:52px;border-radius:50%;background:var(--wc,#ff6fa8);color:#fff;font-weight:700;font-size:1.5em;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -5px 0 rgba(0,0,0,.2)}
+.lvl .lt{font-weight:700;font-size:.9em;line-height:1.1}
+.lvl .ls{font-size:.72em;color:var(--ink2);line-height:1.15}
+.lvl .lst{font-size:1.15em;letter-spacing:2px}
+.lvl.locked{background:#eef1f6;color:#7a8396}
+.lvl.locked .ln{background:#a5adbd}
+.lvl.next{outline:4px solid #ff9f1c;animation:pulse 1.6s ease-in-out infinite}
+.lvl.busy .ln{background:linear-gradient(135deg,#ff5c5c,#ff9f1c)}
+@keyframes pulse{0%,100%{box-shadow:var(--shadow)}50%{box-shadow:0 6px 0 rgba(31,42,68,.18),0 0 0 9px rgba(255,159,28,.3)}}
+
+/* ---------- money ---------- */
+.money{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;font-weight:700;line-height:1;pointer-events:none}
+.coin{--cs:calc(var(--cb,52px)*var(--d));width:var(--cs);height:var(--cs);border-radius:50%;font-size:calc(var(--cs)*.4);
+  box-shadow:inset 0 0 0 calc(var(--cs)*.055) rgba(0,0,0,.16),inset 0 calc(var(--cs)*-.05) 0 rgba(0,0,0,.12),0 2px 0 rgba(0,0,0,.35)}
+.coin .cv,.coin .cu2{position:relative;z-index:1}
+.coin .cu2{font-size:.5em;font-weight:600;margin-top:.05em}
+.coin{flex-direction:column}
+.coin.k-cu{background:radial-gradient(circle at 35% 30%,#ffd0ad 0,#d9824d 42%,#a5552a 100%);color:#4a1f08}
+.coin.k-au{background:radial-gradient(circle at 35% 30%,#fff6c2 0,#e9bf45 42%,#b38613 100%);color:#4f3a02}
+.coin.k-e1{background:radial-gradient(circle at 35% 30%,#ffffff 0,#cfd4dc 40%,#8b929d 100%);color:#4f3a02}
+.coin.k-e1::before{content:"";position:absolute;inset:17%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6c2,#e9bf45 50%,#b38613);box-shadow:0 0 0 1px rgba(0,0,0,.2)}
+.coin.k-e2{background:radial-gradient(circle at 35% 30%,#fff6c2 0,#e9bf45 42%,#b38613 100%);color:#2f3540}
+.coin.k-e2::before{content:"";position:absolute;inset:17%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffffff,#cfd4dc 50%,#8b929d);box-shadow:0 0 0 1px rgba(0,0,0,.2)}
+.coin.k-e1 .cv,.coin.k-e2 .cv{font-size:.95em}
+.note{width:calc(var(--nb,110px)*var(--w));aspect-ratio:var(--ar);border-radius:calc(var(--nb,110px)*.04);box-shadow:0 2px 0 rgba(0,0,0,.35)}
+.note svg{display:block;width:100%;height:100%}
+/* sizes per context */
+.mini{--cb:30px;--nb:56px}
+.mini .coin .cu2{display:none}
+.mini .money{vertical-align:middle}
+
+/* ---------- game screen ---------- */
+.overlay.game{background:linear-gradient(180deg,var(--shop2) 0%,#fff8ec 100%);overflow:hidden;touch-action:none}
+.overlay.game.show{display:grid}
+#scrGame{grid-template-columns:minmax(0,1.32fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) minmax(0,1.22fr);
+  grid-template-areas:"top top" "scene reg" "drawer side";gap:10px;
+  padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
+@media (orientation:portrait){
+  #scrGame{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto minmax(0,1.15fr);
+    grid-template-areas:"top top" "scene reg" "side side" "drawer drawer";gap:8px}
+}
+.gtop{grid-area:top;display:flex;align-items:center;gap:8px;min-width:0}
+.gtop .title{flex:1;min-width:0;font-weight:700;background:#fff;border-radius:999px;padding:.3em .8em;box-shadow:var(--shadow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:.5em}
+.gtop .title .gt{overflow:hidden;text-overflow:ellipsis}
+.dots{display:inline-flex;gap:4px;flex:none;margin-left:auto}
+.dots i{width:12px;height:12px;border-radius:50%;background:#dfe5ee;display:block}
+.dots i.ok{background:#2fb35a} .dots i.meh{background:#ffb703} .dots i.cur{background:#ff6fa8;box-shadow:0 0 0 3px #ffd0e2}
+.easybtn{background:#fff;color:var(--ink);font-weight:600;border-radius:999px;box-shadow:var(--shadow);min-height:52px;padding:0 .9em;font-size:.85em;white-space:nowrap}
+.easybtn:active{transform:translateY(3px)}
+.gtop .crownpill{font-size:.95em}
+@media (max-width:700px){
+  .gtop{gap:5px} .gtop .iconbtn{width:44px;height:44px;min-width:44px;font-size:20px}
+  .easybtn{min-height:44px;padding:0 .6em;font-size:.72em}
+  .easybtn .ex{display:none}
+  .gtop .title{font-size:.8em;padding:.3em .6em} .dots i{width:9px;height:9px} .gtop .crownpill{font-size:.8em;padding:.2em .5em}
+}
+
+/* scene */
+.scene{grid-area:scene;position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);container-type:size;background:#fff}
+.scene .wall{position:absolute;inset:0;background:var(--wallbg,linear-gradient(180deg,#fff6fb,#ffe3ef))}
+.scene.w1 .wall{background:linear-gradient(180deg,#bfe9ff 0 60%,#9fe3b8 60%)}
+.scene.w2 .wall{background:repeating-linear-gradient(0deg,transparent 0 23cqh,#d9a066 23cqh 25cqh),linear-gradient(180deg,#fff0d6,#ffe1b0)}
+.scene.w3 .wall{background:radial-gradient(circle,#fff 0 .6cqh,transparent .8cqh) 0 0/9cqw 12cqh,linear-gradient(180deg,#d9ccff,#f6ecff)}
+.awning{position:absolute;left:0;right:0;top:0;height:14cqh;z-index:3;
+  background:repeating-linear-gradient(90deg,var(--shop) 0 8cqw,#fff 8cqw 16cqw);
+  -webkit-mask:radial-gradient(4cqw 3.4cqh at 4cqw 100%,transparent 98%,#000) 0 0/8cqw 100%;mask:radial-gradient(4cqw 3.4cqh at 4cqw 100%,transparent 98%,#000) 0 0/8cqw 100%;
+  filter:drop-shadow(0 3px 0 rgba(0,0,0,.12))}
+.shelfdeco{position:absolute;right:3cqw;top:17cqh;font-size:min(9cqh,6cqw);opacity:.55;z-index:1;letter-spacing:.2em;text-align:right;line-height:1.3}
+.decos{position:absolute;inset:0;pointer-events:none;z-index:4}
+.decos .d{position:absolute;font-size:min(12cqh,8cqw);line-height:1}
+.decos .bunting{position:absolute;left:0;right:0;top:13cqh;height:8cqh;background:
+  conic-gradient(from 150deg at 50% 0,#ff5c8a 0 60deg,transparent 60deg) 0 0/7cqw 100%,
+  conic-gradient(from 150deg at 50% 0,#ffd23f 0 60deg,transparent 60deg) 3.5cqw 0/7cqw 100%;opacity:.95}
+.decos .lights{position:absolute;left:0;right:0;top:15cqh;height:5cqh;background:radial-gradient(circle,#fff36b 0 32%,transparent 36%) 0 0/6cqw 100%;filter:drop-shadow(0 0 4px #ffe14d)}
+.queue{position:absolute;right:2cqw;bottom:36cqh;z-index:2;display:flex;gap:1cqw;font-size:min(10cqh,6cqw);opacity:.85}
+.queue span{filter:saturate(.8);animation:bob 2.4s ease-in-out infinite}
+.cust{position:absolute;left:4cqw;bottom:30cqh;z-index:2;display:flex;flex-direction:column;align-items:center;transition:transform .7s ease, opacity .5s}
+.cust.out{transform:translateX(130cqw)} .cust.gone{transform:translateX(-60cqw);opacity:0}
+.cust .cbody{width:min(30cqh,21cqw);height:min(30cqh,21cqw);border-radius:50% 50% 18% 18%;background:var(--cc,#8fb8ff);display:flex;align-items:flex-start;justify-content:center;box-shadow:inset 0 -6px 0 rgba(0,0,0,.15)}
+.cust .cface{font-size:min(27cqh,19cqw);line-height:1;margin-top:-58%;filter:drop-shadow(0 3px 0 rgba(0,0,0,.15))}
+.cust.walk .cface{animation:walk .35s ease-in-out infinite alternate}
+.cust.happy .cface{animation:hop .5s ease 2}
+.cust.puzzled .cface{animation:shake .45s ease}
+@keyframes walk{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-6%) rotate(4deg)}}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-22%)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8%)}75%{transform:translateX(8%)}}
+.cname{position:absolute;bottom:-1.1em;background:#fff;border-radius:999px;padding:.05em .55em;font-size:clamp(11px,4.2cqh,17px);font-weight:700;white-space:nowrap;box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.bubble{position:absolute;left:calc(6cqw + min(30cqh,21cqw));right:3cqw;top:17cqh;z-index:5;background:#fff;border-radius:18px;padding:.45em .7em;font-size:clamp(13px,5.6cqh,21px);font-weight:600;line-height:1.2;
+  box-shadow:0 4px 0 rgba(31,42,68,.15);opacity:0;transform:scale(.8);transform-origin:left bottom;transition:opacity .2s,transform .2s;max-height:40cqh;overflow:hidden}
+.bubble.show{opacity:1;transform:none}
+.bubble::before{content:"";position:absolute;left:-12px;bottom:14px;border:8px solid transparent;border-right:12px solid #fff;border-left:0}
+.bubble.warn{background:#fff3c4}
+.counter{position:absolute;left:0;right:0;bottom:0;height:32cqh;z-index:3;background:linear-gradient(180deg,#f7d9a8 0 12%,#e2b36f 12% 16%,var(--shop) 16%);display:flex;align-items:flex-start;gap:2cqw;padding:1.2cqh 2cqw 0;
+  --cb:min(21cqh,10cqw);--nb:min(42cqh,21cqw)}
+.counter .items{display:flex;gap:1cqw;flex-wrap:wrap;align-items:flex-start;max-width:46%}
+.prod{background:#fff;border-radius:12px;padding:.1em .25em .15em;display:flex;flex-direction:column;align-items:center;box-shadow:0 3px 0 rgba(0,0,0,.15);animation:popin .3s ease}
+.prod .pe{font-size:min(12cqh,6.5cqw);line-height:1.05}
+.prod .pp{font-size:clamp(10px,3.6cqh,15px);font-weight:700;white-space:nowrap}
+@keyframes popin{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+.paid{flex:1;display:flex;flex-wrap:wrap;gap:1cqw;align-items:center;justify-content:flex-end;align-content:flex-start;min-height:20cqh}
+.paid .pm{position:relative;border-radius:10px;padding:2px;transition:transform .15s}
+.paid .pm.sel{transform:translateY(-8%) scale(1.08);box-shadow:0 0 0 4px #ff9f1c,0 0 18px #ffd23f}
+.paid .pm.bounce{animation:boing .5s ease}
+@keyframes boing{0%,100%{transform:none}30%{transform:translateY(-20%)}60%{transform:translateY(4%)}}
+.paidlbl{position:absolute;right:2cqw;bottom:1cqh;font-size:clamp(10px,3.6cqh,15px);font-weight:700;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.4)}
+.me{position:absolute;right:1.5cqw;top:16cqh;z-index:2;display:none}
+
+/* register */
+.reg{grid-area:reg;display:flex;gap:10px;min-height:0;min-width:0;container-type:size}
+.regbody{flex:1.25;min-width:0;border-radius:22px;padding:2.4cqh 2.4cqh 2cqh;display:flex;flex-direction:column;gap:1.4cqh;position:relative;
+  background:var(--skin,linear-gradient(180deg,#ff6b6b,#d94848));box-shadow:var(--shadow),inset 0 -8px 0 rgba(0,0,0,.18)}
+.regbody .brand{font-weight:700;color:#fff;font-size:clamp(11px,5.4cqh,18px);text-shadow:0 2px 0 rgba(0,0,0,.25);display:flex;align-items:center;gap:.3em;justify-content:space-between}
+.regbody .avatar{font-size:clamp(18px,10cqh,40px);position:relative;line-height:1}
+.regbody .avatar .hat{position:absolute;left:50%;top:-.45em;transform:translateX(-50%);font-size:.62em}
+.lcd{background:#173b2d;border-radius:12px;padding:.35em .6em;color:#8dffb5;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;box-shadow:inset 0 3px 0 rgba(0,0,0,.35);display:flex;flex-direction:column;gap:.1em}
+.lcd .row{display:flex;justify-content:space-between;align-items:center;gap:.5em;font-size:clamp(12px,6cqh,22px);white-space:nowrap}
+.lcd .row .lab{font-family:var(--font);font-weight:600;font-size:.72em;letter-spacing:.04em;color:#bfffd6;display:flex;align-items:center;gap:.3em}
+.lcd .row .val{font-weight:700}
+.lcd .row.big .val{font-size:1.45em;color:#d6ffe4}
+.lcd .row.hl{background:rgba(255,255,255,.08);border-radius:6px}
+.lcd .row.neg .val{color:#ffb4b4}
+.lcd .row.zero .val{color:#fff36b}
+.lcd .row[data-info]{cursor:pointer}
+.lcd .row .info{width:1.35em;height:1.35em;border-radius:50%;background:#2e6b52;color:#fff;font-size:.85em;font-weight:700;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font);pointer-events:auto}
+.lcd.multi .row{font-size:clamp(11px,4.8cqh,19px)}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:auto}
+.keys i{display:block;height:clamp(6px,4.6cqh,18px);border-radius:5px;background:rgba(255,255,255,.85);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.keys i:nth-child(4n){background:#ffd23f}
+.bon{flex:1;min-width:0;background:#fff;border-radius:6px 6px 0 0;padding:.5em .6em;font-size:clamp(11px,4.6cqh,17px);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;
+  -webkit-mask:linear-gradient(#000,#000) top/100% calc(100% - 8px) no-repeat,radial-gradient(5px at 6px 100%,transparent 96%,#000) 0 100%/12px 8px repeat-x;mask:linear-gradient(#000,#000) top/100% calc(100% - 8px) no-repeat,radial-gradient(5px at 6px 100%,transparent 96%,#000) 0 100%/12px 8px repeat-x}
+.bon h4{margin:0 0 .3em;text-align:center;font-size:1em;letter-spacing:.06em;border-bottom:2px dashed #c9d3e6;padding-bottom:.2em}
+.bon .bl{display:flex;justify-content:space-between;gap:.4em;animation:popin .25s}
+.bon .bl span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bon .bt{margin-top:auto;border-top:2px dashed #c9d3e6;padding-top:.2em;display:flex;justify-content:space-between;font-weight:700;font-size:1.12em}
+.bon .bitems{overflow:hidden;display:flex;flex-direction:column;gap:.1em}
+@container (max-width:340px){ .reg .bon{display:none} }
+@media (orientation:portrait){ .reg{flex-direction:column-reverse} .reg .bon{flex:none;max-height:38%} .reg .bon .bitems{display:none} .reg .bon h4{display:none} .reg .bon{border-radius:14px;-webkit-mask:none;mask:none;padding:.3em .6em} .reg .bon .bt{margin:0;border:0;padding:0} }
+
+/* side panel */
+.side{grid-area:side;min-width:0;min-height:0;display:flex;flex-direction:column;gap:8px}
+.stepbar{background:#fff;border-radius:18px;padding:.4em .8em;font-weight:600;box-shadow:var(--shadow);display:flex;align-items:center;gap:.5em;font-size:.92em;line-height:1.2;min-height:2.6em}
+.stepbar .sn{background:var(--purple);color:#fff;border-radius:999px;padding:.1em .6em;font-size:.85em;white-space:nowrap}
+.cline{background:#fff;border-radius:18px;padding:.4em .6em;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:.3em}
+.cline .ctitle{font-size:.75em;font-weight:700;color:var(--ink2);display:flex;justify-content:space-between}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:.25em .2em;font-weight:700;font-size:.9em}
+.chain .amt{background:#eef3ff;border-radius:10px;padding:.1em .4em;white-space:nowrap}
+.chain .amt.start{background:#ffe3ef}
+.chain .amt.round{background:#e2f7e8}
+.chain .amt.goal{background:#fff3c4;border:2px dashed #e0b400}
+.chain .amt.done{background:#2fb35a;color:#fff;border-color:#2fb35a}
+.chain .amt.over{background:#ffd6d6;color:#9b1c1c}
+.chain .ar{display:inline-flex;align-items:center;gap:.1em;font-size:.85em;color:var(--ink2);white-space:nowrap}
+.chain .ar .mini{display:inline-flex}
+.bar{height:10px;border-radius:999px;background:#eef1f6;overflow:hidden;position:relative}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#4cc3ff,#2fb35a);border-radius:999px;transition:width .3s}
+.bar.over i{background:#ff6b6b}
+.tip{background:#fff8d6;border:3px solid #ffd23f;border-radius:16px;padding:.35em .7em;font-size:.85em;font-weight:600;display:none;line-height:1.25}
+.tip.show{display:block;animation:popin .25s}
+.trayrow{display:flex;gap:8px;flex:1;min-height:0}
+.tray{flex:1;min-width:0;min-height:70px;border-radius:22px;background:radial-gradient(ellipse at 50% 35%,#f4f7fb,#cfd8e6);box-shadow:inset 0 6px 10px rgba(31,42,68,.25),var(--shadow);position:relative;container-type:size;
+  display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:center;gap:4px;padding:8px;--cb:min(34cqh,17cqw,64px);--nb:min(62cqh,34cqw,128px)}
+.tray .tlab{position:absolute;left:12px;top:6px;font-size:.72em;font-weight:700;color:#64708a}
+.tray .tsum{position:absolute;right:12px;top:6px;font-size:.78em;font-weight:700;color:#3b4767}
+.tray .empty{color:#8a93a6;font-size:.85em;font-weight:600}
+.tray .tm{border-radius:8px;transition:transform .12s}
+.tray .tm:active{transform:scale(.92)}
+.tray.droptarget{box-shadow:inset 0 6px 10px rgba(31,42,68,.25),0 0 0 5px #ff9f1c}
+.givecol{display:flex;flex-direction:column;gap:8px;justify-content:center}
+.givebtn{min-height:76px;font-size:1.25em;padding:.3em 1em}
+.hintbtn{min-height:48px;font-size:.85em}
+@media (orientation:portrait){ .trayrow{min-height:clamp(84px,13vh,150px)} .side{gap:6px} }
+@media (orientation:portrait) and (max-width:560px){ .givebtn{min-height:60px;font-size:1.1em;padding:.2em .8em} .hintbtn{min-height:44px} .trayrow{min-height:96px} .tray{min-height:96px} }
+@media (orientation:landscape){ .side{container-type:size} .side .tray{min-height:0} .trayrow{min-height:min(130px,30cqh)}
+  .givebtn{min-height:min(76px,17cqh);font-size:clamp(15px,5cqh,1.25em)} .hintbtn{min-height:min(48px,11cqh)} .givecol{gap:min(8px,2cqh)} }
+.chain.long{font-size:.8em;gap:.15em}
+.chain.long .mini{--cb:24px;--nb:44px}
+
+/* drawer */
+.drawer{grid-area:drawer;min-height:0;min-width:0;border-radius:var(--radius);padding:10px;display:flex;flex-direction:column;gap:8px;
+  background:var(--skin,linear-gradient(180deg,#ff6b6b,#d94848));box-shadow:var(--shadow),inset 0 -8px 0 rgba(0,0,0,.18)}
+.drow{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:7px;background:#232a3a;border-radius:16px;padding:7px;box-shadow:inset 0 4px 8px rgba(0,0,0,.45)}
+.drow.nrow{flex:1.08}
+.slot{position:relative;border-radius:11px;background:linear-gradient(180deg,#3a4357,#2c3446);box-shadow:inset 0 3px 6px rgba(0,0,0,.5);container-type:size;min-width:0;padding:0;overflow:hidden;transition:box-shadow .15s,transform .1s}
+.slot:active{transform:scale(.97)}
+.slot .stack{position:absolute;left:0;right:0;top:0;bottom:24%;display:flex;align-items:center;justify-content:center}
+.slot .stack .sp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.nslot{--nb:min(88cqw,112cqh)} .cslot{--cb:min(78cqw,62cqh)}
+.slot .slab{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);background:#fff;color:var(--ink);border-radius:999px;padding:0 .45em;font-weight:700;font-size:clamp(11px,min(17cqh,24cqw),20px);white-space:nowrap;line-height:1.35}
+.slot .scount{position:absolute;right:5%;top:4%;font-size:clamp(9px,11cqh,13px);color:#c5cee0;font-weight:600}
+.slot.hint{box-shadow:inset 0 3px 6px rgba(0,0,0,.5),0 0 0 4px #ffd23f,0 0 18px #ffd23f;animation:glow 1s ease-in-out infinite}
+.slot.target{box-shadow:inset 0 3px 6px rgba(0,0,0,.5),0 0 0 3px rgba(255,255,255,.45)}
+.slot.wrong{animation:shake .4s ease;box-shadow:inset 0 3px 6px rgba(0,0,0,.5),0 0 0 4px #ff6b6b}
+.slot.empty .slab{opacity:.6}
+@keyframes glow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35)}}
+.drawer.locked .slot{cursor:default}
+
+/* fly layer */
+.fly{position:fixed;left:0;top:0;z-index:60;pointer-events:none}
+.ghost{position:fixed;z-index:61;pointer-events:none;transform:translate(-50%,-50%) scale(1.08);filter:drop-shadow(0 8px 10px rgba(0,0,0,.3))}
+.crownfly{position:fixed;z-index:62;font-size:28px;pointer-events:none}
+
+/* coach (Juf Kassa) */
+#coach{position:fixed;inset:0;z-index:55;display:none}
+#coach.show{display:block}
+#coach .spot{position:fixed;border-radius:20px;box-shadow:0 0 0 9999px rgba(31,42,68,.5),0 0 0 5px #ffd23f inset;transition:all .3s;pointer-events:none}
+#coach .spot.none{left:50%!important;top:50%!important;width:0!important;height:0!important}
+#coach .ccard{position:fixed;left:0;right:0;margin:0 auto;width:min(620px,94vw);background:#fff;border-radius:24px;box-shadow:0 8px 0 rgba(31,42,68,.22);padding:14px 16px;display:flex;gap:12px;align-items:flex-start;animation:popin .3s}
+#coach .ccard.top{top:max(12px,env(safe-area-inset-top))} #coach .ccard.bottom{bottom:max(12px,env(safe-area-inset-bottom))}
+#coach .cf{font-size:52px;line-height:1;flex:none}
+#coach .ctext{flex:1;text-align:left}
+#coach .ctext b.nm{display:block;color:var(--purple);font-size:.85em}
+#coach .ctext p{margin:.1em 0 .5em;font-weight:500}
+#coach .ctext .btn{min-height:52px}
+#coach .ctext .mini{display:inline-flex;vertical-align:middle}
+
+/* result / modal cards */
+.mcard{background:#fff;border-radius:28px;box-shadow:0 8px 0 rgba(31,42,68,.22);padding:18px 20px;width:min(560px,94vw);max-height:92vh;overflow-y:auto;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;animation:popin .3s}
+.mcard h2{font-size:1.5em}
+.mcard .rowc{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+.mcard .explain{background:#f2f6ff;border-radius:18px;padding:.5em .8em;width:100%;font-size:.92em}
+.mcard .explain .chain{justify-content:center}
+.mcard .gain{font-weight:700;font-size:1.15em;color:#5a26c2}
+.bigstars{font-size:3.2em;letter-spacing:.1em;line-height:1}
+.bigstars span{display:inline-block;opacity:0;transform:scale(.2)}
+.bigstars span.in{animation:starin .45s cubic-bezier(.3,1.6,.6,1) forwards}
+@keyframes starin{to{opacity:1;transform:scale(1)}}
+.unlockbanner{background:linear-gradient(135deg,#fff3c4,#ffd6ea);border-radius:18px;padding:.5em 1em;font-weight:700;width:100%}
+.ocard{width:min(640px,94vw);max-height:90vh;overflow-y:auto;text-align:left;display:flex;flex-direction:column;gap:12px}
+.ocard h3{font-size:1.05em;margin-bottom:2px}
+.ocard p{margin:0;font-size:.9em}
+.seg{display:inline-flex;background:#eef1f6;border-radius:999px;padding:4px;gap:4px;flex-wrap:wrap}
+.seg button{border-radius:999px;padding:.35em .9em;font-weight:600;min-height:44px}
+.seg button.on{background:var(--blue);color:#fff}
+
+/* shop + book */
+.preview{width:min(100%,640px);height:clamp(160px,28vh,240px);position:relative}
+.preview .scene{position:absolute;inset:0}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tabs button{background:#fff;border-radius:999px;padding:.35em 1em;font-weight:600;box-shadow:var(--shadow);min-height:48px}
+.tabs button.on{background:var(--purple);color:#fff}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;width:100%}
+.sitem{background:#fff;border-radius:22px;box-shadow:var(--shadow);padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;border:4px solid transparent}
+.sitem.sel{border-color:#ff9f1c;background:#fff8e1}
+.sitem .si{font-size:44px;line-height:1.1;width:64px;height:64px;display:flex;align-items:center;justify-content:center;border-radius:16px}
+.sitem .sn{font-weight:700;font-size:.9em}
+.sitem .btn{min-height:44px;font-size:.85em;padding:.25em .8em;width:100%}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;width:100%}
+.bcard{background:#fff;border-radius:22px;box-shadow:var(--shadow);padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+.bcard .bf{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:46px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.15)}
+.bcard .bn{font-weight:700;font-size:.92em;line-height:1.1}
+.bcard .bl2{font-size:.75em;color:var(--ink2);line-height:1.2}
+.bcard .bc{position:absolute;right:8px;top:8px;background:#2fb35a;color:#fff;border-radius:999px;font-size:.72em;font-weight:700;padding:.05em .5em}
+.bcard.unk .bf span{filter:brightness(0);opacity:.28}
+.bcard.unk{background:#eef1f6}
+
+.toast{position:fixed;left:50%;top:max(14px,calc(env(safe-area-inset-top) + 8px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:.55em 1.1em;border-radius:999px;z-index:70;font-weight:600;display:none;max-width:92vw;text-align:center}
+.toast.show{display:block;animation:popin .25s}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:58;overflow:hidden}
+.confetti i{position:absolute;top:-20px;width:12px;height:18px;border-radius:3px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.floattxt{position:fixed;z-index:63;pointer-events:none;font-weight:700;font-size:1.4em;color:#fff;-webkit-text-stroke:1px #5a26c2;text-shadow:0 3px 0 #5a26c2;animation:floatup 1.4s ease forwards;white-space:nowrap}
+@keyframes floatup{0%{transform:translate(-50%,0) scale(.6);opacity:0}20%{transform:translate(-50%,-10px) scale(1.15);opacity:1}100%{transform:translate(-50%,-70px) scale(1);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+<script>
+/* App-modus (PWA): service worker, installatietip en voortgang-brug voor iPad/iPhone. Raakt de spellogica niet. */
+(function(){
+  var ID='kassakoning', PREFIX='kassakoning_', TIPKEY='pwa_tip_'+ID, CK='pwa_'+ID+'_save';
+  var standalone=false;
+  try{standalone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;}catch(e){}
+  var ua=navigator.userAgent||'', isIOS=/iPad|iPhone|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1), isAndroid=/Android/i.test(ua);
+  var path=location.pathname.replace(/[^\/]*$/,'')||'/';
+  /* Voortgang-brug: iOS kopieert bij 'Zet op beginscherm' alleen cookies (geen localStorage) naar de app.
+     In de Safari-tab bewaren we daarom een kopie van de opslag in een cookie (alleen voor dit spelpad);
+     de app neemt die eenmalig over als hij nog leeg is. Op Android delen tab en app de opslag al. */
+  var MAX=3800, DROP=[];
+  function own(){var o={},n=0;try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(PREFIX)===0){try{o[k]=JSON.parse(localStorage.getItem(k));n++;}catch(e){}}}}catch(e){}return n?o:null;}
+  function readCookie(){var m=document.cookie.match(new RegExp('(?:^|; )'+CK+'=([^;]*)'));return m?m[1]:null;}
+  function setCookie(v,age){try{document.cookie=CK+'='+v+'; Path='+path+'; Max-Age='+age+'; SameSite=Lax'+(location.protocol==='https:'?'; Secure':'');}catch(e){}}
+  function apply(d){for(var k in d){if(k.indexOf(PREFIX)===0)localStorage.setItem(k,JSON.stringify(d[k]));}}
+  function b64(buf){var s='',a=new Uint8Array(buf);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+  function unb64(s){var t=atob(s.replace(/-/g,'+').replace(/_/g,'/')),a=new Uint8Array(t.length);for(var i=0;i<t.length;i++)a[i]=t.charCodeAt(i);return a;}
+  function z(str){return new Response(new Blob([str]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer().then(b64);}
+  function unz(s){return new Response(new Blob([unb64(s)]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();}
+  function slim(o){var c=JSON.parse(JSON.stringify(o)),hit=false;for(var k in c){var v=c[k];if(v&&typeof v==='object')DROP.forEach(function(p){if(p in v){delete v[p];hit=true;}});}return hit?c:null;}
+  function pack(o,json){
+    var v='j'+encodeURIComponent(json); if(v.length<=MAX)return Promise.resolve(v);
+    var s=slim(o);
+    if(typeof CompressionStream==='undefined'){if(!s)return Promise.resolve(null);v='j'+encodeURIComponent(JSON.stringify(s));return Promise.resolve(v.length<=MAX?v:null);}
+    return z(json).then(function(c){if(c.length<MAX)return 'z'+c;if(!s)return null;return z(JSON.stringify(s)).then(function(c2){return c2.length<MAX?'z'+c2:null;});});
+  }
+  try{
+    if(standalone){
+      var c=readCookie();
+      if(c&&!own()){
+        if(c.charAt(0)==='j'){apply(JSON.parse(decodeURIComponent(c.slice(1))));setCookie('',0);}
+        else if(c.charAt(0)==='z'&&typeof DecompressionStream!=='undefined'&&!sessionStorage.getItem(CK)){
+          sessionStorage.setItem(CK,'1');
+          unz(c.slice(1)).then(function(t){apply(JSON.parse(t));setCookie('',0);location.reload();}).catch(function(){});
+        }
+      }else if(c)setCookie('',0);
+    }else{
+      var last=readCookie(),lastJson=null,busy=false;
+      var sync=function(){var o=own();if(!o||busy)return;var json=JSON.stringify(o);if(json===lastJson)return;busy=true;
+        pack(o,json).then(function(v){if(v){if(v!==last){setCookie(v,31536000);last=v;}}else if(last){setCookie('',0);last=null;}lastJson=json;})
+          .catch(function(){}).then(function(){busy=false;});};
+      sync();setInterval(sync,5000);
+      addEventListener('pagehide',sync);document.addEventListener('visibilitychange',sync);
+    }
+  }catch(e){}
+  /* Service worker voor offline spelen (relatief pad, scope ./) */
+  if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')){
+    addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{scope:'./'}).catch(function(){});});
+  }
+  /* Installatietip: alleen in een gewone browsertab op iPad/iPhone/Android, nooit in de app zelf */
+  if(standalone)return;
+  var tip;try{tip=JSON.parse(localStorage.getItem(TIPKEY)||'{}')||{};}catch(e){tip={};}
+  function saveTip(){try{localStorage.setItem(TIPKEY,JSON.stringify(tip));}catch(e){}}
+  addEventListener('appinstalled',function(){tip.off=1;saveTip();hide();});
+  if(tip.off||(tip.n||0)>=3||!(isIOS||isAndroid))return;
+  var deferred=null,el=null;
+  addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;var b=el&&el.querySelector('.pwa-tip-go');if(b)b.style.display='';});
+  function hide(){if(el){el.remove();el=null;}document.removeEventListener('pointerdown',outside,true);}
+  function outside(e){if(el&&!el.contains(e.target))hide();}
+  function show(){
+    if(el||!document.body)return;
+    tip.n=(tip.n||0)+1;saveTip();
+    var st=document.createElement('style');
+    st.textContent='.pwa-tip{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));z-index:9999;width:max-content;max-width:min(92vw,520px);display:flex;align-items:center;gap:10px;background:#fff;color:#1f2a44;border-radius:18px;padding:9px 10px 9px 14px;box-shadow:0 4px 0 rgba(31,42,68,.18),0 6px 18px rgba(31,42,68,.18);font:500 15px/1.3 Fredoka,"Baloo 2",Nunito,system-ui,sans-serif;text-align:left;touch-action:manipulation;animation:pwaTipIn .35s ease-out}'+
+      '.pwa-tip b{font-weight:700}.pwa-tip small{display:block;font-size:13px;color:#3b4767;margin-top:2px}'+
+      '.pwa-tip button{font:inherit;border:none;cursor:pointer;touch-action:manipulation;border-radius:999px}'+
+      '.pwa-tip .pwa-tip-go{background:#157a3a;color:#fff;font-weight:700;padding:6px 12px}'+
+      '.pwa-tip .pwa-tip-x{background:#eef3f8;color:#1f2a44;width:32px;height:32px;flex:none;font-size:18px;line-height:32px;padding:0}'+
+      '@keyframes pwaTipIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}';
+    document.head.appendChild(st);
+    el=document.createElement('div');el.className='pwa-tip';el.setAttribute('role','note');
+    var how=isIOS?'Tik in Safari op <b>Deel</b> (vierkantje met pijl) en kies <b>‘Zet op beginscherm’</b>.':'Tik in Chrome op <b>⋮</b> en kies <b>‘App installeren’</b> of <b>‘Toevoegen aan startscherm’</b>.';
+    el.innerHTML='<span aria-hidden="true" style="font-size:22px">📲</span><span><b>Tip:</b> zet dit spel op je beginscherm voor een echte app!<small>'+how+'</small></span>'+
+      '<button type="button" class="pwa-tip-go" style="display:'+(deferred?'':'none')+'">Installeren</button><button type="button" class="pwa-tip-x" aria-label="Tip sluiten">✕</button>';
+    el.querySelector('.pwa-tip-x').addEventListener('click',function(){tip.off=1;saveTip();hide();});
+    el.querySelector('.pwa-tip-go').addEventListener('click',function(){if(!deferred)return;deferred.prompt();deferred.userChoice.then(function(r){if(r&&r.outcome==='accepted'){tip.off=1;saveTip();}}).catch(function(){});deferred=null;hide();});
+    document.body.appendChild(el);
+    setTimeout(function(){document.addEventListener('pointerdown',outside,true);},0);
+  }
+  addEventListener('load',function(){setTimeout(show,1500);});
+})();
+</script>
+</head>
+<body>
+<div class="clouds" aria-hidden="true">
+  <div class="cloud" style="top:8%;width:140px;height:40px;animation-duration:70s;animation-delay:-20s"></div>
+  <div class="cloud" style="top:22%;width:100px;height:30px;animation-duration:55s;animation-delay:-40s"></div>
+  <div class="cloud" style="top:60%;width:160px;height:44px;animation-duration:90s;animation-delay:-5s"></div>
+</div>
+
+<!-- ============ MENU ============ -->
+<div id="scrMenu" class="overlay sky show">
+  <div class="topright"><span class="pill crownpill" title="Kroontjes">👑 <b class="crownCount">0</b></span><button class="iconbtn mutebtn" aria-label="Geluid aan/uit">🔊</button></div>
+  <div class="wrap">
+    <h1 class="logo">Kassa<span class="k2">koning</span><span class="crown">👑</span></h1>
+    <p class="tagline">Jij bent de kassier! Geef het goede wisselgeld terug. 💶</p>
+    <svg class="menureg" id="menuReg" viewBox="0 0 300 200" aria-hidden="true"></svg>
+    <div class="menumsg" id="menuMsg">Welkom in je winkel!</div>
+    <div class="menugrid">
+      <button class="btn big green span2" id="btnPlay">▶️ Spelen</button>
+      <button class="btn big purple sm3" id="btnShop">🏪 Mijn winkel</button>
+      <button class="btn big orange sm3" id="btnBook">📖 Klantenboek</button>
+      <button class="btn big sm3" id="btnHow">❓ Hoe werkt het?</button>
+    </div>
+    <button id="btnParent" class="btn small parent-gate" aria-label="Voor ouders: houd 2 seconden ingedrukt"><span class="fill"></span><span>👪 Voor ouders <small>(houd 2 sec. vast)</small></span></button>
+  </div>
+</div>
+
+<!-- ============ MAP ============ -->
+<div id="scrMap" class="overlay sky">
+  <div class="wrap">
+    <div class="topbar"><button class="iconbtn" data-go="scrMenu" aria-label="Terug">⬅️</button><div class="title">🗺️ Kies een winkel</div><span class="pill crownpill">👑 <b class="crownCount">0</b></span></div>
+    <div class="worlds" id="worldList"></div>
+    <p class="small-note">Speel level 8 (Drukke dag) om de volgende winkel te openen. Je kunt nooit verliezen: oefenen mag altijd!</p>
+  </div>
+</div>
+
+<!-- ============ LEVELS ============ -->
+<div id="scrLevels" class="overlay sky">
+  <div class="wrap">
+    <div class="topbar"><button class="iconbtn" data-go="scrMap" aria-label="Terug">⬅️</button><div class="title" id="lvlTitle">Levels</div><span class="pill" id="lvlStars">⭐ 0</span></div>
+    <div class="lvlhead" id="lvlHead"></div>
+    <div class="lvls" id="lvlList"></div>
+  </div>
+</div>
+
+<!-- ============ GAME ============ -->
+<div id="scrGame" class="overlay game">
+  <div class="gtop">
+    <button class="iconbtn" id="btnExit" aria-label="Naar de kaart">⬅️</button>
+    <div class="title"><span class="gt" id="gTitle">IJscokar</span><span class="dots" id="gDots"></span></div>
+    <span class="pill crownpill">👑 <b class="crownCount">0</b></span>
+    <button class="easybtn" id="btnEasy">🪜 <span class="ex">Iets </span>makkelijker</button>
+    <button class="iconbtn" id="btnHelp" aria-label="Uitleg">❓</button>
+    <button class="iconbtn mutebtn" aria-label="Geluid aan/uit">🔊</button>
+  </div>
+  <div class="scene" id="scene">
+    <div class="wall"></div>
+    <div class="shelfdeco" id="shelfDeco"></div>
+    <div class="awning"></div>
+    <div class="decos" id="decos"></div>
+    <div class="queue" id="queue"></div>
+    <div class="cust out" id="cust"><div class="cbody"><span class="cface" id="cFace">🙂</span></div><span class="cname" id="cName"></span></div>
+    <div class="bubble" id="bubble"></div>
+    <div class="counter" id="counter"><div class="items" id="items"></div><div class="paid" id="paid"></div><span class="paidlbl" id="paidLbl"></span></div>
+  </div>
+  <div class="reg" id="reg">
+    <div class="bon" id="bon"><h4>🧾 BON</h4><div class="bitems" id="bonItems"></div><div class="bt"><span>Totaal</span><span id="bonTotal">€ 0,00</span></div></div>
+    <div class="regbody" id="regBody">
+      <div class="brand"><span id="regName">KASSA</span><span class="avatar" id="meAvatar"></span></div>
+      <div class="lcd" id="lcd"></div>
+      <div class="keys"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <div class="side" id="side">
+    <div class="stepbar" id="stepbar"><span class="sn">Even wachten</span><span>De klant komt eraan…</span></div>
+    <div class="cline" id="cline"></div>
+    <div class="tip" id="tip"></div>
+    <div class="trayrow">
+      <div class="tray" id="tray" data-drop="tray"></div>
+      <div class="givecol">
+        <button class="btn green givebtn" id="btnGive" disabled>🤲 Geven</button>
+        <button class="btn yellow hintbtn" id="btnTip">💡 Tip</button>
+      </div>
+    </div>
+  </div>
+  <div class="drawer" id="drawer"></div>
+</div>
+
+<!-- ============ SHOP ============ -->
+<div id="scrShop" class="overlay sky">
+  <div class="wrap">
+    <div class="topbar"><button class="iconbtn" data-go="scrMenu" aria-label="Terug">⬅️</button><div class="title">🏪 Mijn winkel</div><span class="pill crownpill">👑 <b class="crownCount">0</b></span></div>
+    <div class="preview" id="shopPreview"></div>
+    <div class="tabs" id="shopTabs"></div>
+    <div class="sgrid" id="shopGrid"></div>
+    <p class="small-note">Kroontjes 👑 krijg je als fooi van tevreden klanten. Ze zijn alleen voor je winkel, niet om mee af te rekenen.</p>
+  </div>
+</div>
+
+<!-- ============ BOOK ============ -->
+<div id="scrBook" class="overlay sky">
+  <div class="wrap">
+    <div class="topbar"><button class="iconbtn" data-go="scrMenu" aria-label="Terug">⬅️</button><div class="title">📖 Klantenboek</div><span class="pill" id="bookCount">0/0</span></div>
+    <div class="bgrid" id="bookGrid"></div>
+    <p class="small-note">Help klanten in je winkels om hun sticker te verdienen.</p>
+  </div>
+</div>
+
+<!-- ============ MODALS ============ -->
+<div id="mdResult" class="overlay dim"><div class="mcard" id="resultCard"></div></div>
+<div id="mdDone" class="overlay dim"><div class="mcard" id="doneCard"></div></div>
+<div id="mdInfo" class="overlay dim"><div class="mcard" id="infoCard"></div></div>
+<div id="mdOuders" class="overlay dim">
+  <div class="card ocard">
+    <h2>👪 Voor ouders</h2>
+    <div><h3>💶 Wat leert je kind?</h3>
+      <p>Afrekenen zoals een echte kassier: het betaalde geld in de goede vakjes leggen en wisselgeld teruggeven door <b>op te tellen</b> vanaf de prijs (€ 23,45 + 5 ct = € 23,50 + 50 ct = € 24 + € 1 = € 25 + € 5 = € 30). Alle bedragen kloppen tot op de cent, met echte euromunten en -biljetten (zonder € 200/€ 500). Juistheid telt altijd zwaarder dan snelheid; snelheid geeft pas vanaf winkel 3, level 8 een klein extraatje.</p></div>
+    <div><h3>🗺️ Levels</h3>
+      <p>Normaal gaan levels één voor één open en opent level 8 (Drukke dag) de volgende winkel.</p>
+      <div class="seg" id="segUnlock" style="margin-top:6px"><button data-v="0">Op volgorde</button><button data-v="1">Alles open</button></div></div>
+    <div><h3>🗣️ Voorlezen</h3>
+      <p>Laat de tablet wat de klanten zeggen hardop voorlezen (als het apparaat een Nederlandse stem heeft).</p>
+      <div class="seg" id="segVoice" style="margin-top:6px"><button data-v="0">Uit</button><button data-v="1">Aan</button></div></div>
+    <div><h3>📊 Overzicht</h3><p id="ouderStats"></p></div>
+    <div><h3>🧽 Opnieuw beginnen</h3>
+      <p>Wist alle sterren, kroontjes, winkelspullen en het klantenboek.</p>
+      <button class="btn small orange" id="btnReset" style="margin-top:6px">Voortgang wissen</button></div>
+    <button class="btn green" id="btnOudersClose">✅ Klaar</button>
+  </div>
+</div>
+<div id="coach"><div class="spot none" id="coachSpot"></div><div class="ccard bottom" id="coachCard"><div class="cf" id="coachFace">👩‍💼</div><div class="ctext"><b class="nm" id="coachName">Juf Kassa</b><p id="coachText"></p><button class="btn green" id="coachBtn">Oké!</button></div></div></div>
+<div class="fly" id="fly"></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+'use strict';
+/* =========================================================
+   Kassakoning – afrekenen met echt euro-geld (groep 5)
+   Alle bedragen zijn hele centen (integers).
+   ========================================================= */
+const Q = new URLSearchParams(location.search);
+const SNEL = Math.max(0.2, Math.min(30, parseFloat(Q.get('snel')) || 1));   // test: alles sneller
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const wait = ms => new Promise(r => setTimeout(r, ms / SNEL));
+const rint = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pickOne = arr => arr[Math.floor(Math.random() * arr.length)];
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const sum = arr => arr.reduce((s, v) => s + v, 0);
+function weighted(list) { // [[item, w], ...]
+  const tot = list.reduce((s, x) => s + x[1], 0); if (!(tot > 0)) return null;
+  let r = Math.random() * tot; for (const x of list) { r -= x[1]; if (r <= 0) return x[0]; } return list[list.length - 1][0];
+}
+
+/* ---------------- euro-geld ---------------- */
+const COINS = [1, 2, 5, 10, 20, 50, 100, 200];
+const NOTES = [500, 1000, 2000, 5000, 10000];            // geen € 1/€ 2-biljetten, geen € 200/€ 500
+const LADDER = COINS.concat(NOTES);
+const isNote = v => v >= 500;
+const COIN_MM = { 1: 16.25, 2: 18.75, 5: 21.25, 10: 19.75, 20: 22.25, 50: 24.25, 100: 23.25, 200: 25.75 };
+const NOTE_MM = { 500: [120, 62], 1000: [127, 67], 2000: [133, 72], 5000: [140, 77], 10000: [147, 82] };
+const NOTE_COL = { 500: ['#a3abb5', '#78818c', '#5d6570'], 1000: ['#ef6a6f', '#c63d44', '#97242b'], 2000: ['#5b97e3', '#2f66b5', '#1f4a87'],
+  5000: ['#f7a54a', '#d9781d', '#a85710'], 10000: ['#55bf7e', '#2b8c52', '#1d6a3c'] };
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function fmt(c) { const neg = c < 0; c = Math.abs(Math.round(c)); return (neg ? '− ' : '') + '€ ' + Math.floor(c / 100) + ',' + pad2(c % 100); }
+function words(c) { // 'nog 20 cent', '1 euro', '€ 1,50'
+  c = Math.abs(c); if (c < 100) return c + ' cent'; if (c % 100 === 0) return (c / 100) + ' euro'; return fmt(c);
+}
+function label(v) { return v < 100 ? v + ' ct' : '€ ' + v / 100; }
+function nameOf(v) { return isNote(v) ? 'het briefje van ' + (v / 100) + ' euro' : v < 100 ? 'de munt van ' + v + ' cent' : 'de munt van ' + (v / 100) + ' euro'; }
+function shortName(v) { return isNote(v) ? 'briefje van € ' + v / 100 : v < 100 ? v + ' cent' : '€ ' + v / 100 + '-munt'; }
+
+function noteSVG(v) {
+  const [w, h] = NOTE_MM[v], [c1, c2, c3] = NOTE_COL[v], val = v / 100, ar = [];
+  // simpel bouwwerk-motief (poort/bogen), geen echte biljetafbeelding
+  const n = 3, bw = 15, x0 = w * .36, yb = h * .86, hh = h * .3;
+  for (let i = 0; i < n; i++) { const x = x0 + i * (bw + 3); ar.push(`<path d="M${x} ${yb} v${-hh} a${bw / 2} ${bw / 2} 0 0 1 ${bw} 0 v${hh}" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2.4"/>`); }
+  const roofY = yb - hh - bw / 2 - 5;
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<rect x="0" y="0" width="${w}" height="${h}" rx="5" fill="${c1}"/>
+<rect x="${w * .8}" y="0" width="${w * .2}" height="${h}" fill="${c2}" opacity=".55"/>
+<circle cx="${w * .89}" cy="${h * .52}" r="${h * .2}" fill="#fff" opacity=".28"/>
+<path d="M${x0 - 6} ${roofY + 4} L${x0 + (n * (bw + 3)) / 2 - 1.5} ${roofY - 9} L${x0 + n * (bw + 3) + 3} ${roofY + 4} Z" fill="#fff" fill-opacity=".35"/>
+${ar.join('')}
+<rect x="${x0 - 6}" y="${yb}" width="${n * (bw + 3) + 9}" height="3" fill="#fff" fill-opacity=".45"/>
+<rect x="3" y="3" width="${w - 6}" height="${h - 6}" rx="4" fill="none" stroke="${c3}" stroke-width="1.6" opacity=".7"/>
+<text x="8" y="${h * .42}" font-family="Fredoka,Arial,sans-serif" font-weight="700" font-size="${h * .4}" fill="#fff" stroke="${c3}" stroke-width="1.6" paint-order="stroke">${val}</text>
+<text x="9" y="${h * .62}" font-family="Fredoka,Arial,sans-serif" font-weight="700" font-size="${h * .14}" fill="#fff" letter-spacing="1">EURO</text>
+<text x="${w * .89}" y="${h * .93}" text-anchor="middle" font-family="Fredoka,Arial,sans-serif" font-weight="700" font-size="${h * .2}" fill="#fff">${val}</text>
+</svg>`;
+}
+function moneyHTML(v, cls) {
+  if (isNote(v)) { const [w, h] = NOTE_MM[v]; return `<div class="money note ${cls || ''}" data-v="${v}" style="--w:${(w / 147).toFixed(4)};--ar:${w}/${h}">${noteSVG(v)}</div>`; }
+  const k = v <= 5 ? 'k-cu' : v <= 50 ? 'k-au' : v === 100 ? 'k-e1' : 'k-e2';
+  const inner = v < 100 ? `<span class="cv">${v}</span><span class="cu2">cent</span>` : `<span class="cv">€${v / 100}</span>`;
+  return `<div class="money coin ${k} ${cls || ''}" data-v="${v}" style="--d:${(COIN_MM[v] / 25.75).toFixed(4)}">${inner}</div>`;
+}
+function miniMoney(v) { return `<span class="mini">${moneyHTML(v)}</span>`; }
+
+/* ---------------- wisselgeld-wiskunde ---------------- */
+// Minst mogelijke stukken voor 'amount' met (optioneel) beperkte voorraad per soort. null = kan niet.
+function optimalChange(amount, counts, denoms) {
+  if (amount === 0) return [];
+  if (amount < 0) return null;
+  const ds = (denoms || LADDER).filter(v => v <= amount && (!counts || (counts[v] || 0) > 0)).sort((a, b) => b - a);
+  let best = null, bestN = Infinity; const cur = [];
+  (function dfs(i, rem, n) {
+    if (rem === 0) { if (n < bestN) { bestN = n; best = cur.slice(); } return; }
+    if (i >= ds.length) return;
+    const d = ds[i]; if (n + Math.ceil(rem / d) >= bestN) return;
+    let k = Math.floor(rem / d); if (counts) k = Math.min(k, counts[d] || 0);
+    for (; k >= 0; k--) { for (let j = 0; j < k; j++) cur.push(d); dfs(i + 1, rem - k * d, n + k); cur.length -= k; }
+  })(0, amount, 0);
+  return best;
+}
+const OPT_CACHE = new Map();
+function optUnlimited(a) { let r = OPT_CACHE.get(a); if (!r) { r = optimalChange(a, null, LADDER); OPT_CACHE.set(a, r); } return r; }
+
+// Is dit een geloofwaardige betaling voor prijs P? (zie tests)
+function realism(P, pcs) {
+  const s = sum(pcs);
+  if (!pcs.length || s <= P) return { ok: false, why: 'te weinig' };
+  if (pcs.some(v => !LADDER.includes(v))) return { ok: false, why: 'onbekend geld' };
+  const nxt = LADDER.find(d => d > P); const ni = nxt ? LADDER.indexOf(nxt) : LADDER.length - 1;
+  const maxAllowed = Math.max(LADDER[Math.min(ni + 1, LADDER.length - 1)], 500);
+  if (Math.max.apply(null, pcs) > maxAllowed) return { ok: false, why: 'veel te groot briefje' };
+  const extra = pcs.filter(v => s - v >= P);
+  if (extra.length) {
+    if (extra.some(v => isNote(v))) return { ok: false, why: 'overbodig briefje' };
+    const base = s - sum(extra);
+    if (base <= P) return { ok: false, why: 'onduidelijk / had gepast' };
+  }
+  const ch = s - P, opt = optUnlimited(ch);
+  if (pcs.some(v => opt.includes(v))) return { ok: false, why: 'zelfde geld terug' };
+  if (extra.length) {
+    const base = s - sum(extra);
+    if (opt.length >= optUnlimited(base - P).length) return { ok: false, why: 'extra munten maken het niet mooier' };
+    return { ok: true, extra: true };
+  }
+  return { ok: true, extra: false };
+}
+
+const MS_CACHE = {};
+function multisets(denoms, maxP) {
+  const ds = denoms.slice().sort((a, b) => b - a), key = ds.join(',') + '|' + maxP;
+  if (MS_CACHE[key]) return MS_CACHE[key];
+  const out = [], cur = [];
+  (function rec(i, left, s) {
+    if (cur.length) out.push({ pcs: cur.slice(), sum: s, min: cur[cur.length - 1] });
+    if (!left) return;
+    for (let j = i; j < ds.length; j++) { cur.push(ds[j]); rec(j, left - 1, s + ds[j]); cur.pop(); }
+  })(0, maxP, 0);
+  out.sort((a, b) => a.sum - b.sum);
+  return (MS_CACHE[key] = out);
+}
+
+// Kies een betaling die bij de klant past. style: normal | big | smart | coins | piggy
+function choosePayment(P, style, pay) {
+  const pd = pay.denoms; let pool;
+  if (style === 'coins') pool = multisets(pd.filter(v => !isNote(v)), 6);
+  else if (style === 'piggy') pool = multisets(pd.filter(v => v >= 10 && v <= 50), 8);
+  else if (style === 'smart') pool = multisets(pd, 4);
+  else pool = multisets(pd, pay.max || 1);
+  const cands = [];
+  for (const m of pool) {
+    if (m.sum <= P) continue;
+    const hasExtra = m.sum - m.min >= P;
+    if (style !== 'smart' && hasExtra) continue;
+    if (style === 'smart' && !hasExtra) continue;
+    if (style === 'big' && m.pcs.length > 1) continue;
+    if (style === 'smart' && (m.sum - P) % 50 !== 0) continue;          // slimme klant wil mooi rond geld terug
+    const r = realism(P, m.pcs); if (!r.ok) continue;
+    let w;
+    if (style === 'big') w = 1;
+    else if (style === 'coins' || style === 'piggy') w = m.pcs.length;
+    else if (style === 'smart') w = (P / m.sum) / optUnlimited(m.sum - P).length / m.pcs.length;
+    else w = (m.pcs.length === 1 ? 4 : 1) / m.pcs.length * (P / m.sum);
+    cands.push([m, w]);
+  }
+  if (!cands.length) return null;
+  if (style === 'big') { let b = cands[0][0]; for (const c of cands) if (c[0].sum > b.sum) b = c[0]; return b.pcs.slice(); }
+  return weighted(cands).pcs.slice();
+}
+
+/* ---------------- data: winkels, producten, levels ---------------- */
+const H_FULL = { tip: 'auto', line: true, slotHint: true, explain: true, displays: false };
+const h = o => Object.assign({}, H_FULL, o);
+const D_W2 = [5, 10, 20, 50, 100, 200, 500, 1000, 2000];
+const D_W3 = [5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
+const WORLDS = [
+  { id: 1, key: 'ijscokar', name: 'IJscokar', emoji: '🍦', color: '#ff6fa8', scene: 'w1', shelf: '🍦 🍧 🍨',
+    desc: 'Hele euro\'s en 50 cent. Juf Kassa helpt je bij elke stap.', reg: 'IJSKASSA',
+    products: [
+      { e: '🚀', n: 'Raketje', p: 100 }, { e: '🍭', n: 'Lolly', p: 100 }, { e: '💧', n: 'Flesje water', p: 100 },
+      { e: '🍧', n: 'Schaafijs', p: 200 }, { e: '🍫', n: 'Choco-ijsje', p: 200 }, { e: '🍦', n: 'Hoorntje 2 bol', a: 'een hoorntje met 2 bolletjes', p: 300 },
+      { e: '🍨', n: 'Beker 3 bol', a: 'een beker met 3 bolletjes', p: 400 }, { e: '🍓', n: 'Aardbeienijs', p: 300 },
+      { e: '☁️', n: 'Slagroom extra', a: 'extra slagroom', p: 50 }, { e: '✨', n: 'Spikkels', a: 'spikkels erop', p: 50 },
+      { e: '🧊', n: 'Waterijsje', p: 150 }, { e: '🍦', n: 'Hoorntje 1 bol', a: 'een hoorntje met 1 bolletje', p: 150 },
+      { e: '🍦', n: 'Softijs', p: 250 }, { e: '🥤', n: 'Milkshake', p: 350 }, { e: '🧇', n: 'Wafel met ijs', p: 450 },
+      { e: '🍨', n: 'IJscoupe', p: 600 }, { e: '🍌', n: 'Banana split', p: 650 }, { e: '🍨', n: 'Familiebak', a: 'een familiebak ijs', p: 800 }],
+    levels: [
+      { t: 'Je eerste klant', s: 'Wisselgeld is 1 munt', customers: 4, items: [1, 1], rule: 100, pmin: 100, pmax: 400,
+        pay: { denoms: [200, 500], max: 1, styles: { normal: 1 } }, change: [1, 1], drawer: [100, 200, 500], help: h({}), tutorial: true },
+      { t: 'Twee munten', s: 'Tel op tot het betaalde geld', customers: 5, items: [1, 1], rule: 100, pmin: 100, pmax: 900,
+        pay: { denoms: [200, 500, 1000], max: 1, styles: { normal: 1 } }, change: [1, 2], drawer: [100, 200, 500, 1000], help: h({}) },
+      { t: 'Briefje terug', s: 'Soms geef je € 5 terug', customers: 5, items: [1, 2], rule: 100, pmin: 100, pmax: 900,
+        pay: { denoms: [500, 1000], max: 1, styles: { normal: 2, big: 1 } }, change: [2, 3], drawer: [100, 200, 500, 1000], help: h({}),
+        intro: ['Soms betaalt een klant met een groot briefje. Dan geef je ook een <b>briefje van € 5</b> terug. Tel gewoon op: € 3 + € 2 = € 5, + € 5 = € 10!'] },
+      { t: '50 cent!', s: 'Nieuw: de munt van 50 cent', customers: 5, items: [1, 1], rule: 50, cents: 'x50', pmin: 50, pmax: 450,
+        pay: { denoms: [100, 200, 500], max: 1, styles: { normal: 1 } }, change: [1, 2], drawer: [50, 100, 200, 500, 1000], help: h({}),
+        intro: ['Nieuw in de kassa: de munt van <b>50 cent</b>! ' + '{m50}' + ' Twee munten van 50 cent zijn samen 1 euro.', 'Kost het ijsje € 1,50 en krijg je € 2? Tel op: € 1,50 + 50 cent = € 2,00. Je geeft dus 50 cent terug!'] },
+      { t: 'Tel maar op', s: 'Euro\'s en 50 cent door elkaar', customers: 5, items: [1, 2], rule: 50, pmin: 100, pmax: 950,
+        pay: { denoms: [100, 200, 500, 1000], max: 1, styles: { normal: 1 } }, change: [2, 4], drawer: [50, 100, 200, 500, 1000], help: h({}) },
+      { t: 'Het hele gezin', s: 'Meer ijsjes, groter briefje', customers: 5, items: [2, 3], rule: 50, pmin: 400, pmax: 1900,
+        pay: { denoms: [200, 500, 1000, 2000], max: 2, styles: { normal: 3, big: 1 } }, change: [1, 4], drawer: [50, 100, 200, 500, 1000, 2000], help: h({ tip: 'button' }),
+        intro: ['Nu kopen klanten soms meer ijsjes. De kassa telt de prijzen voor je op. Er is ook een vakje voor het <b>briefje van € 20</b>.', 'De tip komt nu niet meer vanzelf. Heb je hulp nodig? Tik op <b>💡 Tip</b>.'] },
+      { t: 'Opa Kees komt', s: 'Klanten met veel munten', customers: 5, items: [1, 3], rule: 50, pmin: 100, pmax: 1900,
+        pay: { denoms: [50, 100, 200, 500, 1000, 2000], max: 2, styles: { normal: 3, coins: 2, big: 1 } }, change: [2, 5], drawer: [50, 100, 200, 500, 1000, 2000], help: h({ tip: 'button', slotHint: false, explain: false }) },
+      { t: 'Drukke dag', s: '8 klanten achter elkaar', busy: true, customers: 8, mix: [3, 4, 5, 6, 7], drawer: [50, 100, 200, 500, 1000, 2000], help: h({ tip: 'button', slotHint: false, explain: false }) },
+    ] },
+  { id: 2, key: 'bakker', name: 'Bakker', emoji: '🥐', color: '#e8913a', scene: 'w2', shelf: '🍞 🥐 🥖<br>🧁 🍩 🥧',
+    desc: 'Prijzen met 5, 10, 20 en 50 cent. Slimme klanten geven er muntjes bij.', reg: 'BAKKERSKASSA',
+    products: [
+      { e: '🥯', n: 'Krentenbol', p: 60 }, { e: '🍪', n: 'Koekje', p: 50 }, { e: '🥯', n: 'Rozijnenbol', p: 70 }, { e: '🧇', n: 'Stroopwafel', p: 75 },
+      { e: '🥐', n: 'Croissant', p: 120 }, { e: '🍪', n: 'Gevulde koek', p: 135 }, { e: '🥨', n: 'Pretzel', p: 140 }, { e: '🍩', n: 'Donut', p: 150 },
+      { e: '🍫', n: 'Chocoladebroodje', p: 160 }, { e: '🥧', n: 'Appelflap', p: 165 }, { e: '🧀', n: 'Kaasbroodje', p: 175 }, { e: '🥖', n: 'Stokbrood', p: 190 },
+      { e: '🧁', n: 'Muffin', p: 195 }, { e: '🍰', n: 'Tompouce', p: 210 }, { e: '🌭', n: 'Saucijzenbroodje', p: 225 }, { e: '🍞', n: 'Wit brood', p: 245 },
+      { e: '🍞', n: 'Bruin brood', p: 285 }, { e: '🍞', n: 'Volkorenbrood', p: 310 }, { e: '🍰', n: 'Taartpunt', p: 325 }, { e: '🍪', n: 'Zak koekjes', p: 450 },
+      { e: '🥧', n: 'Appeltaart', p: 1250 }, { e: '🎂', n: 'Verjaardagstaart', p: 1695 }, { e: '🍓', n: 'Aardbeienvlaai', p: 1450 }],
+    levels: [
+      { t: 'Krentenbollen', s: 'Nieuw: 10 en 20 cent', customers: 5, items: [1, 1], rule: 10, pmin: 30, pmax: 300,
+        pay: { denoms: [100, 200, 500], max: 1, styles: { normal: 1 } }, change: [1, 3], drawer: [10, 20, 50, 100, 200, 500, 1000], help: h({}),
+        intro: ['Welkom bij de bakker! Hier zijn er meer munten: <b>10 cent</b> {m10} en <b>20 cent</b> {m20}.', 'Een krentenbol kost € 0,60 en je krijgt € 1? Tel op: 0,60 + 20 cent = 0,80 + 20 cent = € 1,00. Dus 2 munten van 20 cent!'] },
+      { t: 'Brood en broodjes', s: 'Prijzen met 10 cent', customers: 5, items: [1, 2], rule: 10, pmin: 50, pmax: 600,
+        pay: { denoms: [100, 200, 500, 1000], max: 1, styles: { normal: 1 } }, change: [2, 4], drawer: [10, 20, 50, 100, 200, 500, 1000], help: h({}) },
+      { t: 'Vijf cent', s: 'Nieuw: de munt van 5 cent', customers: 5, items: [1, 2], rule: 5, cents: 'odd5', pmin: 50, pmax: 600,
+        pay: { denoms: [100, 200, 500, 1000], max: 1, styles: { normal: 1 } }, change: [2, 5], drawer: D_W2, help: h({}),
+        intro: ['Nieuw: de munt van <b>5 cent</b> {m5}. Eindigt de prijs op een 5, zoals € 1,35? Maak er dan eerst een mooi rond bedrag van: 1,35 + 5 cent = 1,40.'] },
+      { t: 'Taartjes', s: 'Meer dingen tegelijk', customers: 5, items: [2, 3], rule: 5, pmin: 300, pmax: 1500,
+        pay: { denoms: [200, 500, 1000, 2000], max: 2, styles: { normal: 3, big: 1 } }, change: [2, 5], drawer: D_W2, help: h({ tip: 'button' }),
+        intro: ['De tip komt nu niet meer vanzelf. Tik op <b>💡 Tip</b> als je hulp wilt. Dat mag altijd!'] },
+      { t: 'Slimme klanten', s: 'Klant geeft muntjes erbij', customers: 5, items: [1, 2], rule: 5, pmin: 100, pmax: 1500,
+        pay: { denoms: D_W2, max: 2, styles: { smart: 3, normal: 1 } }, change: [1, 4], drawer: D_W2, help: h({ tip: 'button' }),
+        intro: ['Sommige klanten zijn slim: ze geven er <b>muntjes bij</b>, zodat ze mooi rond geld terugkrijgen.', 'Kost het € 7,30 en geeft de klant € 10,30? Tel op vanaf € 7,30 tot € 10,30: + € 1 = € 8,30, + € 2 = € 10,30. Je geeft € 3 terug!'] },
+      { t: 'Taart bestellen', s: 'Grote bedragen tot € 20', customers: 5, items: [1, 3], rule: 5, pmin: 500, pmax: 1995,
+        pay: { denoms: D_W2, max: 2, styles: { normal: 2, smart: 1, big: 1 } }, change: [2, 6], drawer: D_W2, help: h({ tip: 'button', explain: false }) },
+      { t: 'Spaarpotgeld', s: 'Betalen met veel munten', customers: 5, items: [1, 2], rule: 5, pmin: 50, pmax: 1000,
+        pay: { denoms: D_W2, max: 2, styles: { coins: 2, piggy: 1, normal: 1 } }, change: [2, 6], drawer: D_W2, help: h({ tip: 'button', slotHint: false, explain: false }) },
+      { t: 'Drukke dag', s: '8 klanten achter elkaar', busy: true, customers: 8, mix: [3, 4, 5, 6, 7], drawer: D_W2, help: h({ tip: 'button', slotHint: false, explain: false }) },
+    ] },
+  { id: 3, key: 'speelgoed', name: 'Speelgoedwinkel', emoji: '🧸', color: '#7b5cff', scene: 'w3', shelf: '🧸 🚂 🪁<br>🧩 🎲 🤖',
+    desc: 'Een slimme kassa met hulpschermen. Grote bedragen tot € 100.', reg: 'SLIMME KASSA',
+    products: [
+      { e: '🎈', n: 'Ballon', p: 150 }, { e: '🏀', n: 'Stuiterbal', p: 195 }, { e: '⭐', n: 'Stickervel', p: 250 }, { e: '🦆', n: 'Badeend', p: 300 },
+      { e: '🔮', n: 'Zak knikkers', p: 350 }, { e: '🪀', n: 'Jojo', p: 395 }, { e: '✏️', n: 'Kleurpotloden', p: 495 }, { e: '💦', n: 'Waterpistool', p: 795 },
+      { e: '🧩', n: 'Puzzel', p: 895 }, { e: '🚗', n: 'Speelgoedauto', p: 1295 }, { e: '⚽', n: 'Voetbal', p: 1495 }, { e: '🪆', n: 'Pop', p: 1650 },
+      { e: '🪁', n: 'Vlieger', p: 1750 }, { e: '🎩', n: 'Goocheldoos', p: 1895 }, { e: '🧸', n: 'Knuffelbeer', p: 1995 }, { e: '🎲', n: 'Bordspel', p: 2195 },
+      { e: '🚀', n: 'Raket', p: 2295 }, { e: '🦖', n: 'Dinosaurus', p: 2450 }, { e: '👕', n: 'Voetbalshirt', p: 2795 }, { e: '🧱', n: 'Bouwdoos', p: 2995 },
+      { e: '🤖', n: 'Robot', p: 3495 }, { e: '🛹', n: 'Skateboard', p: 3995 }, { e: '🎸', n: 'Gitaar', p: 4495 }, { e: '🚂', n: 'Treinset', p: 4995 },
+      { e: '🏎️', n: 'Racebaan', p: 5995 }],
+    levels: [
+      { t: 'De slimme kassa', s: 'Hulpschermen op de kassa', customers: 5, items: [1, 1], rule: 5, pmin: 200, pmax: 2000,
+        pay: { denoms: [500, 1000, 2000], max: 1, styles: { normal: 1 } }, change: [1, 5], drawer: D_W3, help: h({ tip: 'button', displays: true }), displayIntro: true },
+      { t: 'Twee speeltjes', s: 'De kassa telt op', customers: 5, items: [2, 2], rule: 5, pmin: 500, pmax: 3500,
+        pay: { denoms: [500, 1000, 2000, 5000], max: 2, styles: { normal: 3, big: 1 } }, change: [2, 6], drawer: D_W3, help: h({ tip: 'button', displays: true }) },
+      { t: 'Groot briefje', s: 'Betalen met € 50', customers: 5, items: [1, 3], rule: 5, pmin: 1000, pmax: 4900,
+        pay: { denoms: [1000, 2000, 5000], max: 2, styles: { big: 2, normal: 1 } }, change: [2, 7], drawer: D_W3, help: h({ tip: 'button', displays: true }) },
+      { t: 'Slim betalen', s: 'Muntjes erbij voor rond geld', customers: 5, items: [1, 2], rule: 5, pmin: 500, pmax: 5000,
+        pay: { denoms: D_W3, max: 2, styles: { smart: 3, normal: 1 } }, change: [1, 5], drawer: D_W3, help: h({ tip: 'button', displays: true, slotHint: false }) },
+      { t: 'Cadeautjes', s: '2 tot 4 speeltjes', customers: 5, items: [2, 4], rule: 5, pmin: 1500, pmax: 7000,
+        pay: { denoms: D_W3, max: 3, styles: { normal: 2, smart: 1, big: 1 } }, change: [2, 7], drawer: D_W3, help: h({ tip: 'button', displays: true, slotHint: false, explain: false }) },
+      { t: 'Honderd euro!', s: 'Bedragen tot € 100', customers: 5, items: [1, 3], rule: 5, pmin: 4000, pmax: 9900,
+        pay: { denoms: D_W3, max: 3, styles: { normal: 2, big: 2, smart: 1 } }, change: [2, 8], drawer: D_W3, help: h({ tip: 'button', displays: true, slotHint: false, explain: false }),
+        intro: ['Nu worden de bedragen groot: tot <b>€ 100</b>! Er is een vakje voor het groene <b>briefje van € 100</b> {m10000}.'] },
+      { t: 'Zonder tel-lijn', s: 'Alleen de slimme kassa', customers: 5, items: [1, 4], rule: 5, pmin: 1000, pmax: 9900,
+        pay: { denoms: D_W3, max: 3, styles: { normal: 2, smart: 1, big: 1, coins: 1 } }, change: [2, 8], drawer: D_W3, help: h({ tip: 'button', displays: true, line: false, slotHint: false, explain: false }),
+        intro: ['Nu is de tel-lijn weg. Kijk goed naar de schermen van de slimme kassa: <b>NOG TE GEVEN</b> vertelt hoeveel er nog bij moet.'] },
+      { t: 'Drukke dag', s: '8 klanten + snelheidsbonus', busy: true, speed: true, customers: 8, mix: [3, 4, 5, 6, 7], drawer: D_W3, help: h({ tip: 'button', displays: true, line: false, slotHint: false, explain: false }),
+        intro: ['Drukke dag in de speelgoedwinkel! Ben je goed <b>én</b> snel? Dan krijg je een extra kroontje ⚡. Goed is altijd belangrijker dan snel!'] },
+    ] },
+  // Binnenkort: alleen data + kassa-modus toevoegen (helpers kunnen per level uit: tip:'off', line:false, displays:false).
+  { id: 4, key: 'supermarkt', name: 'Supermarkt', emoji: '🛒', color: '#2fb35a', soon: true,
+    desc: 'Veel artikelen scannen, afronden op 5 cent en geen hulpschermen. En soms is een vakje leeg: wissel slim (2 × 20 ct + 10 ct) of vraag “Heeft u het misschien gepast?”',
+    register: { round5: true, restock: 'manual', askExact: true } },
+  { id: 5, key: 'markt', name: 'Markt & Kledingwinkel', emoji: '👕', color: '#ff8c42', soon: true,
+    desc: 'Kortingen: 50%, 2e halve prijs, 1+1 gratis, € 2 korting. Klanten betalen slim (€ 25,05 voor € 23,05). Raakt het wisselgeld op? Vraag om 5 cent of bel de chef voor een nieuwe rol munten.',
+    register: { discounts: true, restock: 'manual', askExact: true, callManager: true } },
+  { id: 6, key: 'stroomstoring', name: 'Stroomstoring', emoji: '🔦', color: '#5b6478', soon: true,
+    desc: 'De kassa doet het niet! Tel de prijzen zelf op met een kladblok en reken het wisselgeld uit je hoofd.',
+    register: { off: true, notepad: true } },
+];
+// Voorraad per vakje (echte aantallen; winkel 1–3 worden automatisch bijgevuld)
+const STOCK = { 1: 30, 2: 30, 5: 25, 10: 25, 20: 25, 50: 20, 100: 20, 200: 15, 500: 10, 1000: 8, 2000: 6, 5000: 4, 10000: 2 };
+
+const CUSTOMERS = [
+  { id: 'kees', name: 'Opa Kees', face: '👴', col: '#8fb8ff', style: 'coins', hi: 'Goeiemiddag! Ik heb nog een hoop muntjes.', pay: 'Even tellen… alsjeblieft!', bye: 'Dankjewel, tot morgen!' },
+  { id: 'jansen', name: 'Haastige mevrouw Jansen', face: '👩‍💼', col: '#ffb3c7', style: 'normal', hi: 'Snel graag, mijn trein vertrekt zo!', pay: 'Hier, alsjeblieft!', bye: 'Top, ik ren!' },
+  { id: 'kim', name: 'Kim met de spaarpot', face: '👧', col: '#ffd166', style: 'piggy', hi: 'Ik heb heel lang gespaard!', pay: 'Uit mijn spaarpot!', bye: 'Joepie, dankjewel!' },
+  { id: 'groot', name: 'Meneer Groot', face: '🧔', col: '#9be7c4', style: 'big', hi: 'Goedendag!', pay: 'Sorry, ik heb alleen een groot briefje.', bye: 'Bedankt, fijne dag!' },
+  { id: 'truus', name: 'Oma Truus', face: '👵', col: '#e3c4ff', style: 'smart', hi: 'Hallo lieverd!', pay: 'Ik doe er wat kleingeld bij, dat is makkelijker.', bye: 'Wat ben jij handig!' },
+  { id: 'ingrid', name: 'Juf Ingrid', face: '👩‍🏫', col: '#ffcf9e', style: 'smart', hi: 'Hoi! Ik moet zo naar school.', pay: 'Zo krijg ik mooi rond geld terug.', bye: 'Goed gerekend! Een tien!' },
+  { id: 'bram', name: 'Brandweerman Bram', face: '👨‍🚒', col: '#ff9b9b', style: 'normal', hi: 'Na het blussen heb ik trek!', pay: 'Alsjeblieft!', bye: 'Bedankt, held!' },
+  { id: 'sanne', name: 'Sportieve Sanne', face: '🏃‍♀️', col: '#a0e7ff', style: 'normal', hi: 'Lekker na het hardlopen!', pay: 'Hier!', bye: 'Super, doei!' },
+  { id: 'karim', name: 'Kok Karim', face: '👨‍🍳', col: '#fff0a8', style: 'normal', hi: 'Even proeven wat jullie hebben!', pay: 'Alsjeblieft, chef!', bye: 'Heerlijk, merci!' },
+  { id: 'fleur', name: 'Prinses Fleur', face: '👸', col: '#ffc6f0', style: 'big', hi: 'Goedendag, kassier!', pay: 'In mijn kasteel hebben we alleen grote briefjes.', bye: 'Koninklijk gedaan!' },
+  { id: 'piet', name: 'Piraat Piet', face: '🦜', col: '#c8e6a0', style: 'coins', hi: 'Arrr! Ik kom wat kopen!', pay: 'Arrr, betalen met mijn schat!', bye: 'Arrr, dank je, maatje!' },
+  { id: 'bliep', name: 'Robot Bliep', face: '🤖', col: '#cfd8e6', style: 'smart', hi: 'Bliep bliep! Klant gedetecteerd.', pay: 'Bliep! Ik reken alles precies uit.', bye: 'Bliep! Klopt tot op de cent.' },
+  { id: 'tweeling', name: 'Tweeling Tim & Tom', face: '👬', col: '#b5f2c8', style: 'normal', hi: 'Wij willen allebei wat!', pay: 'Samen betalen!', bye: 'Dankjewel! Dankjewel!' },
+  { id: 'agent', name: 'Agent Ali', face: '👮', col: '#a9c4ff', style: 'normal', hi: 'Even pauze van het boeven vangen.', pay: 'Alsjeblieft!', bye: 'Keurig gedaan!' },
+  { id: 'ayla', name: 'Astronaut Ayla', face: '👩‍🚀', col: '#d7d3ff', style: 'big', hi: 'Net terug van de maan!', pay: 'Op de maan hebben ze geen kleingeld.', bye: 'Ruimte-goed! Doei!' },
+  { id: 'max', name: 'Hond Max (met baasje)', face: '🐶', col: '#f5d0a9', style: 'normal', hi: 'Woef! Woef!', pay: 'Woef! (Het baasje betaalt.)', bye: 'Woef woef! 🐾' },
+  { id: 'daan', name: 'Dokter Daan', face: '🧑‍⚕️', col: '#c4f0ff', style: 'normal', hi: 'Even iets lekkers na het spreekuur.', pay: 'Alsjeblieft!', bye: 'Gezond gerekend!' },
+  { id: 'zork', name: 'Tovenaar Zork', face: '🧙', col: '#cdb4ff', style: 'smart', hi: 'Hocus pocus, ik heb trek!', pay: 'Simsalabim, wat muntjes erbij!', bye: 'Magisch goed!' },
+  { id: 'baby', name: 'Papa met baby Bo', face: '👨‍🍼', col: '#ffe0b3', style: 'normal', hi: 'Sst, de baby slaapt…', pay: 'Hier, alsjeblieft.', bye: 'Dankjewel! (fluister)' },
+];
+
+/* ---------------- transactie maken ---------------- */
+function levelCfg(world, n) { return world.levels[n - 1]; }
+function subCfg(world, lv) { // drukke dag: kies een van de mix-levels
+  if (!lv.mix) return lv;
+  const base = world.levels[pickOne(lv.mix) - 1];
+  return Object.assign({}, base, { drawer: lv.drawer, help: lv.help });
+}
+function centsOk(P, rule) {
+  if (!rule) return true;
+  if (rule === 'x50') return P % 100 === 50;
+  if (rule === 'odd5') return P % 10 === 5;
+  return true;
+}
+function pickItems(world, cfg) {
+  const pool = world.products.filter(p => p.p % cfg.rule === 0 && p.p <= cfg.pmax);
+  const k = rint(cfg.items[0], cfg.items[1]); const items = [];
+  const bag = shuffle(pool.slice());
+  for (let i = 0; i < k; i++) items.push(bag.length ? bag.pop() : pickOne(pool));
+  const P = sum(items.map(x => x.p));
+  if (P < cfg.pmin || P > cfg.pmax || !centsOk(P, cfg.cents)) return null;
+  return items;
+}
+function pickStyle(cfg) { return weighted(Object.entries(cfg.pay.styles).filter(e => e[1] > 0)); }
+
+// drawer: { denom: count }. Geeft {items, price, pay, change, style, opt, cfg} terug.
+function makeTransaction(world, lv, drawer, tries) {
+  for (let t = 0; t < (tries || 600); t++) {
+    const cfg = subCfg(world, lv);
+    const items = pickItems(world, cfg); if (!items) continue;
+    const P = sum(items.map(x => x.p));
+    let style = pickStyle(cfg);
+    let pay = choosePayment(P, style, cfg.pay);
+    if (!pay && style !== 'normal') { style = 'normal'; pay = choosePayment(P, 'normal', cfg.pay); }
+    if (!pay) continue;
+    if (pay.some(v => !cfg.drawer.includes(v))) continue;             // ontvangen geld moet een vakje hebben
+    const ch = sum(pay) - P;
+    const counts = {}; cfg.drawer.forEach(v => counts[v] = drawer ? (drawer[v] || 0) : STOCK[v]);
+    const opt = optimalChange(ch, counts, cfg.drawer); if (!opt) continue;
+    if (opt.length < cfg.change[0] || opt.length > cfg.change[1]) continue;
+    pay.sort((a, b) => b - a);
+    return { items, price: P, pay, change: ch, style, opt, cfg };
+  }
+  return null;
+}
+
+/* ---------------- opslag ---------------- */
+const LS_KEY = 'kassakoning_v1';
+function defaultSave() {
+  return { v: 1, crowns: 0, muted: false, voice: false, unlockAll: false, prog: {}, seen: {}, cust: {},
+    owned: { kleur: ['roze'], deco: [], kassa: ['rood'], avatar: ['jongen', 'meisje'], hoed: ['geen'] },
+    eq: { kleur: 'roze', deco: [], kassa: 'rood', avatar: 'jongen', hoed: 'geen' },
+    stats: { served: 0, first: 0, slim: 0, levels: 0, fast: 0 } };
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      const o = JSON.parse(raw), d = defaultSave(), s = Object.assign(d, o);
+      s.owned = Object.assign(defaultSave().owned, o.owned || {}); s.eq = Object.assign(defaultSave().eq, o.eq || {});
+      s.stats = Object.assign(defaultSave().stats, o.stats || {});
+      return s;
+    }
+  } catch (e) { }
+  return defaultSave();
+}
+let S = load();
+function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { } }
+const pkey = (w, n) => w + '-' + n;
+function prog(w, n) { return S.prog[pkey(w, n)] || null; }
+function worldOpen(w) { if (w.soon) return false; return S.unlockAll || w.id === 1 || !!(prog(w.id - 1, 8) && prog(w.id - 1, 8).done); }
+function levelOpen(w, n) { return worldOpen(w) && (S.unlockAll || n === 1 || !!(prog(w.id, n - 1) && prog(w.id, n - 1).done)); }
+function worldStars(w) { let s = 0; if (w.levels) for (let n = 1; n <= w.levels.length; n++) s += (prog(w.id, n) || {}).stars || 0; return s; }
+
+/* ---------------- geluid ---------------- */
+let AC = null, NOISE = null;
+function ac() {
+  if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } }
+  if (AC && AC.state === 'suspended') AC.resume().catch(() => { });
+  return AC;
+}
+function tone(freq, dur, type, vol, when, slide) {
+  if (S.muted) return; const a = ac(); if (!a) return;
+  try {
+    const t = a.currentTime + (when || 0); const o = a.createOscillator(), g = a.createGain();
+    o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .12, t + .008); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur + .05);
+  } catch (e) { }
+}
+function noise(dur, vol, when, freq, q) {
+  if (S.muted) return; const a = ac(); if (!a) return;
+  try {
+    if (!NOISE) { NOISE = a.createBuffer(1, a.sampleRate, a.sampleRate); const d = NOISE.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+    const t = a.currentTime + (when || 0), s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    s.buffer = NOISE; f.type = 'bandpass'; f.frequency.value = freq || 2500; f.Q.value = q || 1.2;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .2, t + .01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); g.connect(a.destination); s.start(t); s.stop(t + dur + .05);
+  } catch (e) { }
+}
+const SFX = {
+  click() { tone(720, .05, 'triangle', .07); },
+  scan() { tone(1760, .08, 'square', .05); },
+  coin(v) { const f = 2400 + Math.random() * 900 - (v || 0) * 2; tone(f, .09, 'triangle', .09); tone(f * 1.5, .12, 'sine', .05, .03); },
+  paper() { noise(.16, .16, 0, 3200, .8); noise(.1, .08, .08, 1800, 1); },
+  money(v) { if (isNote(v)) SFX.paper(); else SFX.coin(v); },
+  oops() { tone(330, .18, 'sine', .12, 0, 230); tone(250, .22, 'triangle', .07, .12, 190); },
+  kaching() { noise(.25, .12, 0, 900, .7); tone(2093, .5, 'triangle', .1, .12); tone(2637, .6, 'triangle', .08, .2); tone(3136, .7, 'sine', .05, .26); },
+  good() { [523, 659, 784, 1047].forEach((f, i) => tone(f, .16, 'triangle', .12, i * .06)); },
+  crown() { [1319, 1568, 2093].forEach((f, i) => tone(f, .12, 'square', .035, i * .06)); },
+  buy() { [784, 988, 1175, 1568].forEach((f, i) => tone(f, .14, 'square', .05, i * .07)); },
+  fanfare() { [523, 659, 784, 659, 784, 1047].forEach((f, i) => tone(f, .22, 'triangle', .13, i * .12)); },
+  walk() { tone(180, .05, 'sine', .06); tone(160, .05, 'sine', .06, .18); },
+};
+function vibrate(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) { } }
+function say(html) {
+  if (!S.voice || !window.speechSynthesis) return;
+  try {
+    const txt = String(html).replace(/<[^>]+>/g, ' ').replace(/€\s?(\d+),(\d\d)/g, (m, e, c) => e + ' euro ' + (c === '00' ? '' : +c)).replace(/[\u{1F000}-\u{1FFFF}\u2600-\u27BF]/gu, '');
+    speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = 'nl-NL'; u.rate = 1; speechSynthesis.speak(u);
+  } catch (e) { }
+}
+
+/* ---------------- uiterlijk / Mijn winkel ---------------- */
+const SHOP = {
+  kleur: { title: '🎨 Winkelkleur', items: [
+    { id: 'roze', n: 'Roze', c: '#ff6fa8', c2: '#ffe3ef', p: 0 }, { id: 'mint', n: 'Mint', c: '#21b894', c2: '#dcfff6', p: 6 },
+    { id: 'zon', n: 'Zonnig geel', c: '#f5a300', c2: '#fff4cc', p: 6 }, { id: 'zee', n: 'Zeeblauw', c: '#3a86ff', c2: '#e0ecff', p: 8 },
+    { id: 'paars', n: 'Paars', c: '#8f5cff', c2: '#efe6ff', p: 8 }, { id: 'oranje', n: 'Oranje', c: '#ff7b29', c2: '#ffeadb', p: 10 },
+    { id: 'nacht', n: 'Nachtblauw', c: '#28336b', c2: '#e3e7ff', p: 15 }] },
+  deco: { title: '🎈 Versiering', multi: true, items: [
+    { id: 'vlag', n: 'Vlaggetjes', e: '🎏', p: 5 }, { id: 'plant', n: 'Plantje', e: '🪴', p: 6 }, { id: 'ballon', n: 'Ballonnen', e: '🎈', p: 8 },
+    { id: 'lamp', n: 'Lampjes', e: '💡', p: 10 }, { id: 'kat', n: 'Winkelkat', e: '🐈', p: 12 }, { id: 'vis', n: 'Aquarium', e: '🐠', p: 15 },
+    { id: 'beker', n: 'Gouden beker', e: '🏆', p: 20 }, { id: 'disco', n: 'Discobal', e: '🪩', p: 25 }] },
+  kassa: { title: '🧾 Kassa', items: [
+    { id: 'rood', n: 'Rood', bg: 'linear-gradient(180deg,#ff6b6b,#d94848)', p: 0 }, { id: 'blauw', n: 'Blauw', bg: 'linear-gradient(180deg,#5aa9ff,#2f6fd6)', p: 8 },
+    { id: 'groen', n: 'Groen', bg: 'linear-gradient(180deg,#4fd18b,#1f9a5a)', p: 8 }, { id: 'roze', n: 'Roze', bg: 'linear-gradient(180deg,#ff8fc7,#e0569b)', p: 10 },
+    { id: 'zwart', n: 'Stoer zwart', bg: 'linear-gradient(180deg,#535a73,#262a3a)', p: 12 }, { id: 'goud', n: 'Goud', bg: 'linear-gradient(180deg,#ffe27a,#d4a017)', p: 30 },
+    { id: 'ruimte', n: 'Ruimte', bg: 'radial-gradient(circle at 30% 40%,#fff 0 1.2px,transparent 2px) 0 0/26px 26px,radial-gradient(circle at 70% 80%,#ffe9a8 0 1px,transparent 2px) 0 0/19px 19px,linear-gradient(180deg,#3a2f8a,#140f3a)', p: 35 },
+    { id: 'regenboog', n: 'Regenboog', bg: 'linear-gradient(100deg,#ff6b6b,#ffb703,#2fb35a,#3a86ff,#8f5cff)', p: 40 }] },
+  avatar: { title: '🧑 Kassier', items: [
+    { id: 'jongen', n: 'Jongen', e: '👦', p: 0 }, { id: 'meisje', n: 'Meisje', e: '👧', p: 0 }, { id: 'aap', n: 'Aap', e: '🐵', p: 10 },
+    { id: 'kat2', n: 'Kat', e: '🐱', p: 10 }, { id: 'robot', n: 'Robot', e: '🤖', p: 15 }, { id: 'leeuw', n: 'Leeuw', e: '🦁', p: 15 },
+    { id: 'alien', n: 'Ruimtewezen', e: '👽', p: 20 }, { id: 'eenhoorn', n: 'Eenhoorn', e: '🦄', p: 25 }] },
+  hoed: { title: '🎩 Hoofddeksel', items: [
+    { id: 'geen', n: 'Niets', e: '🚫', p: 0 }, { id: 'pet', n: 'Pet', e: '🧢', p: 5 }, { id: 'strik', n: 'Strik', e: '🎀', p: 5 },
+    { id: 'hoed', n: 'Hoge hoed', e: '🎩', p: 10 }, { id: 'geleerd', n: 'Slimme hoed', e: '🎓', p: 10 }, { id: 'kroon', n: 'Kroon', e: '👑', p: 25 }] },
+};
+const shopItem = (cat, id) => SHOP[cat].items.find(x => x.id === id) || SHOP[cat].items[0];
+function avatarHTML() { const a = shopItem('avatar', S.eq.avatar), hh = S.eq.hoed !== 'geen' ? `<span class="hat">${shopItem('hoed', S.eq.hoed).e}</span>` : ''; return `${a.e}${hh}`; }
+const DECO_POS = { plant: 'left:1.5cqw;bottom:31cqh', ballon: 'right:2cqw;top:16cqh', kat: 'right:3cqw;bottom:21cqh;font-size:min(10cqh,7cqw)', vis: 'left:40cqw;top:20cqh',
+  beker: 'left:58cqw;top:18cqh;font-size:min(9cqh,6cqw)', disco: 'left:47cqw;top:12cqh' };
+function decoHTML() {
+  return S.eq.deco.map(id => id === 'vlag' ? '<div class="bunting"></div>' : id === 'lamp' ? '<div class="lights"></div>' :
+    `<span class="d" style="${DECO_POS[id] || ''}">${shopItem('deco', id).e}</span>`).join('');
+}
+function applyLook() {
+  const k = shopItem('kleur', S.eq.kleur), r = document.documentElement.style;
+  r.setProperty('--shop', k.c); r.setProperty('--shop2', k.c2);
+  r.setProperty('--skin', shopItem('kassa', S.eq.kassa).bg);
+  $('#decos').innerHTML = decoHTML();
+  $('#meAvatar').innerHTML = avatarHTML();
+}
+
+/* ---------------- schermen ---------------- */
+const RENDER = {};
+function show(id) {
+  $$('.overlay.sky, .overlay.game').forEach(o => o.classList.toggle('show', o.id === id));
+  if (id !== 'scrGame' && G) stopGame();
+  if (RENDER[id]) RENDER[id]();
+}
+function syncCrowns() { $$('.crownCount').forEach(e => e.textContent = S.crowns); }
+function syncMute() { $$('.mutebtn').forEach(b => { b.textContent = S.muted ? '🔇' : '🔊'; b.setAttribute('aria-pressed', S.muted ? 'true' : 'false'); }); }
+function toast(t, ms) { const n = $('#toast'); n.innerHTML = t; n.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => n.classList.remove('show'), (ms || 1800)); }
+function floatText(t, el) { const r = (el || $('#scene')).getBoundingClientRect(); const f = document.createElement('div'); f.className = 'floattxt'; f.textContent = t; f.style.left = (r.left + r.width / 2) + 'px'; f.style.top = (r.top + r.height * .35) + 'px'; document.body.appendChild(f); setTimeout(() => f.remove(), 1500); }
+function confetti(n) {
+  const c = document.createElement('div'); c.className = 'confetti'; const cols = ['#ff6fa8', '#ffd23f', '#4cc3ff', '#2fb35a', '#8f5cff', '#ff9f1c'];
+  for (let i = 0; i < (n || 70); i++) { const p = document.createElement('i'); p.style.left = Math.random() * 100 + 'vw'; p.style.background = pickOne(cols); p.style.animationDuration = (1.6 + Math.random() * 1.8) + 's'; p.style.animationDelay = Math.random() * .6 + 's'; c.appendChild(p); }
+  document.body.appendChild(c); setTimeout(() => c.remove(), 4200);
+}
+
+const ICON_FG = `
+  <path d="M96 262 H416 L446 384 H66 Z" fill="var(--rb,#ff5c5c)" stroke="#1f2a44" stroke-width="12" stroke-linejoin="round"/>
+  <g fill="#fff" stroke="#1f2a44" stroke-width="5"><rect x="126" y="282" width="46" height="26" rx="7"/><rect x="186" y="282" width="46" height="26" rx="7"/><rect x="246" y="282" width="46" height="26" rx="7"/>
+  <rect x="116" y="322" width="46" height="26" rx="7"/><rect x="178" y="322" width="46" height="26" rx="7"/><rect x="240" y="322" width="46" height="26" rx="7"/></g>
+  <rect x="318" y="282" width="70" height="66" rx="10" fill="#ffd23f" stroke="#1f2a44" stroke-width="5"/>
+  <rect x="226" y="236" width="60" height="30" fill="#1f2a44"/>
+  <rect x="138" y="160" width="236" height="84" rx="16" fill="#173b2d" stroke="#1f2a44" stroke-width="12"/>
+  <text x="256" y="220" text-anchor="middle" font-size="54" font-family="Fredoka,Arial,sans-serif" font-weight="700" fill="#8dffb5">€ 5,-</text>
+  <rect x="58" y="384" width="396" height="30" rx="6" fill="#2a2f3d" stroke="#1f2a44" stroke-width="10"/>
+  <rect x="300" y="352" width="96" height="46" rx="5" fill="#2b8c52" stroke="#1f2a44" stroke-width="5" transform="rotate(-12 348 375)"/>
+  <circle cx="120" cy="388" r="22" fill="#e9bf45" stroke="#1f2a44" stroke-width="5"/><circle cx="168" cy="392" r="19" fill="#d9824d" stroke="#1f2a44" stroke-width="5"/>
+  <circle cx="212" cy="390" r="21" fill="#cfd4dc" stroke="#1f2a44" stroke-width="5"/><circle cx="212" cy="390" r="12" fill="#e9bf45"/>
+  <rect x="66" y="410" width="380" height="58" rx="14" fill="var(--rb2,#e04848)" stroke="#1f2a44" stroke-width="12"/>
+  <rect x="216" y="428" width="80" height="16" rx="8" fill="#1f2a44"/>
+  <g transform="rotate(-8 256 112)">
+    <path d="M178 150 L164 74 L214 112 L256 52 L298 112 L348 74 L334 150 Z" fill="#ffd23f" stroke="#1f2a44" stroke-width="12" stroke-linejoin="round"/>
+    <rect x="176" y="134" width="160" height="22" rx="6" fill="#ffb703" stroke="#1f2a44" stroke-width="9"/>
+    <circle cx="256" cy="52" r="13" fill="#ff5c8a" stroke="#1f2a44" stroke-width="7"/><circle cx="164" cy="74" r="11" fill="#4cc3ff" stroke="#1f2a44" stroke-width="7"/><circle cx="348" cy="74" r="11" fill="#4cc3ff" stroke="#1f2a44" stroke-width="7"/>
+    <path d="M200 120 l10 -18" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+  </g>`;
+
+RENDER.scrMenu = () => {
+  syncCrowns(); syncMute();
+  $('#menuReg').setAttribute('viewBox', '40 30 432 450'); $('#menuReg').innerHTML = ICON_FG;
+  const served = S.stats.served; const open = WORLDS.filter(w => worldOpen(w)).length;
+  $('#menuMsg').textContent = served ? `👑 ${served} klanten geholpen · ${open} ${open === 1 ? 'winkel' : 'winkels'} open` : 'Welkom! Jij wordt de kassier. 🛎️';
+};
+RENDER.scrMap = () => {
+  syncCrowns();
+  $('#worldList').innerHTML = WORLDS.map(w => {
+    if (w.soon) return `<button class="wcard soon" data-world="${w.id}"><span class="wnum">Winkel ${w.id}</span><span class="badge">Binnenkort</span><span class="wi" style="background:${w.color}">${w.emoji}</span><span><div class="wn">${w.name}</div><div class="ws">${w.desc}</div></span></button>`;
+    const open = worldOpen(w), st = worldStars(w), done = w.levels.filter((l, i) => (prog(w.id, i + 1) || {}).done).length;
+    return `<button class="wcard ${open ? '' : 'locked'}" data-world="${w.id}"><span class="wnum">Winkel ${w.id}</span>${open ? '' : '<span class="badge">🔒</span>'}<span class="wi" style="background:${w.color}">${w.emoji}</span><span><div class="wn">${w.name}</div><div class="ws">${open ? w.desc : 'Speel eerst level 8 (Drukke dag) van ' + WORLDS[w.id - 2].name + '.'}</div><div class="wst">⭐ ${st}/24 · ${done}/8 levels</div></span></button>`;
+  }).join('');
+};
+let curWorld = 1;
+RENDER.scrLevels = () => {
+  const w = WORLDS[curWorld - 1];
+  $('#lvlTitle').textContent = w.emoji + ' ' + w.name; $('#lvlStars').textContent = '⭐ ' + worldStars(w) + '/24';
+  $('#lvlHead').innerHTML = `<span class="wi">${w.emoji}</span><span><b>${w.name}</b><br><span class="small-note">${w.desc}</span></span>`;
+  let nextMarked = false;
+  $('#lvlList').innerHTML = w.levels.map((l, i) => {
+    const n = i + 1, p = prog(w.id, n), open = levelOpen(w, n);
+    let cls = open ? '' : 'locked'; if (open && !(p && p.done) && !nextMarked) { cls += ' next'; nextMarked = true; }
+    if (l.busy) cls += ' busy';
+    const stars = [1, 2, 3].map(k => `<span class="${p && p.stars >= k ? 'star-on' : 'star-off'}">★</span>`).join('');
+    return `<button class="lvl ${cls}" data-level="${n}" style="--wc:${w.color}"><span class="ln">${open ? (l.busy ? '🏃' : n) : '🔒'}</span><span class="lt">${l.t}</span><span class="ls">${l.s}</span><span class="lst">${stars}</span></button>`;
+  }).join('');
+};
+
+/* =========================================================
+   Het spel
+   ========================================================= */
+let G = null;
+const alive = tok => G && G.token === tok;
+const slotEl = v => $(`#drawer .slot[data-v="${v}"]`);
+function fillTokens(html) { return String(html).replace(/\{m(\d+)\}/g, (m, v) => miniMoney(+v)); }
+
+function startLevel(wid, n) {
+  const world = WORLDS[wid - 1], lv = world.levels[n - 1];
+  if (G) stopGame();
+  G = { world, wid, n, lv, help: lv.help, idx: 0, total: lv.customers, results: [], crowns: 0, slim: 0, firstOk: 0, fast: 0,
+    drawer: {}, tray: [], counter: [], phase: 'idle', busy: false, token: {}, used: new Set(), tx: null, scanned: 0, received: 0, tries: 0 };
+  lv.drawer.forEach(v => G.drawer[v] = STOCK[v]);
+  curWorld = wid;
+  $$('.overlay.sky').forEach(o => o.classList.remove('show'));
+  $('#scrGame').classList.add('show');
+  setupGameUI();
+  runLevel(G.token);
+}
+function stopGame() {
+  if (!G) return; G.token = null; G = null;
+  $('#coach').classList.remove('show'); ['#mdResult', '#mdDone', '#mdInfo'].forEach(s => $(s).classList.remove('show'));
+  $('#fly').innerHTML = '';
+  try { speechSynthesis && speechSynthesis.cancel(); } catch (e) { }
+}
+function setupGameUI() {
+  const w = G.world, lv = G.lv;
+  $('#gTitle').textContent = `${w.emoji} ${w.name} · ${G.n}. ${lv.t}`;
+  const sc = $('#scene'); sc.className = 'scene ' + w.scene;
+  $('#shelfDeco').innerHTML = w.shelf; $('#regName').textContent = w.reg;
+  $('#btnEasy').style.visibility = (G.wid === 1 && G.n === 1) ? 'hidden' : '';
+  applyLook(); syncCrowns(); syncMute();
+  renderDots(); renderDrawer(); clearCounter(); renderAll();
+  $('#cust').className = 'cust out'; $('#bubble').className = 'bubble';
+  stepbar('Even wachten', 'De winkel gaat open…');
+}
+function renderDots() { $('#gDots').innerHTML = Array.from({ length: G.total }, (_, i) => `<i class="${G.results[i] || (i === G.idx ? 'cur' : '')}"></i>`).join(''); }
+function stepbar(tag, txt) { $('#stepbar').innerHTML = `<span class="sn">${tag}</span><span>${txt}</span>`; }
+function bubble(txt, warn) { const b = $('#bubble'); b.innerHTML = txt; b.className = 'bubble show' + (warn ? ' warn' : ''); say(txt); }
+function hideBubble() { $('#bubble').className = 'bubble'; }
+function clearCounter() { $('#items').innerHTML = ''; $('#paid').innerHTML = ''; $('#paidLbl').textContent = ''; $('#bonItems').innerHTML = ''; $('#bonTotal').textContent = fmt(0); G && (G.counter = []); }
+
+/* ---- kassalade ---- */
+function renderDrawer() {
+  const d = G.lv.drawer, notes = d.filter(isNote), coins = d.filter(v => !isNote(v));
+  const slot = v => `<button class="slot ${isNote(v) ? 'nslot' : 'cslot'}" data-v="${v}" data-src="slot" data-drop="slot" aria-label="Vakje ${label(v)}"><div class="stack"></div><span class="slab">${label(v)}</span><span class="scount"></span></button>`;
+  $('#drawer').innerHTML = (notes.length ? `<div class="drow nrow" style="--n:${notes.length}">${notes.map(slot).join('')}</div>` : '') +
+    `<div class="drow crow" style="--n:${coins.length}">${coins.map(slot).join('')}</div>`;
+  d.forEach(updateSlot);
+}
+function updateSlot(v) {
+  const el = slotEl(v); if (!el) return; const c = G.drawer[v] || 0, n = Math.min(c, isNote(v) ? 3 : 4);
+  let html = ''; for (let i = 0; i < n; i++) { const dx = isNote(v) ? (i - (n - 1) / 2) * 3 : (i - (n - 1) / 2) * 4, dy = -i * (isNote(v) ? 3 : 2.5); html += `<div class="sp" style="transform:translate(${dx}px,${dy}px)">${moneyHTML(v)}</div>`; }
+  el.querySelector('.stack').innerHTML = html; el.querySelector('.scount').textContent = c ? '×' + c : 'leeg';
+  el.classList.toggle('empty', !c);
+}
+function clearHints() { $$('#drawer .slot.hint, #drawer .slot.wrong').forEach(s => s.classList.remove('hint', 'wrong')); }
+
+/* ---- schermen van de kassa ---- */
+const DISP_INFO = {
+  betalen: 'TE BETALEN: zoveel moet de klant betalen. De kassa telt alle prijzen voor je op.',
+  ontvangen: 'ONTVANGEN: zoveel geld heb je van de klant gekregen. De kassa telt mee als je het geld in de la legt.',
+  terug: 'TERUG: zoveel wisselgeld moet je teruggeven. De slimme kassa rekent het uit: ontvangen min te betalen.',
+  hand: 'IN JE HAND: zoveel geld ligt er nu in je teruggeef-bakje.',
+  nog: 'NOG TE GEVEN: zoveel moet er nog bij. Staat er € 0,00? Dan is het precies goed en tik je op Geven!',
+};
+function renderLCD() {
+  const lcd = $('#lcd'), tx = G.tx, ph = G.phase;
+  const afterStash = ph === 'change' || ph === 'done';
+  if (G.help.displays) {
+    const hand = sum(G.tray), nog = tx ? tx.change - hand : 0;
+    const row = (k, lab, val, cls) => `<div class="row ${cls || ''}" data-disp="${k}" data-info="${k}"><span class="lab">${lab}<span class="info" aria-hidden="true">i</span></span><span class="val">${val}</span></div>`;
+    lcd.className = 'lcd multi';
+    lcd.innerHTML = row('betalen', 'TE BETALEN', fmt(G.scanned)) + row('ontvangen', 'ONTVANGEN', fmt(G.received)) +
+      row('terug', 'TERUG', afterStash ? fmt(tx.change) : '—', 'hl') + row('hand', 'IN JE HAND', fmt(hand)) +
+      row('nog', 'NOG TE GEVEN', afterStash ? (nog < 0 ? 'te veel ' + fmt(-nog) : fmt(nog)) : '—', afterStash ? (nog < 0 ? 'neg' : nog === 0 ? 'zero' : '') : '');
+  } else {
+    lcd.className = 'lcd';
+    lcd.innerHTML = `<div class="row big"><span class="lab">TOTAAL</span><span class="val">${fmt(G.scanned)}</span></div>` +
+      (tx && (ph === 'stash' || afterStash) ? `<div class="row"><span class="lab">KLANT GEEFT</span><span class="val">${fmt(sum(tx.pay))}</span></div>` : '');
+  }
+}
+/* ---- tel-lijn ---- */
+function renderLine() {
+  const el = $('#cline'), tx = G.tx;
+  if (!G.help.line) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  if (!tx || !(G.phase === 'stash' || G.phase === 'change' || G.phase === 'done')) {
+    el.innerHTML = `<div class="ctitle"><span>🔢 Tel-lijn</span><span></span></div><div class="chain"><span class="amt start">prijs</span><span class="ar">→ … →</span><span class="amt goal">🎯 betaald</span></div><div class="bar"><i style="width:0"></i></div>`; return;
+  }
+  const P = tx.price, paid = sum(tx.pay), sorted = G.tray.slice().sort((a, b) => a - b);
+  let a = P, parts = `<span class="amt start">${fmt(P)}</span>`;
+  for (const v of sorted) { a += v; parts += `<span class="ar">+${miniMoney(v)}</span><span class="amt ${a === paid ? 'done' : a > paid ? 'over' : (a % 100 === 0 ? 'round' : '')}">${fmt(a)}</span>`; }
+  if (a < paid) parts += `<span class="ar">→</span><span class="amt goal">🎯 ${fmt(paid)}</span>`;
+  const state = a === paid ? '✔ Precies goed!' : a > paid ? '⚠️ Te veel!' : G.phase === 'change' ? 'nog niet' : '';
+  const pct = Math.max(0, Math.min(1, (a - P) / Math.max(1, paid - P))) * 100;
+  el.innerHTML = `<div class="ctitle"><span>🔢 Tel op van ${fmt(P)} tot ${fmt(paid)}</span><span>${state}</span></div><div class="chain ${sorted.length > 3 ? 'long' : ''}">${parts}</div><div class="bar ${a > paid ? 'over' : ''}"><i style="width:${pct}%"></i></div>`;
+}
+/* ---- teruggeef-bakje ---- */
+function renderTray() {
+  const t = $('#tray'), sorted = G.tray.slice().sort((a, b) => a - b), showSum = G.help.line || G.help.displays;
+  t.innerHTML = `<span class="tlab">🤲 Teruggeef-bakje</span>${showSum && sorted.length ? `<span class="tsum">${fmt(sum(sorted))}</span>` : ''}` +
+    (sorted.length ? sorted.map(v => `<button class="tm" data-src="tray" data-tv="${v}" aria-label="${label(v)} terugleggen">${moneyHTML(v)}</button>`).join('')
+      : `<span class="empty">${G.phase === 'change' ? 'Tik op een vakje in de kassa' : ''}</span>`);
+  $('#btnGive').disabled = G.phase !== 'change';
+}
+function renderAll() { renderLCD(); renderLine(); renderTray(); syncTipBtn(); }
+function syncTipBtn() {
+  const b = $('#btnTip'), mode = G.help.tip;
+  if (G.tries >= 3 && G.phase === 'change') { b.style.display = ''; b.textContent = '🙋 Help mij'; b.dataset.mode = 'show'; return; }
+  b.dataset.mode = 'tip'; b.textContent = '💡 Tip';
+  b.style.display = (mode === 'button' || (mode === 'auto' && G.phase === 'stash')) ? '' : 'none';
+  b.disabled = !(G.phase === 'stash' || G.phase === 'change');
+}
+
+/* ---- tips ---- */
+function nextSuggestion() { // volgende munt/briefje volgens 'optellen zoals een kassier'
+  const tx = G.tx, rem = tx.change - sum(G.tray);
+  if (rem <= 0) return { rem };
+  const avail = Object.assign({}, G.drawer), opt = optimalChange(rem, avail, G.lv.drawer);
+  if (!opt) return { rem, none: true };
+  return { rem, v: opt[opt.length - 1], opt };
+}
+function showTip() {
+  const el = $('#tip'); clearHints();
+  if (G.phase === 'stash') {
+    const p = G.counter[G.sel || 0]; if (!p) return;
+    el.innerHTML = `💡 Tip: dit is ${nameOf(p.v)} ${miniMoney(p.v)}. Leg het in het vakje <b>${label(p.v)}</b>.`; el.classList.add('show');
+    slotEl(p.v) && slotEl(p.v).classList.add('hint'); return;
+  }
+  if (G.phase !== 'change') return;
+  const s = nextSuggestion(), A = G.tx.price + sum(G.tray);
+  if (s.rem === 0) el.innerHTML = '💡 Je bent precies bij het betaalde bedrag. Tik op <b>Geven</b>!';
+  else if (s.rem < 0) el.innerHTML = `💡 Je geeft ${words(-s.rem)} te veel. Tik op geld in het bakje om het terug in de kassa te leggen.`;
+  else if (s.none) el.innerHTML = '💡 Dat lukt zo niet. Leg wat geld terug en probeer andere munten.';
+  else {
+    const B = A + s.v, round = B % 100 === 0 && s.rem - s.v > 0 && A % 100 !== 0;
+    el.innerHTML = `💡 Tip: ${fmt(A)} + ${miniMoney(s.v)} ${words(s.v)} = <b>${fmt(B)}</b>` + (s.rem === s.v ? ' Dan ben je klaar!' : round ? ' Een mooi rond bedrag!' : '');
+    slotEl(s.v) && slotEl(s.v).classList.add('hint');
+  }
+  el.classList.add('show'); G.tipShown = true;
+}
+function hideTip() { $('#tip').classList.remove('show'); G && (G.tipShown = false); clearHints(); }
+function refreshTip() { if (G.help.tip === 'auto' || (G.tipShown && G.tries > 0)) showTip(); else hideTip(); }
+
+/* ---- vliegend geld ---- */
+function fly(v, fromEl, toEl, ms) {
+  return new Promise(res => {
+    if (!fromEl || !toEl) return res();
+    const a = (fromEl.querySelector && fromEl.querySelector('.money') || fromEl).getBoundingClientRect(), b0 = toEl.getBoundingClientRect();
+    const tm = toEl.querySelector && toEl.querySelector('.money'); const b = tm ? tm.getBoundingClientRect() : b0;
+    const w = document.createElement('div'); w.style.cssText = `position:fixed;left:0;top:0;--cb:60px;--nb:120px;will-change:transform`;
+    w.innerHTML = moneyHTML(v); $('#fly').appendChild(w);
+    const m = w.firstChild, nat = isNote(v) ? 120 * NOTE_MM[v][0] / 147 : 60 * COIN_MM[v] / 25.75;
+    const s1 = Math.max(.25, a.width / nat), s2 = tm ? Math.max(.25, b.width / nat) : s1;
+    const nh = m.getBoundingClientRect().height, nw = m.getBoundingClientRect().width;
+    const x1 = a.left + a.width / 2 - nw / 2, y1 = a.top + a.height / 2 - nh / 2, x2 = b.left + b.width / 2 - nw / 2, y2 = b.top + b.height / 2 - nh / 2;
+    const anim = w.animate([
+      { transform: `translate(${x1}px,${y1}px) scale(${s1})` },
+      { transform: `translate(${(x1 + x2) / 2}px,${Math.min(y1, y2) - 50}px) scale(${(s1 + s2) / 2 * 1.12})`, offset: .5 },
+      { transform: `translate(${x2}px,${y2}px) scale(${s2})` }], { duration: (ms || 420) / SNEL, easing: 'ease-in-out', fill: 'forwards' });
+    anim.onfinish = () => { w.remove(); res(); };
+    setTimeout(() => { if (w.isConnected) { w.remove(); res(); } }, (ms || 420) / SNEL + 400);
+  });
+}
+function crownsFly(n, fromEl) {
+  const a = fromEl.getBoundingClientRect(), tgt = $('#scrGame .crownpill').getBoundingClientRect();
+  for (let i = 0; i < n; i++) setTimeout(() => {
+    const c = document.createElement('div'); c.className = 'crownfly'; c.textContent = '👑'; document.body.appendChild(c);
+    const x1 = a.left + a.width / 2, y1 = a.top + a.height / 3, x2 = tgt.left + 14, y2 = tgt.top + 6;
+    c.animate([{ transform: `translate(${x1}px,${y1}px) scale(.6)` }, { transform: `translate(${x1 + (x2 - x1) * .3}px,${y1 - 60}px) scale(1.3)`, offset: .35 }, { transform: `translate(${x2}px,${y2}px) scale(.8)` }],
+      { duration: 800 / SNEL, easing: 'ease-in', fill: 'forwards' }).onfinish = () => { c.remove(); SFX.crown(); };
+  }, i * 160 / SNEL);
+}
+
+/* ---- Juf Kassa ---- */
+function coach(html, target, btn) {
+  return new Promise(res => {
+    const c = $('#coach'), spot = $('#coachSpot'), card = $('#coachCard');
+    $('#coachText').innerHTML = fillTokens(html); $('#coachBtn').textContent = btn || 'Oké!';
+    const el = typeof target === 'string' ? $(target) : target;
+    let place = 'bottom';
+    if (el) {
+      const r = el.getBoundingClientRect(), p = 6;
+      spot.classList.remove('none'); Object.assign(spot.style, { left: (r.left - p) + 'px', top: (r.top - p) + 'px', width: (r.width + 2 * p) + 'px', height: (r.height + 2 * p) + 'px' });
+      if (r.top + r.height / 2 > innerHeight * .5) place = 'top';
+    } else spot.classList.add('none');
+    card.className = 'ccard ' + place; c.classList.add('show'); say(html);
+    const done = () => { c.classList.remove('show'); SFX.click(); res(); };
+    $('#coachBtn').onclick = done;
+    coach.current = done;
+  });
+}
+
+/* ---- level & klanten ---- */
+async function runLevel(tok) {
+  await wait(250); if (!alive(tok)) return;
+  const lv = G.lv, key = 'intro-' + G.wid + '-' + G.n;
+  if (lv.tutorial && !S.seen.tut) {
+    await coach('Hoi! Ik ben <b>Juf Kassa</b>. 👋 Vandaag ben jij de kassier van de ijscokar. Ik help je!', null, 'Leuk!'); if (!alive(tok)) return;
+    await coach('Dit is de <b>kassalade</b>. Achterin liggen de briefjes, voorin de munten. Elk soort geld heeft een eigen vakje. Op het vakje staat wat erin hoort.', '#drawer'); if (!alive(tok)) return;
+    await coach('Hier zie je de klant. Die koopt iets en betaalt. Daarna geef jij het <b>wisselgeld</b> terug.', '#scene', 'Beginnen!'); if (!alive(tok)) return;
+  } else if (lv.intro && !S.seen[key]) {
+    for (const line of lv.intro) { await coach(line); if (!alive(tok)) return; }
+    S.seen[key] = 1; save();
+  }
+  serveCustomer(tok);
+}
+function restock() {
+  let did = false;
+  for (const v of G.lv.drawer) {
+    if (G.drawer[v] < Math.ceil(STOCK[v] / 2)) { G.drawer[v] = STOCK[v]; did = true; }
+    else if (G.drawer[v] > STOCK[v] * 2) G.drawer[v] = STOCK[v];   // teveel briefjes gaan naar de kluis
+    updateSlot(v);
+  }
+  return did;
+}
+function pickCustomer(style) {
+  let pool = CUSTOMERS.filter(c => c.style === style); if (!pool.length) pool = CUSTOMERS.filter(c => c.style === 'normal');
+  const fresh = pool.filter(c => !G.used.has(c.id)), p2 = fresh.length ? fresh : pool, unseen = p2.filter(c => !S.cust[c.id]);
+  const c = pickOne(unseen.length && Math.random() < .6 ? unseen : p2); G.used.add(c.id); return c;
+}
+function fallbackTx() { // zou nooit nodig moeten zijn (tests controleren dit)
+  G.fallbacks = (G.fallbacks || 0) + 1;
+  return makeTransaction(G.world, G.lv, G.drawer, 5000) || (() => {
+    const it = G.world.products[0], P = it.p, nxt = G.lv.drawer.find(v => v > P) || Math.max.apply(null, G.lv.drawer);
+    const opt = optimalChange(nxt - P, G.drawer, G.lv.drawer) || []; return { items: [it], price: P, pay: [nxt], change: nxt - P, style: 'normal', opt, cfg: G.lv };
+  })();
+}
+function orderText(items) {
+  const ph = items.map(x => x.a || ('een ' + x.n.toLowerCase()));
+  return 'Ik wil graag ' + (ph.length > 1 ? ph.slice(0, -1).join(', ') + ' en ' + ph[ph.length - 1] : ph[0]) + '.';
+}
+async function serveCustomer(tok) {
+  if (!alive(tok)) return;
+  G.phase = 'enter'; G.tray = []; G.tries = 0; G.scanned = 0; G.received = 0; G.tx = null; G.sel = 0; hideTip(); clearCounter();
+  if (restock() && G.idx > 0) toast('🧑‍💼 De chef heeft de kassa bijgevuld.');
+  const tx = makeTransaction(G.world, G.lv, G.drawer) || fallbackTx();
+  G.tx = tx; G.help = Object.assign({}, G.lv.help);
+  const c = pickCustomer(tx.style); G.cust = c;
+  renderDots(); renderAll();
+  const left = G.total - G.idx - 1;
+  $('#queue').innerHTML = G.lv.busy ? Array.from({ length: Math.min(4, left) }, (_, i) => `<span style="animation-delay:${-i * .4}s">${CUSTOMERS[(G.idx * 3 + i * 5) % CUSTOMERS.length].face}</span>`).join('') : '';
+  $('#cFace').textContent = c.face; $('#cName').textContent = c.name; $('#cust').style.setProperty('--cc', c.col);
+  const cu = $('#cust'); cu.className = 'cust out'; void cu.offsetWidth;
+  stepbar('Klant!', 'Er komt een klant aan…');
+  cu.className = 'cust walk'; SFX.walk(); await wait(750); if (!alive(tok)) return; cu.className = 'cust';
+  bubble(`${c.hi} ${orderText(tx.items)}`); await wait(1100); if (!alive(tok)) return;
+  // scannen
+  G.phase = 'scan'; stepbar('Scannen', 'De kassa scant de spullen… piep!');
+  for (const it of tx.items) {
+    const d = document.createElement('div'); d.className = 'prod'; d.innerHTML = `<span class="pe">${it.e}</span><span class="pp">${fmt(it.p)}</span>`; $('#items').appendChild(d);
+    const b = document.createElement('div'); b.className = 'bl'; b.innerHTML = `<span>${it.e} ${it.n}</span><span>${fmt(it.p)}</span>`; $('#bonItems').appendChild(b);
+    G.scanned += it.p; $('#bonTotal').textContent = fmt(G.scanned); SFX.scan(); renderLCD();
+    await wait(480); if (!alive(tok)) return;
+  }
+  stepbar('Totaal', `Dat is dan <b>${fmt(tx.price)}</b>, alstublieft.`);
+  await wait(600); if (!alive(tok)) return;
+  // betalen
+  bubble(c.pay);
+  for (const v of tx.pay) {
+    const pm = document.createElement('button'); pm.className = 'pm'; pm.dataset.src = 'counter'; pm.innerHTML = moneyHTML(v); pm.style.visibility = 'hidden';
+    $('#paid').appendChild(pm); G.counter.push({ v, el: pm });
+    await fly(v, $('#cust'), pm, 380); if (!alive(tok)) return; pm.style.visibility = ''; SFX.money(v);
+    await wait(120);
+  }
+  $('#paidLbl').textContent = 'Klant geeft: ' + fmt(sum(tx.pay));
+  await wait(300); if (!alive(tok)) return;
+  startStash(tok);
+}
+async function startStash(tok) {
+  G.phase = 'stash'; renderAll(); selectPiece(0);
+  if (G.lv.tutorial && !S.seen.tut && G.idx === 0) {
+    await coach(`De klant geeft je ${words(sum(G.tx.pay))}. Eerst leg je het geld <b>in de kassa</b>. Tik op het vakje waar het hoort. Of sleep het geld erheen.`, '#counter'); if (!alive(tok)) return;
+  }
+}
+function selectPiece(i) {
+  if (!G.counter.length) return;
+  G.sel = Math.max(0, Math.min(i, G.counter.length - 1));
+  G.counter.forEach((p, k) => p.el.classList.toggle('sel', k === G.sel));
+  const v = G.counter[G.sel].v;
+  stepbar('Stap 1 · Geld in de kassa', `Waar hoort ${nameOf(v)}? Tik op het goede vakje.`);
+  if (G.help.tip === 'auto' && G.idx === 0 && G.n <= 2) { /* de eerste keren: alleen het vakje laten oplichten bij een fout */ }
+  syncTipBtn();
+}
+async function placeAttempt(idx, v) {
+  if (G.phase !== 'stash' || G.busy) return;
+  const p = G.counter[idx]; if (!p) return;
+  const tok = G.token;
+  if (p.v === v) {
+    G.busy = true; clearHints(); hideTip();
+    p.el.classList.remove('sel');
+    const slot = slotEl(v); p.el.style.visibility = 'hidden';
+    const f = fly(v, p.el, slot, 360);
+    G.counter.splice(idx, 1);
+    await f; if (!alive(tok)) return;
+    p.el.remove(); G.drawer[v]++; G.received += v; updateSlot(v); SFX.money(v); renderLCD();
+    G.busy = false;
+    if (!G.counter.length) startChange(tok); else selectPiece(0);
+  } else {
+    SFX.oops(); vibrate(40);
+    const s = slotEl(v); s && (s.classList.remove('wrong'), void s.offsetWidth, s.classList.add('wrong'));
+    p.el.classList.remove('bounce'); void p.el.offsetWidth; p.el.classList.add('bounce');
+    p.wrong = (p.wrong || 0) + 1;
+    stepbar('Oeps!', `Dit is ${nameOf(p.v)}. Zoek het vakje met <b>${label(p.v)}</b>.`);
+    if (G.help.slotHint || p.wrong >= 2) setTimeout(() => { const r = slotEl(p.v); r && r.classList.add('hint'); }, 350);
+  }
+}
+async function startChange(tok) {
+  G.phase = 'change'; G.t0 = performance.now(); $('#paidLbl').textContent = '';
+  stepbar('Stap 2 · Wisselgeld', G.help.line ? `Tik op de vakjes en tel op van <b>${fmt(G.tx.price)}</b> tot <b>${fmt(sum(G.tx.pay))}</b>.` :
+    G.help.displays ? 'Geef het wisselgeld. Kijk naar de slimme kassa!' : 'Geef het wisselgeld terug.');
+  renderAll(); refreshTip();
+  if (G.lv.tutorial && !S.seen.tut && G.idx === 0) {
+    await coach(`Nu het <b>wisselgeld</b>. Echte kassiers tellen <b>óp</b>: vanaf de prijs tot het geld dat de klant gaf. ${fmt(G.tx.price)} … tot ${fmt(sum(G.tx.pay))}. Hoeveel is dat?`, '#cline'); if (!alive(tok)) return;
+    await coach('De <b>tip</b> helpt je: tik op het vakje dat oplicht. Het geld komt in het <b>teruggeef-bakje</b>. Klopt het? Tik dan op <b>Geven</b>. Een munt terugleggen? Tik erop in het bakje.', '#side', 'Ik ga het proberen!'); if (!alive(tok)) return;
+    refreshTip();
+  }
+  if (G.lv.displayIntro && !S.seen.disp && G.idx === 0) {
+    await coach('Dit is de <b>slimme kassa</b>! Die heeft hulpschermen. Ik laat ze even zien.', '#lcd'); if (!alive(tok)) return;
+    for (const k of ['betalen', 'ontvangen', 'terug', 'hand', 'nog']) { await coach(DISP_INFO[k], `#lcd [data-disp="${k}"]`); if (!alive(tok)) return; }
+    await coach('Tik op het <b>i</b>-knopje als je het nog eens wilt horen. Succes!'); if (!alive(tok)) return;
+    S.seen.disp = 1; save();
+  }
+}
+function takeFromSlot(v) {
+  if (G.phase !== 'change' || G.busy) return;
+  if (!(G.drawer[v] > 0)) { toast('Dit vakje is leeg!'); SFX.oops(); return; }
+  G.drawer[v]--; G.tray.push(v); updateSlot(v); SFX.money(v);
+  const tok = G.token; renderTray(); renderLine(); renderLCD();
+  const tm = $(`#tray .tm[data-tv="${v}"]`); if (tm) { tm.style.visibility = 'hidden'; fly(v, slotEl(v), tm, 300).then(() => { if (alive(tok)) tm.style.visibility = ''; }); }
+  refreshTip(); hideBubbleSoon();
+}
+function returnFromTray(v) {
+  if (G.phase !== 'change' || G.busy) return;
+  const i = G.tray.indexOf(v); if (i < 0) return;
+  const from = $(`#tray .tm[data-tv="${v}"]`);
+  G.tray.splice(i, 1); G.drawer[v]++;
+  fly(v, from, slotEl(v), 300).then(() => G && updateSlot(v));
+  SFX.money(v); renderTray(); renderLine(); renderLCD(); refreshTip();
+}
+function hideBubbleSoon() { if ($('#bubble').classList.contains('warn')) { clearTimeout(hideBubbleSoon.t); hideBubbleSoon.t = setTimeout(() => G && $('#bubble').classList.contains('warn') && hideBubble(), 2500); } }
+
+async function give() {
+  if (!G || G.phase !== 'change' || G.busy) return;
+  const tok = G.token, tx = G.tx, given = sum(G.tray), diff = given - tx.change;
+  if (diff !== 0) {
+    G.tries++; SFX.oops(); vibrate([30, 40, 30]);
+    const cu = $('#cust'); cu.classList.remove('puzzled'); void cu.offsetWidth; cu.classList.add('puzzled');
+    bubble(diff < 0 ? (given === 0 ? `Hé, ik krijg nog ${words(-diff)} terug!` : `Hé, ik krijg nog ${words(-diff)}!`) : `Dat is te veel, ik krijg ${words(diff)} te veel!`, true);
+    stepbar('Bijna!', diff < 0 ? 'Er moet nog wat bij. Tel nog eens op!' : 'Leg wat terug in de kassa: tik op het geld in het bakje.');
+    if (G.help.tip !== 'off') showTip();
+    syncTipBtn(); return;
+  }
+  // goed!
+  G.phase = 'done'; G.busy = true; hideTip(); syncTipBtn();
+  const first = G.tries === 0, avail = Object.assign({}, G.drawer); G.tray.forEach(v => avail[v] = (avail[v] || 0) + 1);
+  const best = optimalChange(tx.change, avail, G.lv.drawer) || G.tray, slim = G.tray.length <= best.length;
+  const secs = (performance.now() - G.t0) / 1000 * SNEL;
+  const fast = !!(G.lv.speed && first && secs <= 8 + 3 * best.length);
+  let gain = (first ? 2 : 1) + (slim ? 1 : 0) + (fast ? 1 : 0);
+  G.results[G.idx] = first ? 'ok' : 'meh'; if (first) G.firstOk++; if (slim) G.slim++; if (fast) G.fast++;
+  G.crowns += gain; S.crowns += gain;
+  S.stats.served++; if (first) S.stats.first++; if (slim) S.stats.slim++; if (fast) S.stats.fast++;
+  const isNew = !S.cust[G.cust.id]; S.cust[G.cust.id] = (S.cust[G.cust.id] || 0) + 1;
+  if (G.lv.tutorial && G.idx === 0) S.seen.tut = 1;
+  save(); renderDots();
+  SFX.kaching(); const cu = $('#cust'); cu.className = 'cust happy';
+  bubble((first ? '' : 'Ja, nu klopt het! ') + G.cust.bye);
+  const trayEls = $$('#tray .tm');
+  trayEls.forEach((el, i) => { const v = +el.dataset.tv; el.style.visibility = 'hidden'; setTimeout(() => fly(v, el, $('#cust'), 420), i * 70 / SNEL); });
+  stepbar('Kaching!', first ? (slim ? '🧠 Slim gewisseld! Precies goed in één keer.' : '✅ Precies goed!') : '👍 Gelukt!');
+  crownsFly(gain, $('#cust'));
+  if (slim && G.tray.length > 1) setTimeout(() => G && floatText('🧠 Slim gewisseld!'), 200 / SNEL);
+  if (fast) setTimeout(() => G && floatText('⚡ Bliksemsnel!'), 900 / SNEL);
+  if (isNew) setTimeout(() => toast(`📖 Nieuwe sticker: ${G ? G.cust.name : ''}!`), 1200 / SNEL);
+  await wait(900); if (!alive(tok)) return;
+  syncCrowns();
+  if (G.help.explain) { await showResult(first, slim, best, gain, fast); if (!alive(tok)) return; }
+  else await wait(900);
+  if (!alive(tok)) return;
+  G.tray = []; renderTray();
+  cu.className = 'cust gone'; hideBubble(); await wait(600); if (!alive(tok)) return;
+  G.busy = false; G.idx++;
+  if (G.idx < G.total) serveCustomer(tok); else levelDone();
+}
+function chainHTML(price, pieces) {
+  const sorted = pieces.slice().sort((a, b) => a - b); let a = price, s = `<span class="amt start">${fmt(price)}</span>`;
+  sorted.forEach((v, i) => { a += v; s += `<span class="ar">+${miniMoney(v)}</span><span class="amt ${i === sorted.length - 1 ? 'done' : a % 100 === 0 ? 'round' : ''}">${fmt(a)}</span>`; });
+  return `<div class="chain">${s}</div>`;
+}
+function showResult(first, slim, best, gain, fast) {
+  return new Promise(res => {
+    const tx = G.tx, n = G.tray.length;
+    const title = first ? (slim ? '🧠 Slim gewisseld!' : '✅ Goed zo!') : '👍 Gelukt!';
+    let tip = slim ? `Je gaf zo weinig mogelijk munten en briefjes: <b>${n} ${n === 1 ? 'stuk' : 'stuks'}</b>. Zo doet een echte kassier het!`
+      : `Goed! Het kan ook met minder: <b>${best.length}</b> in plaats van ${n} stuks.<div class="rowc" style="margin-top:6px">${best.slice().sort((a, b) => a - b).map(miniMoney).join('')}</div>`;
+    $('#resultCard').innerHTML = `<h2>${title}</h2>
+      <div class="explain"><b>Zo tel je op:</b>${chainHTML(tx.price, G.tray)}<div style="margin-top:4px">Wisselgeld: <b>${fmt(tx.change)}</b>. Controle: ${fmt(tx.price)} + ${fmt(tx.change)} = ${fmt(sum(tx.pay))} ✔</div></div>
+      <div>${tip}</div>${first ? '' : '<div class="small-note">De volgende keer in één keer goed? Dan krijg je een ster!</div>'}
+      <div class="gain">👑 +${gain} fooi${fast ? ' (⚡ snel!)' : ''}</div>
+      <button class="btn green big" id="btnNextCust">${G.idx + 1 < G.total ? 'Volgende klant ▶' : 'Klaar! 🎉'}</button>`;
+    $('#mdResult').classList.add('show');
+    $('#btnNextCust').onclick = () => { SFX.click(); $('#mdResult').classList.remove('show'); res(); };
+  });
+}
+function levelDone() {
+  const N = G.total, ok = G.firstOk, stars = ok === N ? 3 : ok >= Math.ceil(N * .6) ? 2 : 1;
+  const k = pkey(G.wid, G.n), prev = S.prog[k] || {};
+  const nextWorld = WORLDS[G.wid], wasOpen = nextWorld && worldOpen(nextWorld);
+  S.prog[k] = { stars: Math.max(stars, prev.stars || 0), done: true, plays: (prev.plays || 0) + 1 };
+  S.crowns += stars; G.crowns += stars; S.stats.levels++; save(); syncCrowns();
+  const unlocked = G.n === 8 && nextWorld && !nextWorld.soon && !wasOpen && worldOpen(nextWorld);
+  const msg = stars === 3 ? 'Perfect! Alle klanten in één keer goed geholpen!' : stars === 2 ? 'Heel goed gedaan!' : 'Goed geoefend! Speel nog eens voor meer sterren.';
+  let banner = '';
+  if (unlocked) banner = `<div class="unlockbanner">🎉 Nieuwe winkel open: ${nextWorld.emoji} ${nextWorld.name}!</div>`;
+  else if (G.n === 8 && G.wid === 3) banner = `<div class="unlockbanner">👑 Je bent een echte Kassakoning! Nieuwe winkels komen binnenkort.</div>`;
+  const hasNext = G.n < 8;
+  $('#doneCard').innerHTML = `<h2>${G.lv.busy ? 'Drukke dag voorbij!' : 'Level klaar!'}</h2>
+    <div class="bigstars">${[1, 2, 3].map(i => `<span class="${i <= stars ? 'star-on' : 'star-off'}">★</span>`).join('')}</div>
+    <div><b>${msg}</b></div>
+    <div>${ok} van de ${N} klanten in één keer goed · 🧠 ${G.slim}× slim gewisseld${G.lv.speed ? ` · ⚡ ${G.fast}× snel` : ''}</div>
+    <div class="gain">👑 +${G.crowns} kroontjes</div>${banner}
+    <div class="btnrow">${hasNext ? '<button class="btn green big" id="dNext">▶ Volgende level</button>' : unlocked ? '<button class="btn green big" id="dWorld">🏪 Naar de nieuwe winkel</button>' : ''}
+    <button class="btn white" id="dAgain">🔁 Nog een keer</button><button class="btn" id="dMap">🗺️ Kaart</button></div>`;
+  $('#mdDone').classList.add('show'); SFX.fanfare(); confetti(stars * 30);
+  $$('#doneCard .bigstars span').forEach((s, i) => setTimeout(() => s.classList.add('in'), 250 + i * 280));
+  const wid = G.wid, n = G.n;
+  const close = () => $('#mdDone').classList.remove('show');
+  $('#dAgain').onclick = () => { close(); startLevel(wid, n); };
+  $('#dMap').onclick = () => { close(); curWorld = wid; show('scrLevels'); };
+  if ($('#dNext')) $('#dNext').onclick = () => { close(); startLevel(wid, n + 1); };
+  if ($('#dWorld')) $('#dWorld').onclick = () => { close(); curWorld = wid + 1; show('scrLevels'); };
+}
+async function helpMe() { // na 3 pogingen: Juf Kassa legt de beste combinatie klaar
+  if (G.phase !== 'change' || G.busy) return;
+  G.busy = true;
+  for (const v of G.tray.slice()) { G.drawer[v]++; updateSlot(v); }
+  G.tray = []; const best = optimalChange(G.tx.change, G.drawer, G.lv.drawer) || [];
+  best.forEach(v => { G.drawer[v]--; G.tray.push(v); updateSlot(v); });
+  renderTray(); renderLine(); renderLCD(); G.busy = false;
+  await coach(`Kijk, zo kan het: ${chainHTML(G.tx.price, best)} Tik nu op <b>Geven</b>.`, '#tray');
+}
+function helpNow() {
+  if (!G) return;
+  const ph = G.phase;
+  if (ph === 'stash') coach('Leg het geld van de klant in de kassalade. Briefjes achterin, munten voorin. Op elk vakje staat wat erin hoort. Tik eerst op het geld (als je wilt) en dan op het vakje.', '#drawer');
+  else if (ph === 'change') coach(G.help.displays && !G.help.line ? `Geef samen <b>TERUG</b>: ${fmt(G.tx.change)}. Kijk bij <b>NOG TE GEVEN</b> hoeveel er nog bij moet.` :
+    `Tel op zoals een kassier: begin bij de prijs <b>${fmt(G.tx.price)}</b> en leg geld in het bakje tot je bij <b>${fmt(sum(G.tx.pay))}</b> bent. Maak eerst een mooi rond bedrag, dan grotere stappen.`, G.help.line ? '#cline' : '#lcd');
+  else coach('Wacht even tot de klant betaald heeft. Daarna leg je het geld in de kassa en geef je wisselgeld terug.');
+}
+
+/* ---------------- Mijn winkel ---------------- */
+let shopTab = 'kleur';
+RENDER.scrShop = () => {
+  syncCrowns();
+  $('#shopPreview').innerHTML = `<div class="scene w1" style="--skin:${shopItem('kassa', S.eq.kassa).bg}"><div class="wall"></div><div class="shelfdeco">🍦 🥐 🧸</div><div class="awning"></div>
+    <div class="decos">${decoHTML()}</div>
+    <div class="cust" style="left:38cqw;--cc:#fff3c4"><div class="cbody"><span class="cface regbody" style="background:none;box-shadow:none;padding:0"><span class="avatar" style="font-size:inherit">${avatarHTML()}</span></span></div><span class="cname">Jij! 👑</span></div>
+    <div class="counter"><div style="margin:1cqh auto 0;width:26cqw;height:22cqh;border-radius:12px;background:var(--skin);box-shadow:inset 0 -6px 0 rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center"><span style="background:#173b2d;color:#8dffb5;border-radius:8px;padding:.1em .5em;font-weight:700;font-size:min(7cqh,4cqw)">€ 0,00</span></div></div></div>`;
+  $('#shopTabs').innerHTML = Object.keys(SHOP).map(k => `<button data-tab="${k}" class="${k === shopTab ? 'on' : ''}">${SHOP[k].title}</button>`).join('');
+  const cat = SHOP[shopTab];
+  $('#shopGrid').innerHTML = cat.items.map(it => {
+    const own = S.owned[shopTab].includes(it.id), sel = cat.multi ? S.eq.deco.includes(it.id) : S.eq[shopTab] === it.id;
+    const icon = shopTab === 'kleur' ? `<span class="si" style="background:${it.c}"></span>` : shopTab === 'kassa' ? `<span class="si" style="background:${it.bg}"></span>` : `<span class="si">${it.e}</span>`;
+    const btn = own ? (cat.multi ? `<button class="btn small ${sel ? 'white' : 'green'}" data-equip="${it.id}">${sel ? 'Weghalen' : 'Neerzetten'}</button>` : sel ? '<button class="btn small white" disabled>✔ Gekozen</button>' : `<button class="btn small green" data-equip="${it.id}">Kiezen</button>`)
+      : `<button class="btn small purple" data-buy="${it.id}" ${S.crowns < it.p ? 'disabled' : ''}>👑 ${it.p}</button>`;
+    return `<div class="sitem ${sel ? 'sel' : ''}">${icon}<span class="sn">${it.n}</span>${btn}</div>`;
+  }).join('');
+};
+function buyItem(id) {
+  const it = shopItem(shopTab, id); if (S.owned[shopTab].includes(id)) return;
+  if (S.crowns < it.p) { SFX.oops(); toast('Nog niet genoeg kroontjes. Help nog wat klanten! 👑'); return; }
+  S.crowns -= it.p; S.owned[shopTab].push(id); equipItem(id, true); SFX.buy(); confetti(30); toast(`🎉 Gekocht: ${it.n}!`);
+}
+function equipItem(id, silent) {
+  if (SHOP[shopTab].multi) { const i = S.eq.deco.indexOf(id); if (i >= 0) S.eq.deco.splice(i, 1); else S.eq.deco.push(id); }
+  else S.eq[shopTab] = id;
+  save(); applyLook(); if (!silent) SFX.click(); RENDER.scrShop();
+}
+
+/* ---------------- Klantenboek ---------------- */
+RENDER.scrBook = () => {
+  const met = CUSTOMERS.filter(c => S.cust[c.id]).length;
+  $('#bookCount').textContent = `📖 ${met}/${CUSTOMERS.length}`;
+  $('#bookGrid').innerHTML = CUSTOMERS.map(c => {
+    const n = S.cust[c.id] || 0;
+    return n ? `<div class="bcard"><span class="bc">${n}×</span><span class="bf" style="background:${c.col}">${c.face}</span><span class="bn">${c.name}</span><span class="bl2">“${c.pay}”</span></div>`
+      : `<div class="bcard unk"><span class="bf" style="background:#e3e7ee"><span>${c.face}</span></span><span class="bn">???</span><span class="bl2">Nog niet ontmoet</span></div>`;
+  }).join('');
+};
+
+/* ---------------- ouders ---------------- */
+function renderOuders() {
+  $$('#segUnlock button').forEach(b => b.classList.toggle('on', (b.dataset.v === '1') === !!S.unlockAll));
+  $$('#segVoice button').forEach(b => b.classList.toggle('on', (b.dataset.v === '1') === !!S.voice));
+  const st = S.stats, pct = st.served ? Math.round(st.first / st.served * 100) : 0;
+  $('#ouderStats').innerHTML = `${st.served} klanten geholpen, waarvan ${st.first} in één keer goed (${pct}%) · ${st.slim}× met zo weinig mogelijk munten/briefjes · ${st.levels} levels gespeeld · ${S.crowns} kroontjes.<br>` +
+    WORLDS.filter(w => !w.soon).map(w => `${w.emoji} ${w.name}: ⭐ ${worldStars(w)}/24`).join(' · ');
+  const rb = $('#btnReset'); rb.dataset.armed = ''; rb.textContent = 'Voortgang wissen';
+}
+function holdButton(el, ms, cb) {
+  let t0 = 0, raf = 0; const fill = el.querySelector('.fill');
+  const stop = () => { cancelAnimationFrame(raf); t0 = 0; fill.style.width = '0'; };
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault(); t0 = performance.now();
+    const step = () => { if (!t0) return; const p = (performance.now() - t0) / ms; fill.style.width = Math.min(100, p * 100) + '%'; if (p >= 1) { stop(); cb(); } else raf = requestAnimationFrame(step); };
+    raf = requestAnimationFrame(step);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => el.addEventListener(ev, stop));
+  el.addEventListener('contextmenu', e => e.preventDefault());
+  el.addEventListener('click', () => { if (!t0 && !$('#mdOuders').classList.contains('show')) { const m = $('#menuMsg'), old = m.textContent; m.textContent = '👪 Houd de knop 2 seconden vast'; clearTimeout(holdButton.t); holdButton.t = setTimeout(() => m.textContent = old, 1600); } });
+}
+
+/* ---------------- info-popups ---------------- */
+function info(html, buttons) {
+  return new Promise(res => {
+    $('#infoCard').innerHTML = html + `<div class="btnrow">${(buttons || [['ok', 'Oké!', 'green']]).map(b => `<button class="btn ${b[2] || ''}" data-ans="${b[0]}">${b[1]}</button>`).join('')}</div>`;
+    $('#mdInfo').classList.add('show');
+    $$('#infoCard [data-ans]').forEach(b => b.onclick = () => { SFX.click(); $('#mdInfo').classList.remove('show'); res(b.dataset.ans); });
+  });
+}
+function howItWorks() {
+  info(`<h2>❓ Hoe werkt Kassakoning?</h2>
+    <div class="explain" style="text-align:left">1️⃣ Een klant koopt iets. De kassa scant alles en laat het <b>totaal</b> zien.<br>
+    2️⃣ De klant betaalt. Leg het geld in het goede vakje van de <b>kassalade</b>: briefjes achterin, munten voorin.<br>
+    3️⃣ Geef het <b>wisselgeld</b> terug. Tel óp vanaf de prijs tot het bedrag dat de klant gaf, zoals een echte kassier:</div>
+    <div class="explain">${chainHTML(2345, [5, 50, 100, 500])}<div class="small-note" style="margin-top:4px">€ 23,45 + 5 ct = € 23,50 → + 50 ct = € 24 → + € 1 = € 25 → + € 5 = € 30</div></div>
+    <div>⭐ Goed in één keer = sterren. 🧠 Zo weinig mogelijk munten = extra fooi. 👑 Met fooi koop je spullen voor <b>Mijn winkel</b>.<br>Te moeilijk? Tik op <b>🪜 Iets makkelijker</b>. Je kunt nooit verliezen!</div>`, [['ok', 'Begrepen!', 'green']]);
+}
+
+/* ---------------- slepen & tikken ---------------- */
+let drag = null, noClickUntil = 0;
+const scr = $('#scrGame');
+scr.addEventListener('pointerdown', e => {
+  if (!G || G.busy) return;
+  const src = e.target.closest('[data-src]'); if (!src) return;
+  if (src.dataset.src === 'slot' && G.phase !== 'change') return;
+  if (src.dataset.src === 'counter' && G.phase !== 'stash') return;
+  drag = { src, id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false, ghost: null, v: +(src.dataset.v || src.dataset.tv || (src.querySelector('.money') || {}).dataset?.v) };
+});
+window.addEventListener('pointermove', e => {
+  if (!drag || e.pointerId !== drag.id) return;
+  if (!drag.moved && Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) > 12) {
+    if (drag.src.dataset.src === 'slot' && !(G.drawer[drag.v] > 0)) { drag = null; return; }
+    drag.moved = true; const g = document.createElement('div'); g.className = 'ghost'; g.style.cssText += ';--cb:62px;--nb:124px'; g.innerHTML = moneyHTML(drag.v); document.body.appendChild(g); drag.ghost = g;
+    if (drag.src.dataset.src === 'counter') { const i = G.counter.findIndex(p => p.el === drag.src); if (i >= 0) selectPiece(i); drag.src.style.opacity = '.35'; }
+    if (drag.src.dataset.src === 'tray') drag.src.style.opacity = '.35';
+  }
+  if (drag.moved) {
+    drag.ghost.style.left = e.clientX + 'px'; drag.ghost.style.top = e.clientY + 'px';
+    const t = document.elementFromPoint(e.clientX, e.clientY); const d = t && t.closest('[data-drop]');
+    $$('.slot.target, .tray.droptarget').forEach(x => x.classList.remove('target', 'droptarget'));
+    if (d) d.classList.add(d.dataset.drop === 'tray' ? 'droptarget' : 'target');
+  }
+});
+function endDrag(e) {
+  if (!drag || (e && e.pointerId !== drag.id)) return;
+  const d0 = drag; drag = null;
+  $$('.slot.target, .tray.droptarget').forEach(x => x.classList.remove('target', 'droptarget'));
+  if (!d0.moved) return;
+  noClickUntil = performance.now() + 350;
+  d0.ghost && d0.ghost.remove(); d0.src.style.opacity = '';
+  if (!G || !e) return;
+  const t = document.elementFromPoint(e.clientX, e.clientY), tgt = t && t.closest('[data-drop]'), kind = d0.src.dataset.src;
+  if (kind === 'counter' && tgt && tgt.dataset.drop === 'slot') { const i = G.counter.findIndex(p => p.el === d0.src); if (i >= 0) placeAttempt(i, +tgt.dataset.v); }
+  else if (kind === 'slot' && tgt && tgt.dataset.drop === 'tray') takeFromSlot(d0.v);
+  else if (kind === 'tray' && !(tgt && tgt.dataset.drop === 'tray')) returnFromTray(d0.v);
+}
+window.addEventListener('pointerup', endDrag);
+window.addEventListener('pointercancel', e => { if (drag) { drag.ghost && drag.ghost.remove(); drag.src.style.opacity = ''; drag = null; } });
+
+scr.addEventListener('click', e => {
+  if (!G || performance.now() < noClickUntil) return;
+  const info = e.target.closest('[data-info]'); if (info) { e.stopPropagation(); coach(DISP_INFO[info.dataset.info], info); return; }
+  const pm = e.target.closest('.pm'); if (pm && G.phase === 'stash') { const i = G.counter.findIndex(p => p.el === pm); if (i >= 0) { SFX.click(); selectPiece(i); } return; }
+  const slot = e.target.closest('.slot');
+  if (slot) { const v = +slot.dataset.v; if (G.phase === 'stash') placeAttempt(G.sel || 0, v); else if (G.phase === 'change') takeFromSlot(v); return; }
+  const tm = e.target.closest('.tm'); if (tm) { returnFromTray(+tm.dataset.tv); return; }
+});
+$('#btnGive').onclick = () => give();
+$('#btnTip').onclick = () => { if (!G) return; SFX.click(); if ($('#btnTip').dataset.mode === 'show') helpMe(); else showTip(); };
+$('#btnHelp').onclick = () => { SFX.click(); helpNow(); };
+$('#btnExit').onclick = async () => {
+  SFX.click(); if (!G) return show('scrMap');
+  const a = await info('<h2>Stoppen?</h2><div>Wil je stoppen met dit level? Je kunt het later opnieuw spelen.</div>', [['stop', '🗺️ Ja, stoppen', 'orange'], ['door', '▶ Nee, doorgaan', 'green']]);
+  if (a === 'stop' && G) { const w = G.wid; stopGame(); curWorld = w; show('scrLevels'); }
+};
+$('#btnEasy').onclick = async () => {
+  SFX.click(); if (!G) return;
+  let tw = G.wid, tn = G.n - 1; if (tn < 1) { tw = G.wid - 1; tn = 7; }
+  if (tw < 1) { toast('Dit is al het makkelijkste level. Tik op ❓ voor uitleg!'); return; }
+  const tl = WORLDS[tw - 1].levels[tn - 1];
+  const a = await info(`<h2>🪜 Iets makkelijker?</h2><div>Even oefenen met <b>${WORLDS[tw - 1].name} ${tn}: ${tl.t}</b>. Dat is slim, zo worden echte kassiers ook goed!</div>`, [['ja', '🪜 Ja, iets makkelijker', 'green'], ['nee', 'Nee, ik ga door', 'white']]);
+  if (a === 'ja' && G) { startLevel(tw, tn); toast('Even iets makkelijker oefenen 💪'); }
+};
+
+/* ---------------- algemene knoppen ---------------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.go) { SFX.click(); show(t.dataset.go); return; }
+  if (t.classList.contains('mutebtn')) { S.muted = !S.muted; save(); syncMute(); if (!S.muted) SFX.click(); return; }
+  if (t.dataset.world) {
+    const w = WORLDS[+t.dataset.world - 1];
+    if (w.soon) { SFX.click(); info(`<h2>${w.emoji} ${w.name}</h2><div>${w.desc}</div><div class="small-note">Deze winkel komt binnenkort!</div>`); return; }
+    if (!worldOpen(w)) { SFX.oops(); t.animate([{ transform: 'rotate(-2deg)' }, { transform: 'rotate(2deg)' }, { transform: 'none' }], { duration: 300 }); toast(`🔒 Speel eerst level 8 van ${WORLDS[w.id - 2].name}.`); return; }
+    SFX.click(); curWorld = w.id; show('scrLevels'); return;
+  }
+  if (t.dataset.level) {
+    const w = WORLDS[curWorld - 1], n = +t.dataset.level;
+    if (!levelOpen(w, n)) { SFX.oops(); toast('🔒 Speel eerst het level ervoor.'); return; }
+    SFX.click(); startLevel(w.id, n); return;
+  }
+  if (t.dataset.tab) { shopTab = t.dataset.tab; SFX.click(); RENDER.scrShop(); return; }
+  if (t.dataset.buy) { buyItem(t.dataset.buy); return; }
+  if (t.dataset.equip) { equipItem(t.dataset.equip); return; }
+  if (t.parentElement && t.parentElement.id === 'segUnlock') { S.unlockAll = t.dataset.v === '1'; save(); renderOuders(); return; }
+  if (t.parentElement && t.parentElement.id === 'segVoice') { S.voice = t.dataset.v === '1'; save(); renderOuders(); if (S.voice) say('Hallo! Ik lees voor wat de klanten zeggen.'); return; }
+});
+$('#btnPlay').onclick = () => { SFX.click(); show('scrMap'); };
+$('#btnShop').onclick = () => { SFX.click(); show('scrShop'); };
+$('#btnBook').onclick = () => { SFX.click(); show('scrBook'); };
+$('#btnHow').onclick = () => { SFX.click(); howItWorks(); };
+$('#btnOudersClose').onclick = () => { $('#mdOuders').classList.remove('show'); RENDER.scrMenu(); };
+$('#btnReset').onclick = e => {
+  const b = e.currentTarget;
+  if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = '⚠️ Echt alles wissen? Tik nog een keer'; return; }
+  const muted = S.muted; S = defaultSave(); S.muted = muted; save(); applyLook(); renderOuders(); syncCrowns(); b.textContent = '✅ Gewist';
+};
+holdButton($('#btnParent'), 2000, () => {
+  SFX.click(); renderOuders();
+  const md = $('#mdOuders'); md.classList.add('show');
+  md.style.pointerEvents = 'none';
+  const en = () => { clearTimeout(en.t); en.t = setTimeout(() => { md.style.pointerEvents = ''; }, 400); };
+  window.addEventListener('pointerup', en, { once: true }); en.t = setTimeout(() => { md.style.pointerEvents = ''; }, 5000);
+});
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('dblclick', e => e.preventDefault());
+document.addEventListener('contextmenu', e => { if (e.target.closest('#scrGame')) e.preventDefault(); });
+
+/* ---------------- start ---------------- */
+applyLook(); syncMute(); syncCrowns(); RENDER.scrMenu();
+if (Q.get('w') && Q.get('l')) { const w = +Q.get('w'), l = +Q.get('l'); if (WORLDS[w - 1] && !WORLDS[w - 1].soon && levelOpen(WORLDS[w - 1], l)) startLevel(w, l); }
+
+// test-haakjes
+window.__kk = {
+  get S() { return S; }, set S(v) { S = v; }, get G() { return G; }, WORLDS, CUSTOMERS, STOCK, LADDER, COINS, NOTES,
+  optimalChange, realism, choosePayment, makeTransaction, fmt, words, startLevel, stopGame, save, load, applyLook, show,
+  give, takeFromSlot, returnFromTray, placeAttempt, coachOk: () => coach.current && $('#coach').classList.contains('show') && coach.current(),
+};
+
+</script>
+</body>
+</html>
