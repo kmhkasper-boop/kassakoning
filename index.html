@@ -381,6 +381,45 @@ h1,h2,h3{margin:0}
 .floattxt{position:fixed;z-index:63;pointer-events:none;font-weight:700;font-size:1.4em;color:#fff;-webkit-text-stroke:1px #5a26c2;text-shadow:0 3px 0 #5a26c2;animation:floatup 1.4s ease forwards;white-space:nowrap}
 @keyframes floatup{0%{transform:translate(-50%,0) scale(.6);opacity:0}20%{transform:translate(-50%,-10px) scale(1.15);opacity:1}100%{transform:translate(-50%,-70px) scale(1);opacity:0}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ---------- v2: geluidsmenu ---------- */
+.sndmenu{position:fixed;z-index:66;background:#fff;border-radius:22px;box-shadow:0 8px 0 rgba(31,42,68,.2),0 10px 26px rgba(31,42,68,.2);padding:8px;display:none;flex-direction:column;gap:6px;min-width:250px;animation:popin .2s}
+.sndmenu.show{display:flex}
+.sndrow{display:flex;align-items:center;gap:10px;padding:.35em .6em;border-radius:16px;min-height:56px;font-weight:600;font-size:1em;text-align:left;background:#f3f6fb}
+.sndrow .se{font-size:1.4em}.sndrow .sl{flex:1}
+.sndrow .sw{width:52px;height:30px;border-radius:999px;background:#c7cdd8;position:relative;transition:background .2s;flex:none}
+.sndrow .sw i{position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 0 rgba(0,0,0,.2);transition:left .2s}
+.sndrow.on .sw{background:var(--green)}.sndrow.on .sw i{left:25px}
+.sndrow .st{font-size:.8em;width:2.2em;color:var(--ink2)}
+.sndgrid{display:grid;grid-template-columns:auto auto 1fr;gap:8px 12px;align-items:center;margin-top:6px}
+.sndgrid .sk{font-weight:600;font-size:.9em}
+.vol{display:flex;align-items:center;gap:8px;font-size:.85em;min-width:0}
+.vol input{flex:1;min-width:80px;height:36px;accent-color:var(--green);touch-action:pan-x}
+.vol b{width:3em;text-align:right}
+@media (max-width:560px){.sndgrid{grid-template-columns:auto 1fr}.sndgrid .vol{grid-column:1/-1}}
+/* ---------- v2: sprongtest & snelle route ---------- */
+.wslot{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.sprongbtn{min-height:52px;font-size:1em;align-self:flex-end;margin-top:-2px;animation:pulse 1.8s ease-in-out infinite}
+.lvlsprong{width:100%}
+.lvlsprong:empty{display:none}
+.sprongcard{width:100%;display:flex;align-items:center;gap:12px;text-align:left;background:linear-gradient(135deg,#fff3c4,#ffe08a);border:3px solid #f2c94c;border-radius:var(--radius);padding:8px 14px;box-shadow:var(--shadow);font-size:1em;min-height:64px}
+.sprongcard:active{transform:translateY(4px)}
+.sprongcard .sj{font-size:34px;width:52px;height:52px;border-radius:50%;background:#ffd23f;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -5px 0 rgba(0,0,0,.15);flex:none}
+.sprongdone{background:#e2f7e8;border:3px solid #9fdcb2;border-radius:18px;padding:.4em .9em;font-weight:600;font-size:.9em}
+.lvl .lskip{position:absolute;right:8px;top:6px;font-size:.85em}
+.sprongbig,.medal{font-size:4em;line-height:1}
+.medal{animation:starin .6s cubic-bezier(.3,1.6,.6,1) both;filter:drop-shadow(0 6px 0 rgba(31,42,68,.18))}
+.skipoffer,.sprongoffer{border-radius:18px;padding:.5em 1em;font-weight:500;width:100%}
+.skipoffer{background:#efe6ff;border:3px solid #c9b3ff}
+.sprongoffer{background:#fff3c4;border:3px solid #f2c94c}
+#scrGame.testmode .gtop .title{box-shadow:0 0 0 4px #ffd23f,var(--shadow)}
+#infoCard .btnrow .btn{max-width:100%}
+.trophies{width:100%;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:10px 12px}
+.trtitle{font-weight:700;margin-bottom:6px;text-align:left}
+.trgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.trophy{background:#eef1f6;border-radius:18px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:2px;color:#7a8396}
+.trophy .te{font-size:36px;line-height:1.1}.trophy .tn{font-weight:700;font-size:.85em;line-height:1.15}.trophy .ts{font-size:.72em}
+.trophy.got{background:linear-gradient(135deg,#fff3c4,#ffd6ea);color:var(--ink)}
 </style>
 <script>
 /* App-modus (PWA): service worker, installatietip en voortgang-brug voor iPad/iPhone. Raakt de spellogica niet. */
@@ -475,7 +514,7 @@ h1,h2,h3{margin:0}
 
 <!-- ============ MENU ============ -->
 <div id="scrMenu" class="overlay sky show">
-  <div class="topright"><span class="pill crownpill" title="Kroontjes">👑 <b class="crownCount">0</b></span><button class="iconbtn mutebtn" aria-label="Geluid aan/uit">🔊</button></div>
+  <div class="topright"><span class="pill crownpill" title="Kroontjes">👑 <b class="crownCount">0</b></span><button class="iconbtn mutebtn" aria-label="Muziek en geluid" aria-haspopup="true" aria-expanded="false">🔊</button></div>
   <div class="wrap">
     <h1 class="logo">Kassa<span class="k2">koning</span><span class="crown">👑</span></h1>
     <p class="tagline">Jij bent de kassier! Geef het goede wisselgeld terug. 💶</p>
@@ -496,7 +535,7 @@ h1,h2,h3{margin:0}
   <div class="wrap">
     <div class="topbar"><button class="iconbtn" data-go="scrMenu" aria-label="Terug">⬅️</button><div class="title">🗺️ Kies een winkel</div><span class="pill crownpill">👑 <b class="crownCount">0</b></span></div>
     <div class="worlds" id="worldList"></div>
-    <p class="small-note">Speel level 8 (Drukke dag) om de volgende winkel te openen. Je kunt nooit verliezen: oefenen mag altijd!</p>
+    <p class="small-note">Speel level 8 (Drukke dag) om de volgende winkel te openen, of laat met de ⚡ Sprongtest zien dat je het al kunt. Je kunt nooit verliezen: oefenen mag altijd!</p>
   </div>
 </div>
 
@@ -505,6 +544,7 @@ h1,h2,h3{margin:0}
   <div class="wrap">
     <div class="topbar"><button class="iconbtn" data-go="scrMap" aria-label="Terug">⬅️</button><div class="title" id="lvlTitle">Levels</div><span class="pill" id="lvlStars">⭐ 0</span></div>
     <div class="lvlhead" id="lvlHead"></div>
+    <div class="lvlsprong" id="lvlSprong"></div>
     <div class="lvls" id="lvlList"></div>
   </div>
 </div>
@@ -517,7 +557,7 @@ h1,h2,h3{margin:0}
     <span class="pill crownpill">👑 <b class="crownCount">0</b></span>
     <button class="easybtn" id="btnEasy">🪜 <span class="ex">Iets </span>makkelijker</button>
     <button class="iconbtn" id="btnHelp" aria-label="Uitleg">❓</button>
-    <button class="iconbtn mutebtn" aria-label="Geluid aan/uit">🔊</button>
+    <button class="iconbtn mutebtn" aria-label="Muziek en geluid" aria-haspopup="true" aria-expanded="false">🔊</button>
   </div>
   <div class="scene" id="scene">
     <div class="wall"></div>
@@ -567,6 +607,7 @@ h1,h2,h3{margin:0}
 <div id="scrBook" class="overlay sky">
   <div class="wrap">
     <div class="topbar"><button class="iconbtn" data-go="scrMenu" aria-label="Terug">⬅️</button><div class="title">📖 Klantenboek</div><span class="pill" id="bookCount">0/0</span></div>
+    <div class="trophies" id="trophies"></div>
     <div class="bgrid" id="bookGrid"></div>
     <p class="small-note">Help klanten in je winkels om hun sticker te verdienen.</p>
   </div>
@@ -582,8 +623,16 @@ h1,h2,h3{margin:0}
     <div><h3>💶 Wat leert je kind?</h3>
       <p>Afrekenen zoals een echte kassier: het betaalde geld in de goede vakjes leggen en wisselgeld teruggeven door <b>op te tellen</b> vanaf de prijs (€ 23,45 + 5 ct = € 23,50 + 50 ct = € 24 + € 1 = € 25 + € 5 = € 30). Alle bedragen kloppen tot op de cent, met echte euromunten en -biljetten (zonder € 200/€ 500). Juistheid telt altijd zwaarder dan snelheid; snelheid geeft pas vanaf winkel 3, level 8 een klein extraatje.</p></div>
     <div><h3>🗺️ Levels</h3>
-      <p>Normaal gaan levels één voor één open en opent level 8 (Drukke dag) de volgende winkel.</p>
+      <p>Normaal gaan levels één voor één open en opent level 8 (Drukke dag) de volgende winkel. Snelle route: wie een level perfect speelt (3 sterren) mag één level overslaan, en met de <b>⚡ Sprongtest</b> (5 klanten uit de moeilijkste levels, zonder hulp, 4 goed nodig) gaat de volgende winkel meteen open. Overgeslagen levels blijven speelbaar voor sterren.</p>
       <div class="seg" id="segUnlock" style="margin-top:6px"><button data-v="0">Op volgorde</button><button data-v="1">Alles open</button></div></div>
+    <div><h3>🎵 Muziek en geluid</h3>
+      <p>Rustige achtergrondmuziek (per winkel een eigen deuntje) en korte geluidjes bij munten, briefjes en de kassa. Alles wordt in het spel zelf gemaakt. De muziek start pas na de eerste tik, wordt zachter als er wordt voorgelezen en pauzeert als de app op de achtergrond staat.</p>
+      <div class="sndgrid">
+        <span class="sk">🎵 Muziek</span><div class="seg" id="segMusic"><button data-v="0">Uit</button><button data-v="1">Aan</button></div>
+        <label class="vol"><span>Volume</span><input type="range" id="volMusic" min="0" max="100" step="5" aria-label="Volume muziek"><b id="volMusicVal"></b></label>
+        <span class="sk">🔔 Geluidseffecten</span><div class="seg" id="segSfx"><button data-v="0">Uit</button><button data-v="1">Aan</button></div>
+        <label class="vol"><span>Volume</span><input type="range" id="volSfx" min="0" max="100" step="5" aria-label="Volume geluidseffecten"><b id="volSfxVal"></b></label>
+      </div></div>
     <div><h3>🗣️ Voorlezen</h3>
       <p>Laat de tablet wat de klanten zeggen hardop voorlezen (als het apparaat een Nederlandse stem heeft).</p>
       <div class="seg" id="segVoice" style="margin-top:6px"><button data-v="0">Uit</button><button data-v="1">Aan</button></div></div>
@@ -597,6 +646,10 @@ h1,h2,h3{margin:0}
 <div id="coach"><div class="spot none" id="coachSpot"></div><div class="ccard bottom" id="coachCard"><div class="cf" id="coachFace">👩‍💼</div><div class="ctext"><b class="nm" id="coachName">Juf Kassa</b><p id="coachText"></p><button class="btn green" id="coachBtn">Oké!</button></div></div></div>
 <div class="fly" id="fly"></div>
 <div class="toast" id="toast" role="status"></div>
+<div class="sndmenu" id="sndMenu" role="menu" aria-label="Muziek en geluid">
+  <button class="sndrow" data-snd="music" role="menuitemcheckbox" aria-checked="true"><span class="se">🎵</span><span class="sl">Muziek</span><span class="sw"><i></i></span><span class="st">Aan</span></button>
+  <button class="sndrow" data-snd="sfx" role="menuitemcheckbox" aria-checked="true"><span class="se">🔔</span><span class="sl">Geluidseffecten</span><span class="sw"><i></i></span><span class="st">Aan</span></button>
+</div>
 <script>
 'use strict';
 /* =========================================================
@@ -925,83 +978,57 @@ function makeTransaction(world, lv, drawer, tries) {
 }
 
 /* ---------------- opslag ---------------- */
+// Zelfde sleutel als v1: oude voortgang blijft gewoon staan. Nieuwe velden krijgen een standaardwaarde (migratie in load()).
 const LS_KEY = 'kassakoning_v1';
+const SAVE_V = 2;
 function defaultSave() {
-  return { v: 1, crowns: 0, muted: false, voice: false, unlockAll: false, prog: {}, seen: {}, cust: {},
+  return { v: SAVE_V, crowns: 0, muted: false, voice: false, unlockAll: false, prog: {}, seen: {}, cust: {},
     owned: { kleur: ['roze'], deco: [], kassa: ['rood'], avatar: ['jongen', 'meisje'], hoed: ['geen'] },
     eq: { kleur: 'roze', deco: [], kassa: 'rood', avatar: 'jongen', hoed: 'geen' },
-    stats: { served: 0, first: 0, slim: 0, levels: 0, fast: 0 } };
+    stats: { served: 0, first: 0, slim: 0, levels: 0, fast: 0, tests: 0 },
+    // v2: geluid
+    music: true, sfx: true, musicVol: 35, sfxVol: 80,
+    // v2: sprongtest & snelle route
+    skip: {},      // { wereld-id: { passed: 1, score: 4, date } }
+    unl: {},       // levels die via ⏩ / sprongtest open zijn: { '1-5': 1 }
+    badges: [],    // ['sprong-1', 'sprong-2', 'diploma']
+    streak: 0 };   // aantal perfecte levels op rij
+}
+function migrate(o) {
+  const d = defaultSave(), s = Object.assign(d, o);
+  s.owned = Object.assign(defaultSave().owned, o.owned || {}); s.eq = Object.assign(defaultSave().eq, o.eq || {});
+  s.stats = Object.assign(defaultSave().stats, o.stats || {});
+  // v1 -> v2: de oude 'geluid uit'-knop gold voor alles; wie alles uit had, houdt alles uit.
+  if (typeof o.music !== 'boolean') s.music = !o.muted;
+  if (typeof o.sfx !== 'boolean') s.sfx = !o.muted;
+  const vol = (x, def) => (typeof x === 'number' && x >= 0 && x <= 100) ? Math.round(x) : def;
+  s.musicVol = vol(o.musicVol, 35); s.sfxVol = vol(o.sfxVol, 80);
+  if (!s.skip || typeof s.skip !== 'object') s.skip = {};
+  if (!s.unl || typeof s.unl !== 'object') s.unl = {};
+  if (!Array.isArray(s.badges)) s.badges = [];
+  if (!(s.streak >= 0)) s.streak = 0;
+  s.muted = !s.music && !s.sfx;
+  s.v = SAVE_V;
+  return s;
 }
 function load() {
   try {
     const raw = localStorage.getItem(LS_KEY);
-    if (raw) {
-      const o = JSON.parse(raw), d = defaultSave(), s = Object.assign(d, o);
-      s.owned = Object.assign(defaultSave().owned, o.owned || {}); s.eq = Object.assign(defaultSave().eq, o.eq || {});
-      s.stats = Object.assign(defaultSave().stats, o.stats || {});
-      return s;
-    }
+    if (raw) { const o = JSON.parse(raw); if (o && typeof o === 'object') { load.migrated = o.v !== SAVE_V; return migrate(o); } }
   } catch (e) { }
   return defaultSave();
 }
 let S = load();
-function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { } }
+if (load.migrated) save();   // oude opslag meteen in het nieuwe formaat bewaren (niets gaat verloren)
+function save() { S.muted = !S.music && !S.sfx; try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { } }
 const pkey = (w, n) => w + '-' + n;
 function prog(w, n) { return S.prog[pkey(w, n)] || null; }
-function worldOpen(w) { if (w.soon) return false; return S.unlockAll || w.id === 1 || !!(prog(w.id - 1, 8) && prog(w.id - 1, 8).done); }
-function levelOpen(w, n) { return worldOpen(w) && (S.unlockAll || n === 1 || !!(prog(w.id, n - 1) && prog(w.id, n - 1).done)); }
+const testPassed = wid => !!(S.skip[wid] && S.skip[wid].passed);
+function worldOpen(w) { if (w.soon) return false; return S.unlockAll || w.id === 1 || !!(prog(w.id - 1, 8) && prog(w.id - 1, 8).done) || testPassed(w.id - 1); }
+function levelOpen(w, n) { return worldOpen(w) && (S.unlockAll || n === 1 || !!(prog(w.id, n - 1) && prog(w.id, n - 1).done) || !!S.unl[pkey(w.id, n)] || testPassed(w.id)); }
 function worldStars(w) { let s = 0; if (w.levels) for (let n = 1; n <= w.levels.length; n++) s += (prog(w.id, n) || {}).stars || 0; return s; }
 
-/* ---------------- geluid ---------------- */
-let AC = null, NOISE = null;
-function ac() {
-  if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } }
-  if (AC && AC.state === 'suspended') AC.resume().catch(() => { });
-  return AC;
-}
-function tone(freq, dur, type, vol, when, slide) {
-  if (S.muted) return; const a = ac(); if (!a) return;
-  try {
-    const t = a.currentTime + (when || 0); const o = a.createOscillator(), g = a.createGain();
-    o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t);
-    if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + dur);
-    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .12, t + .008); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur + .05);
-  } catch (e) { }
-}
-function noise(dur, vol, when, freq, q) {
-  if (S.muted) return; const a = ac(); if (!a) return;
-  try {
-    if (!NOISE) { NOISE = a.createBuffer(1, a.sampleRate, a.sampleRate); const d = NOISE.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
-    const t = a.currentTime + (when || 0), s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
-    s.buffer = NOISE; f.type = 'bandpass'; f.frequency.value = freq || 2500; f.Q.value = q || 1.2;
-    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .2, t + .01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    s.connect(f); f.connect(g); g.connect(a.destination); s.start(t); s.stop(t + dur + .05);
-  } catch (e) { }
-}
-const SFX = {
-  click() { tone(720, .05, 'triangle', .07); },
-  scan() { tone(1760, .08, 'square', .05); },
-  coin(v) { const f = 2400 + Math.random() * 900 - (v || 0) * 2; tone(f, .09, 'triangle', .09); tone(f * 1.5, .12, 'sine', .05, .03); },
-  paper() { noise(.16, .16, 0, 3200, .8); noise(.1, .08, .08, 1800, 1); },
-  money(v) { if (isNote(v)) SFX.paper(); else SFX.coin(v); },
-  oops() { tone(330, .18, 'sine', .12, 0, 230); tone(250, .22, 'triangle', .07, .12, 190); },
-  kaching() { noise(.25, .12, 0, 900, .7); tone(2093, .5, 'triangle', .1, .12); tone(2637, .6, 'triangle', .08, .2); tone(3136, .7, 'sine', .05, .26); },
-  good() { [523, 659, 784, 1047].forEach((f, i) => tone(f, .16, 'triangle', .12, i * .06)); },
-  crown() { [1319, 1568, 2093].forEach((f, i) => tone(f, .12, 'square', .035, i * .06)); },
-  buy() { [784, 988, 1175, 1568].forEach((f, i) => tone(f, .14, 'square', .05, i * .07)); },
-  fanfare() { [523, 659, 784, 659, 784, 1047].forEach((f, i) => tone(f, .22, 'triangle', .13, i * .12)); },
-  walk() { tone(180, .05, 'sine', .06); tone(160, .05, 'sine', .06, .18); },
-};
 function vibrate(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) { } }
-function say(html) {
-  if (!S.voice || !window.speechSynthesis) return;
-  try {
-    const txt = String(html).replace(/<[^>]+>/g, ' ').replace(/€\s?(\d+),(\d\d)/g, (m, e, c) => e + ' euro ' + (c === '00' ? '' : +c)).replace(/[\u{1F000}-\u{1FFFF}\u2600-\u27BF]/gu, '');
-    speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = 'nl-NL'; u.rate = 1; speechSynthesis.speak(u);
-  } catch (e) { }
-}
-
 /* ---------------- uiterlijk / Mijn winkel ---------------- */
 const SHOP = {
   kleur: { title: '🎨 Winkelkleur', items: [
@@ -1048,10 +1075,11 @@ const RENDER = {};
 function show(id) {
   $$('.overlay.sky, .overlay.game').forEach(o => o.classList.toggle('show', o.id === id));
   if (id !== 'scrGame' && G) stopGame();
+  if (id !== 'scrGame') musicWant('menu');
+  closeSndMenu();
   if (RENDER[id]) RENDER[id]();
 }
 function syncCrowns() { $$('.crownCount').forEach(e => e.textContent = S.crowns); }
-function syncMute() { $$('.mutebtn').forEach(b => { b.textContent = S.muted ? '🔇' : '🔊'; b.setAttribute('aria-pressed', S.muted ? 'true' : 'false'); }); }
 function toast(t, ms) { const n = $('#toast'); n.innerHTML = t; n.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => n.classList.remove('show'), (ms || 1800)); }
 function floatText(t, el) { const r = (el || $('#scene')).getBoundingClientRect(); const f = document.createElement('div'); f.className = 'floattxt'; f.textContent = t; f.style.left = (r.left + r.width / 2) + 'px'; f.style.top = (r.top + r.height * .35) + 'px'; document.body.appendChild(f); setTimeout(() => f.remove(), 1500); }
 function confetti(n) {
@@ -1082,17 +1110,27 @@ const ICON_FG = `
   </g>`;
 
 RENDER.scrMenu = () => {
-  syncCrowns(); syncMute();
+  syncCrowns(); syncSound();
   $('#menuReg').setAttribute('viewBox', '40 30 432 450'); $('#menuReg').innerHTML = ICON_FG;
   const served = S.stats.served; const open = WORLDS.filter(w => worldOpen(w)).length;
   $('#menuMsg').textContent = served ? `👑 ${served} klanten geholpen · ${open} ${open === 1 ? 'winkel' : 'winkels'} open` : 'Welkom! Jij wordt de kassier. 🛎️';
 };
+// Sprongtest van wereld w beschikbaar? (w open, nog niet gehaald, en de volgende winkel nog dicht of w is de laatste speelbare)
+function sprongAvailable(w) {
+  if (!w || w.soon || !worldOpen(w) || testPassed(w.id)) return false;
+  const nx = WORLDS[w.id]; return !nx || nx.soon || !worldOpen(nx);
+}
+const lastPlayable = () => WORLDS.filter(w => !w.soon).slice(-1)[0].id;
 RENDER.scrMap = () => {
   syncCrowns();
   $('#worldList').innerHTML = WORLDS.map(w => {
-    if (w.soon) return `<button class="wcard soon" data-world="${w.id}"><span class="wnum">Winkel ${w.id}</span><span class="badge">Binnenkort</span><span class="wi" style="background:${w.color}">${w.emoji}</span><span><div class="wn">${w.name}</div><div class="ws">${w.desc}</div></span></button>`;
+    if (w.soon) return `<div class="wslot"><button class="wcard soon" data-world="${w.id}"><span class="wnum">Winkel ${w.id}</span><span class="badge">Binnenkort</span><span class="wi" style="background:${w.color}">${w.emoji}</span><span><div class="wn">${w.name}</div><div class="ws">${w.desc}</div></span></button></div>`;
     const open = worldOpen(w), st = worldStars(w), done = w.levels.filter((l, i) => (prog(w.id, i + 1) || {}).done).length;
-    return `<button class="wcard ${open ? '' : 'locked'}" data-world="${w.id}"><span class="wnum">Winkel ${w.id}</span>${open ? '' : '<span class="badge">🔒</span>'}<span class="wi" style="background:${w.color}">${w.emoji}</span><span><div class="wn">${w.name}</div><div class="ws">${open ? w.desc : 'Speel eerst level 8 (Drukke dag) van ' + WORLDS[w.id - 2].name + '.'}</div><div class="wst">⭐ ${st}/24 · ${done}/8 levels</div></span></button>`;
+    const prev = WORLDS[w.id - 2], sprong = !open && prev && sprongAvailable(prev);
+    const lockTxt = 'Speel eerst level 8 (Drukke dag) van ' + (prev ? prev.name : '') + '.' + (sprong ? ' Of laat met de ⚡ Sprongtest zien dat je het al kunt!' : '');
+    const tag = testPassed(w.id) ? ' · ⚡ sprongtest gehaald' : '';
+    return `<div class="wslot"><button class="wcard ${open ? '' : 'locked'}" data-world="${w.id}"><span class="wnum">Winkel ${w.id}</span>${open ? '' : '<span class="badge">🔒</span>'}<span class="wi" style="background:${w.color}">${w.emoji}</span><span><div class="wn">${w.name}</div><div class="ws">${open ? w.desc : lockTxt}</div><div class="wst">⭐ ${st}/24 · ${done}/8 levels${tag}</div></span></button>` +
+      (sprong ? `<button class="btn yellow sprongbtn" data-sprong="${prev.id}">⚡ Sprongtest</button>` : '') + `</div>`;
   }).join('');
 };
 let curWorld = 1;
@@ -1100,15 +1138,303 @@ RENDER.scrLevels = () => {
   const w = WORLDS[curWorld - 1];
   $('#lvlTitle').textContent = w.emoji + ' ' + w.name; $('#lvlStars').textContent = '⭐ ' + worldStars(w) + '/24';
   $('#lvlHead').innerHTML = `<span class="wi">${w.emoji}</span><span><b>${w.name}</b><br><span class="small-note">${w.desc}</span></span>`;
+  const sp = $('#lvlSprong'), nx = WORLDS[w.id];
+  if (testPassed(w.id)) { sp.innerHTML = `<div class="sprongdone">⚡ Sprongtest gehaald! ${w.id === lastPlayable() ? '🎓 Kassakoning-diploma' : 'Alle levels staan open; sterren verdien je nog steeds door te spelen.'}</div>`; }
+  else if (sprongAvailable(w)) {
+    const goal = nx && !nx.soon ? `ga meteen door naar ${nx.emoji} <b>${nx.name}</b>` : 'verdien het 🎓 <b>Kassakoning-diploma</b>';
+    sp.innerHTML = `<button class="sprongcard" data-sprong="${w.id}"><span class="sj">⚡</span><span><b>Sprongtest</b><br><span class="small-note">Kun je dit al? Help 5 klanten zonder hulp en ${goal}!</span></span></button>`;
+  } else sp.innerHTML = '';
   let nextMarked = false;
   $('#lvlList').innerHTML = w.levels.map((l, i) => {
     const n = i + 1, p = prog(w.id, n), open = levelOpen(w, n);
     let cls = open ? '' : 'locked'; if (open && !(p && p.done) && !nextMarked) { cls += ' next'; nextMarked = true; }
     if (l.busy) cls += ' busy';
     const stars = [1, 2, 3].map(k => `<span class="${p && p.stars >= k ? 'star-on' : 'star-off'}">★</span>`).join('');
-    return `<button class="lvl ${cls}" data-level="${n}" style="--wc:${w.color}"><span class="ln">${open ? (l.busy ? '🏃' : n) : '🔒'}</span><span class="lt">${l.t}</span><span class="ls">${l.s}</span><span class="lst">${stars}</span></button>`;
+    return `<button class="lvl ${cls}" data-level="${n}" style="--wc:${w.color}"><span class="ln">${open ? (l.busy ? '🏃' : n) : '🔒'}</span>${open && !(p && p.done) && (S.unl[pkey(w.id, n)] || testPassed(w.id)) && !S.unlockAll ? '<span class="lskip">⏩</span>' : ''}<span class="lt">${l.t}</span><span class="ls">${l.s}</span><span class="lst">${stars}</span></button>`;
   }).join('');
 };
+
+/* =========================================================
+   Geluid: muziek (kleine sequencer) + geluidseffecten, alles live met WebAudio gemaakt.
+   Geen audiobestanden. Graaf:  muziek-bus -> lowpass -> volume -> duck --\
+                               effecten  -> volume ---------------------> veiligheids-limiter -> uit
+   ========================================================= */
+const AUD = { ac: null, g: null, gestured: false, log: [], speaking: false, duckUntil: 0, duckLevel: 1 };
+const NOISE_BUF = new WeakMap();
+function noiseBuf(ctx) {
+  let b = NOISE_BUF.get(ctx);
+  if (!b) { b = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); const d = b.getChannelData(0); let x = 12345; for (let i = 0; i < d.length; i++) { x = (x * 1103515245 + 12345) & 0x7fffffff; d[i] = x / 0x3fffffff - 1; } NOISE_BUF.set(ctx, b); }
+  return b;
+}
+function audioGraph(ctx) {
+  const lim = ctx.createDynamicsCompressor();          // alleen als vangnet tegen vervorming
+  lim.threshold.value = -4; lim.knee.value = 4; lim.ratio.value = 12; lim.attack.value = .003; lim.release.value = .2;
+  lim.connect(ctx.destination);
+  const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 4200; lp.Q.value = .4;
+  const musicVol = ctx.createGain(), duck = ctx.createGain(), sfx = ctx.createGain();
+  lp.connect(musicVol); musicVol.connect(duck); duck.connect(lim); sfx.connect(lim);
+  return { lim, musicIn: lp, musicVol, duck, sfx };
+}
+const musicGain = () => Math.pow(S.musicVol / 100, 1.5);   // natuurlijker verloop van de schuif
+const sfxGain = () => S.sfxVol / 100;
+function applyVolumes() {
+  if (!AUD.ac || !AUD.g) return; const t = AUD.ac.currentTime;
+  AUD.g.musicVol.gain.setTargetAtTime(musicGain(), t, .05);
+  AUD.g.sfx.gain.setTargetAtTime(sfxGain(), t, .03);
+}
+// Een AudioContext pas maken na een tik/klik van het kind (autoplay-regels).
+function ac() {
+  if (!AUD.gestured) return null;
+  if (!AUD.ac) {
+    try { AUD.ac = new (window.AudioContext || window.webkitAudioContext)(); AUD.g = audioGraph(AUD.ac); AUD.g.musicVol.gain.value = musicGain(); AUD.g.sfx.gain.value = sfxGain(); }
+    catch (e) { AUD.ac = null; AUD.g = null; }
+  }
+  if (AUD.ac && AUD.ac.state !== 'running' && !document.hidden) AUD.ac.resume().catch(() => { });
+  return AUD.ac;
+}
+function audioUnlock() { AUD.gestured = true; if (ac()) musicSync(); }
+['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, audioUnlock, { capture: true, passive: true }));
+document.addEventListener('visibilitychange', () => {
+  const a = AUD.ac; if (!a) return;
+  if (document.hidden) { a.suspend().catch(() => { }); try { speechSynthesis.cancel(); } catch (e) { } }
+  else { a.resume().catch(() => { }); musicSync(); }
+});
+
+/* ---------- muziek wat zachter tijdens spraak en belangrijke geluidjes ---------- */
+function applyDuck() {
+  if (!AUD.ac || !AUD.g) return;
+  const now = performance.now(), lvl = AUD.speaking ? .3 : now < AUD.duckUntil ? AUD.duckLevel : 1;
+  AUD.g.duck.gain.setTargetAtTime(lvl, AUD.ac.currentTime, lvl < 1 ? .05 : .35);
+  AUD.duckNow = lvl;
+}
+function duck(sec, level) {
+  const now = performance.now(), lv = level || .35;
+  AUD.duckLevel = now >= AUD.duckUntil ? lv : Math.min(AUD.duckLevel, lv);
+  AUD.duckUntil = Math.max(AUD.duckUntil, now + sec * 1000);
+  applyDuck(); clearTimeout(duck.t); duck.t = setTimeout(applyDuck, AUD.duckUntil - now + 30);
+}
+function say(html) {
+  if (!S.voice || !window.speechSynthesis) return;
+  try {
+    const txt = String(html).replace(/<[^>]+>/g, ' ').replace(/€\s?(\d+),(\d\d)/g, (m, e, c) => e + ' euro ' + (c === '00' ? '' : +c)).replace(/[\u{1F000}-\u{1FFFF}\u2600-\u27BF]/gu, '');
+    speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = 'nl-NL'; u.rate = 1;
+    u.onstart = () => { AUD.speaking = true; applyDuck(); };
+    speechSynthesis.speak(u);
+    AUD.speaking = true; applyDuck();
+    clearInterval(say.poll); say.poll = setInterval(() => { if (!speechSynthesis.speaking && !speechSynthesis.pending) { clearInterval(say.poll); AUD.speaking = false; applyDuck(); } }, 300);
+  } catch (e) { }
+}
+
+/* ---------- muziek: instrumenten ---------- */
+// partials: [verhouding, sterkte, uitklinktijd, golfvorm]
+const INSTR = {
+  marimba: { att: .004, p: [[1, 1, .55, 'sine'], [4, .1, .07, 'sine'], [10, .03, .02, 'sine']] },
+  bell: { att: .003, p: [[1, .8, .9, 'sine'], [2, .3, .45, 'sine'], [3, .1, .2, 'sine'], [4.2, .05, .1, 'sine']] },
+  epiano: { att: .012, sus: true, p: [[1, .9, 1.1, 'sine'], [2, .16, .5, 'sine'], [3, .04, .2, 'sine']] },
+  pluck: { att: .003, p: [[1, .9, .38, 'triangle'], [2, .2, .14, 'sine'], [3, .08, .06, 'sine']] },
+};
+function partial(ctx, out, f, t, amp, dec, type, sus, dur, att) {
+  const o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.setValueAtTime(f, t);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(amp, t + att);
+  let end;
+  if (sus) { g.gain.exponentialRampToValueAtTime(Math.max(.0002, amp * .45), t + Math.max(att + .02, dur)); end = t + Math.max(att + .02, dur) + dec * .35; g.gain.exponentialRampToValueAtTime(0.0001, end); }
+  else { end = t + att + dec; g.gain.exponentialRampToValueAtTime(0.0001, end); }
+  o.connect(g); g.connect(out); o.start(t); o.stop(end + .03);
+}
+function playNote(ctx, out, kind, f, t, dur, vel) {
+  const I = INSTR[kind]; for (const [r, a, d, ty] of I.p) partial(ctx, out, f * r, t, a * vel, Math.max(.03, d), ty, I.sus, dur, I.att);
+}
+function playBass(ctx, out, f, t, dur, vel) {
+  partial(ctx, out, f, t, vel, .12, 'sine', true, dur * .9, .012);
+  partial(ctx, out, f * 2, t, vel * .22, .08, 'sine', true, dur * .6, .012);
+}
+function playPad(ctx, out, freqs, t, dur, vel) {
+  for (const f of freqs) for (const det of [-5, 5]) {
+    const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(f, t); o.detune.setValueAtTime(det, t);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(vel, t + .35); g.gain.setValueAtTime(vel, t + dur - .1); g.gain.linearRampToValueAtTime(0.0001, t + dur + .45);
+    o.connect(g); g.connect(out); o.start(t); o.stop(t + dur + .5);
+  }
+}
+function drum(ctx, out, kind, t, vel) {
+  if (kind === 'k') { // zachte bas-drum
+    const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(48, t + .12);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(.26 * vel, t + .005); g.gain.exponentialRampToValueAtTime(0.0001, t + .22);
+    o.connect(g); g.connect(out); o.start(t); o.stop(t + .25); return;
+  }
+  if (kind === 't') { // houtblokje
+    partial(ctx, out, 1850, t, .12 * vel, .035, 'sine', false, 0, .002); partial(ctx, out, 920, t, .06 * vel, .03, 'sine', false, 0, .002); return;
+  }
+  const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = noiseBuf(ctx);
+  const P = { h: ['highpass', 7500, .7, .055, .035], z: ['bandpass', 5200, 1.1, .07, .075], c: ['bandpass', 1500, .9, .11, .11] }[kind];
+  f.type = P[0]; f.frequency.value = P[1]; f.Q.value = P[2];
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(P[3] * vel, t + .006); g.gain.exponentialRampToValueAtTime(0.0001, t + P[4]);
+  s.connect(f); f.connect(g); g.connect(out); s.start(t, Math.random() * .5); s.stop(t + P[4] + .02);
+}
+
+/* ---------- muziek: stukjes (16 maten, 4/4, achtsten) ----------
+   melodie: trap van de toonladder (0 = grondtoon, 7 = octaaf hoger), '-' = aanhouden, '.' = rust
+   bas: r = grondtoon akkoord, f = kwint, o = octaaf, '-' = aanhouden */
+const SCALE = [0, 2, 4, 5, 7, 9, 11];
+const semi = d => SCALE[((d % 7) + 7) % 7] + 12 * Math.floor(d / 7);
+const hzOf = (root, d) => root * Math.pow(2, semi(d) / 12);
+const CHORD = { I: [0, 2, 4], ii: [1, 3, 5], iii: [2, 4, 6], IV: [3, 5, 7], V: [4, 6, 8], vi: [5, 7, 9] };
+const TRACKS = {
+  menu: { naam: 'Kaart en menu', bpm: 100, root: 523.25, swing: .08, lead: 'marimba', lv: .2, bv: .2, pad: .016, stab: 0,
+    bass: 'r - - - f - - -', drums: { z: '. . x . . . x .' },
+    prog: 'I V vi IV I V IV I vi IV I V vi IV V I',
+    mel: ['4 - 2 - 4 5 4 -', '6 - 4 - 1 - 4 -', '7 - 5 - 7 9 7 -', '5 - 3 - 0 - - -', '2 - 4 - 7 - 9 -', '8 - 6 - 4 - 6 -', '7 - 5 - 3 - 5 -', '2 - 0 - - - . .',
+      '9 - 7 - 5 - 7 -', '10 - 7 - 5 - 3 -', '4 5 4 2 0 - 2 -', '4 - - - 6 - 8 -', '7 - 5 7 9 - 7 -', '5 - 3 5 7 - 5 -', '6 - 8 - 6 - 4 -', '7 - - - - - . .'] },
+  ijscokar: { naam: 'IJscokar', bpm: 116, root: 349.23, swing: .18, lead: 'bell', lv: .2, bv: .18, pad: 0, stab: .035,
+    bass: 'r . f . r . f .', stabs: '. x . x . x . x', drums: { t: '. x . x . x . x' },
+    prog: 'I IV V I I IV V I vi IV I V I IV V I',
+    mel: ['0 2 4 7 4 2 4 -', '3 5 7 5 3 5 7 -', '4 6 8 6 4 . 1 -', '2 - 0 - 4 - . .', '7 - 4 - 7 9 7 4', '10 7 5 3 5 - 7 -', '6 - 8 - 4 6 8 -', '7 - - - 0 . . .',
+      '9 - 7 - 5 - 7 -', '10 - 7 - 5 - 3 -', '4 - 2 - 0 2 4 7', '8 - 6 - 4 - - -', '0 2 4 7 4 2 4 -', '3 5 7 10 7 5 3 -', '4 6 8 6 4 6 8 -', '7 - 4 - 0 - . .'] },
+  bakker: { naam: 'Bakker', bpm: 86, root: 392, swing: .1, lead: 'epiano', lv: .17, bv: .2, pad: .02, stab: 0,
+    bass: 'r - - - f - - -', drums: { z: '. . x . . . x .' },
+    prog: 'I vi ii V I vi ii V IV V iii vi ii V I I',
+    mel: ['4 - - 2 4 - 7 -', '7 - - - 5 - 2 -', '3 - - 1 3 - 5 -', '4 - - - - - . .', '4 - - 2 4 - 7 -', '9 - - 7 5 - 7 -', '8 - - 5 3 - 1 -', '6 - - - 4 - . .',
+      '7 - - 5 3 - 5 -', '8 - - 6 4 - 6 -', '6 - - 4 2 - 4 -', '5 - - - 7 - 9 -', '8 - - 7 5 - 3 -', '6 - - 4 1 - 4 -', '2 - - 4 7 - 4 -', '0 - - - - - . .'] },
+  speelgoed: { naam: 'Speelgoedwinkel', bpm: 122, root: 293.66, swing: .14, lead: 'pluck', lv: .2, bv: .19, pad: 0, stab: .03,
+    bass: 'r . o . f . o .', stabs: '. . x . . . x .', drums: { k: 'x . . . x . . .', z: 'x x x x x x x x', c: '. . x . . . x .' },
+    prog: 'I V vi IV I V vi IV IV V iii vi ii V I I',
+    mel: ['7 . 4 . 7 9 7 .', '8 . 6 . 4 6 8 .', '9 . 7 . 5 7 9 .', '7 . 5 . 3 . . .', '4 4 7 . 4 4 9 .', '8 8 6 . 4 . 8 .', '7 7 9 . 7 5 . .', '10 . 7 . 5 3 . .',
+      '3 5 7 . 3 5 7 .', '4 6 8 . 4 6 8 .', '6 . 4 . 2 . 4 .', '5 . 7 . 9 . . .', '8 . 5 . 3 . 1 .', '4 . 6 . 8 . 11 .', '9 . 7 . 4 . 2 .', '0 . 4 . 7 . . .'] },
+};
+const ENERGY = { tempo: 1.12, bass: 'r . r f r . f o', drums: { k: 'x . . . x . . .', h: 'x x x x x x x x', c: '. . x . . . x .' } };
+const tok = s => s.trim().split(/\s+/);
+// Plant één maat in; geeft de duur van de maat terug (sec).
+function scheduleBar(ctx, out, tr, bar, t0, energetic) {
+  const bpm = tr.bpm * (energetic ? ENERGY.tempo : 1), e = 30 / bpm, prog = tok(tr.prog), chord = CHORD[prog[bar % prog.length]];
+  const at = i => t0 + i * e + (i % 2 ? tr.swing * e : 0);
+  const mel = tok(tr.mel[bar % tr.mel.length]);
+  mel.forEach((m, i) => {
+    if (m === '.' || m === '-') return;
+    let n = 1; while (mel[i + n] === '-') n++;
+    const vel = (i === 0 ? 1 : i % 2 ? .78 : .9) * tr.lv * (energetic ? 1.05 : 1);
+    playNote(ctx, out, tr.lead, hzOf(tr.root, +m), at(i), n * e * .92, vel);
+  });
+  const bassP = tok(energetic ? ENERGY.bass : tr.bass), bRoot = chord[0] - 14;
+  bassP.forEach((b, i) => {
+    if (b === '.' || b === '-') return;
+    let n = 1; while (bassP[i + n] === '-') n++;
+    const d = b === 'f' ? bRoot + 4 : b === 'o' ? bRoot + 7 : bRoot;
+    playBass(ctx, out, hzOf(tr.root, d), at(i), n * e * .85, tr.bv * (i === 0 ? 1 : .85));
+  });
+  if (tr.pad) playPad(ctx, out, chord.map(d => hzOf(tr.root, d - 7)), t0, 8 * e, tr.pad);
+  if (tr.stab && tr.stabs) tok(tr.stabs).forEach((x, i) => { if (x === 'x') chord.forEach(d => partial(ctx, out, hzOf(tr.root, d - 7), at(i), tr.stab, .14, 'triangle', false, 0, .004)); });
+  const dr = Object.assign({}, tr.drums, energetic ? ENERGY.drums : {});
+  for (const k in dr) tok(dr[k]).forEach((x, i) => { if (x === 'x') drum(ctx, out, k, at(i), (i % 4 === 0 ? 1 : .7) * (k === 'h' && i % 2 ? .6 : 1)); });
+  return 8 * e;
+}
+
+/* ---------- muziek: afspelen ---------- */
+const MUS = { want: null, wantE: false, cur: null, bus: null, track: null, e: false, bar: 0, nextBar: 0, timer: 0, bars: 0 };
+function musicWant(id, energetic) { MUS.want = id; MUS.wantE = !!energetic; musicSync(); }
+function musicKey() { return S.music && MUS.want && TRACKS[MUS.want] ? MUS.want + (MUS.wantE ? '+druk' : '') : null; }
+function musicSync() {
+  const a = AUD.ac; if (!a || !AUD.gestured) return;   // start pas na een tik
+  const key = musicKey(); if (key === MUS.cur) return;
+  musicStopCur(); if (!key) return;
+  MUS.cur = key; MUS.track = TRACKS[MUS.want]; MUS.e = MUS.wantE;
+  const t = a.currentTime, bus = a.createGain();
+  bus.gain.setValueAtTime(0.0001, t); bus.gain.linearRampToValueAtTime(1, t + 1.5); bus.connect(AUD.g.musicIn);
+  MUS.bus = bus; MUS.bar = 0; MUS.nextBar = t + .12;
+  if (!MUS.timer) MUS.timer = setInterval(musicTick, 120);
+  musicTick();
+}
+function musicStopCur() {
+  const b = MUS.bus; MUS.bus = null; MUS.cur = null; if (!b || !AUD.ac) return;
+  const t = AUD.ac.currentTime;
+  try { b.gain.cancelScheduledValues(t); b.gain.setValueAtTime(b.gain.value, t); b.gain.linearRampToValueAtTime(0.0001, t + .5); } catch (e) { }
+  setTimeout(() => { try { b.disconnect(); } catch (e) { } }, 800);
+}
+function musicTick() {
+  const a = AUD.ac; if (!a || !MUS.bus || a.state !== 'running') return;
+  if (MUS.nextBar < a.currentTime) MUS.nextBar = a.currentTime + .05;   // na pauze niet inhalen
+  while (MUS.nextBar < a.currentTime + .6) { MUS.nextBar += scheduleBar(a, MUS.bus, MUS.track, MUS.bar++, MUS.nextBar, MUS.e); MUS.bars++; }
+}
+// Voor de tests / voorbeeldjes: één rondje van een stuk offline renderen (zelfde graaf als live).
+async function renderTrack(id, energetic, vol, bars) {
+  const tr = TRACKS[id], sr = 44100, barDur = 240 / (tr.bpm * (energetic ? ENERGY.tempo : 1)), nb = bars || tr.mel.length;
+  const len = nb * barDur + 1.2, o = new OfflineAudioContext(1, Math.ceil(len * sr), sr), g = audioGraph(o);
+  g.musicVol.gain.value = vol == null ? 1 : vol;
+  let t = .05; for (let i = 0; i < nb; i++) t += scheduleBar(o, g.musicIn, tr, i, t, energetic);
+  const buf = await o.startRendering(); return buf.getChannelData(0);
+}
+
+/* ---------- geluidseffecten ---------- */
+function sfxCtx() { if (!S.sfx) return null; const a = ac(); return a && a.state !== 'closed' ? a : null; }
+function tone(freq, dur, type, vol, when, slide) {
+  const a = sfxCtx(); if (!a) return;
+  try {
+    const t = a.currentTime + (when || 0); const o = a.createOscillator(), g = a.createGain();
+    o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .12, t + .006); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(AUD.g.sfx); o.start(t); o.stop(t + dur + .05);
+  } catch (e) { }
+}
+function noise(dur, vol, when, freq, q, type, sweep) {
+  const a = sfxCtx(); if (!a) return;
+  try {
+    const t = a.currentTime + (when || 0), s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    s.buffer = noiseBuf(a); f.type = type || 'bandpass'; f.frequency.setValueAtTime(freq || 2500, t); f.Q.value = q || 1.2;
+    if (sweep) f.frequency.exponentialRampToValueAtTime(sweep, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .2, t + Math.min(.02, dur / 3)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); g.connect(AUD.g.sfx); s.start(t, Math.random() * .4); s.stop(t + dur + .05);
+  } catch (e) { }
+}
+// metalen tik: niet-harmonische boventonen (klinkt als een muntje)
+function clink(f, vol, when, len) { tone(f, len || .13, 'sine', vol, when); tone(f * 2.41, (len || .13) * .6, 'sine', vol * .45, when); tone(f * 3.93, (len || .13) * .35, 'sine', vol * .2, when); }
+// kleine munten klinken hoger dan grote
+const COIN_HZ = { 1: 3500, 2: 3350, 5: 3150, 10: 2950, 20: 2750, 50: 2500, 100: 2150, 200: 1900 };
+const coinHz = v => (COIN_HZ[v] || 2600) * (.97 + Math.random() * .06);
+function bellHit(f, vol, when, len) { tone(f, len || .7, 'sine', vol, when); tone(f * 2.76, (len || .7) * .45, 'sine', vol * .35, when); tone(f * 5.4, (len || .7) * .2, 'sine', vol * .12, when); }
+const SFX = {
+  click() { tone(950, .045, 'sine', .07); tone(1900, .025, 'sine', .02); },                       // zachte tik
+  scan() { tone(1975, .09, 'sine', .08); tone(3950, .05, 'sine', .015); },                           // piep (sinus, niet schel)
+  coin(v) { const f = coinHz(v); clink(f, .08); clink(f * 1.01, .035, .045, .09); },                  // kling-kling
+  paper() { noise(.2, .1, 0, 900, .9, 'bandpass', 4200); noise(.05, .05, .05, 6000, 2); noise(.05, .04, .12, 5200, 2); }, // swoesj + ritsel
+  money(v) { if (isNote(v)) SFX.paper(); else SFX.coin(v); },
+  drop(v) { if (isNote(v)) { noise(.12, .05, 0, 1500, .8, 'bandpass', 700); return; } const f = coinHz(v) * .92; clink(f, .06, 0, .1); clink(f, .03, .075, .07); clink(f, .015, .12, .05); }, // muntje landt in het bakje
+  drawer(open, when) { const w = when || 0; noise(open ? .26 : .18, .07, w, open ? 380 : 700, .7, 'lowpass', open ? 900 : 300); tone(open ? 120 : 95, .09, 'sine', .14, w + (open ? .22 : .15), 60); },   // la schuift open/dicht
+  door() { bellHit(2350, .045, 0, .6); bellHit(2100, .035, .1, .55); bellHit(2350, .025, .22, .5); },  // winkelbelletje
+  walk() { tone(170, .05, 'sine', .04, .3); tone(150, .05, 'sine', .04, .5); },
+  oops() { duck(.6, .5); tone(392, .2, 'sine', .11, 0, 262); tone(294, .24, 'triangle', .05, .12, 220); },   // zachte boing
+  kaching() { duck(1.2); SFX.drawer(false, .3); noise(.08, .05, 0, 3000, 1.5); bellHit(2093, .07, .12, .55); bellHit(2637, .06, .2, .6); tone(3136, .5, 'sine', .03, .27); },
+  crown() { tone(1568, .1, 'sine', .035); tone(2093, .14, 'sine', .03, .06); },                      // fooi-belletje
+  star(i) { duck(.6, .5); noise(.05, .08, 0, 1800, 1.4); tone(660 * Math.pow(1.26, i || 0), .16, 'triangle', .1, .01, 990 * Math.pow(1.26, i || 0)); tone(1320 * Math.pow(1.26, i || 0), .2, 'sine', .03, .05); },
+  buy() { duck(1.2); bellHit(1568, .05, 0, .4); [784, 988, 1175, 1568].forEach((f, i) => tone(f, .16, 'triangle', .07, .05 + i * .07)); noise(.25, .05, .3, 5000, 2, 'bandpass', 9000); },
+  fanfare() { duck(2.4); [523, 659, 784, 659, 784, 1047].forEach((f, i) => { tone(f, .24, 'triangle', .11, i * .12); tone(f * 2, .18, 'sine', .02, i * .12); }); },
+  unlock() { duck(3.5, .25);   // nieuwe winkel / sprongtest gehaald
+    [523, 659, 784, 1047].forEach((f, i) => { tone(f, .22, 'triangle', .1, i * .1); tone(f / 2, .22, 'sine', .06, i * .1); });
+    [1047, 1319, 1568].forEach(f => { tone(f, 1.1, 'triangle', .06, .45); tone(f * 1.003, 1.1, 'sine', .03, .45); });
+    tone(130, .4, 'sine', .12, .45, 65); noise(.6, .05, .5, 7000, 1.5, 'bandpass', 12000); [0, 1, 2, 3, 4].forEach(i => tone(2093 * Math.pow(1.12, i), .12, 'sine', .025, .9 + i * .06)); },
+  whoosh() { duck(.8, .4); noise(.38, .09, 0, 400, 1.2, 'bandpass', 3800); tone(500, .35, 'sine', .05, .05, 1500); },   // ⏩ level overslaan
+  aww() { duck(1.2, .4); tone(523, .2, 'triangle', .08); tone(440, .3, 'triangle', .08, .2); tone(523, .35, 'sine', .05, .55); },  // 'bijna!' (vriendelijk)
+};
+// Logboek voor de tests (welke effecten klonken).
+Object.keys(SFX).forEach(k => { const f = SFX[k]; SFX[k] = function () { if (S.sfx && AUD.ac) { AUD.log.push(k); if (AUD.log.length > 60) AUD.log.shift(); } return f.apply(this, arguments); }; });
+
+/* ---------- geluidsmenu (luidspreker-knop) ---------- */
+function sndIcon() { return S.music && S.sfx ? '🔊' : S.music ? '🎵' : S.sfx ? '🔉' : '🔇'; }
+function syncSound() {
+  $$('.mutebtn').forEach(b => { b.textContent = sndIcon(); b.setAttribute('aria-expanded', $('#sndMenu').classList.contains('show') ? 'true' : 'false'); });
+  $$('#sndMenu [data-snd]').forEach(b => { const on = !!S[b.dataset.snd]; b.classList.toggle('on', on); b.setAttribute('aria-checked', on ? 'true' : 'false'); b.querySelector('.st').textContent = on ? 'Aan' : 'Uit'; });
+}
+function openSndMenu(btn) {
+  const m = $('#sndMenu');
+  if (m.classList.contains('show')) { closeSndMenu(); return; }
+  const r = btn.getBoundingClientRect();
+  m.style.top = Math.round(r.bottom + 8) + 'px'; m.style.right = Math.max(8, Math.round(innerWidth - r.right)) + 'px';
+  m.classList.add('show'); syncSound();
+}
+function closeSndMenu() { $('#sndMenu').classList.remove('show'); syncSound(); }
+document.addEventListener('pointerdown', e => { const m = $('#sndMenu'); if (m.classList.contains('show') && !m.contains(e.target) && !e.target.closest('.mutebtn')) closeSndMenu(); }, true);
+function setSound(kind, on) {
+  S[kind] = !!on; save(); syncSound(); musicSync();
+  if (kind === 'sfx' && on) SFX.click();
+}
 
 /* =========================================================
    Het spel
@@ -1118,16 +1444,18 @@ const alive = tok => G && G.token === tok;
 const slotEl = v => $(`#drawer .slot[data-v="${v}"]`);
 function fillTokens(html) { return String(html).replace(/\{m(\d+)\}/g, (m, v) => miniMoney(+v)); }
 
-function startLevel(wid, n) {
-  const world = WORLDS[wid - 1], lv = world.levels[n - 1];
+function startLevel(wid, n, test) {
+  const world = WORLDS[wid - 1], lv = test ? testLevel(world) : world.levels[n - 1];
   if (G) stopGame();
-  G = { world, wid, n, lv, help: lv.help, idx: 0, total: lv.customers, results: [], crowns: 0, slim: 0, firstOk: 0, fast: 0,
+  closeSndMenu();
+  G = { world, wid, n: test ? 0 : n, test: !!test, plan: test ? testPlan() : null, lv, help: lv.help, idx: 0, total: lv.customers, results: [], crowns: 0, slim: 0, firstOk: 0, fast: 0,
     drawer: {}, tray: [], counter: [], phase: 'idle', busy: false, token: {}, used: new Set(), tx: null, scanned: 0, received: 0, tries: 0 };
   lv.drawer.forEach(v => G.drawer[v] = STOCK[v]);
   curWorld = wid;
   $$('.overlay.sky').forEach(o => o.classList.remove('show'));
   $('#scrGame').classList.add('show');
   setupGameUI();
+  musicWant(world.key, !!(lv.busy || test));   // drukke dag + sprongtest: iets vlottere versie
   runLevel(G.token);
 }
 function stopGame() {
@@ -1138,11 +1466,12 @@ function stopGame() {
 }
 function setupGameUI() {
   const w = G.world, lv = G.lv;
-  $('#gTitle').textContent = `${w.emoji} ${w.name} · ${G.n}. ${lv.t}`;
+  $('#gTitle').textContent = G.test ? `${w.emoji} ${w.name} · ⚡ Sprongtest` : `${w.emoji} ${w.name} · ${G.n}. ${lv.t}`;
+  $('#scrGame').classList.toggle('testmode', G.test);
   const sc = $('#scene'); sc.className = 'scene ' + w.scene;
   $('#shelfDeco').innerHTML = w.shelf; $('#regName').textContent = w.reg;
-  $('#btnEasy').style.visibility = (G.wid === 1 && G.n === 1) ? 'hidden' : '';
-  applyLook(); syncCrowns(); syncMute();
+  $('#btnEasy').style.visibility = (G.test || (G.wid === 1 && G.n === 1)) ? 'hidden' : '';
+  applyLook(); syncCrowns(); syncSound();
   renderDots(); renderDrawer(); clearCounter(); renderAll();
   $('#cust').className = 'cust out'; $('#bubble').className = 'bubble';
   stepbar('Even wachten', 'De winkel gaat open…');
@@ -1313,9 +1642,23 @@ async function runLevel(tok) {
     await coach('Hoi! Ik ben <b>Juf Kassa</b>. 👋 Vandaag ben jij de kassier van de ijscokar. Ik help je!', null, 'Leuk!'); if (!alive(tok)) return;
     await coach('Dit is de <b>kassalade</b>. Achterin liggen de briefjes, voorin de munten. Elk soort geld heeft een eigen vakje. Op het vakje staat wat erin hoort.', '#drawer'); if (!alive(tok)) return;
     await coach('Hier zie je de klant. Die koopt iets en betaalt. Daarna geef jij het <b>wisselgeld</b> terug.', '#scene', 'Beginnen!'); if (!alive(tok)) return;
-  } else if (lv.intro && !S.seen[key]) {
-    for (const line of lv.intro) { await coach(line); if (!alive(tok)) return; }
-    S.seen[key] = 1; save();
+  } else if (G.test) {
+    if (!S.seen.tut && !S.seen.ctl) {   // via 'Kies je start': nog nooit de uitleg gezien -> alleen de knoppen uitleggen
+      await coach('Zo werkt de kassa: leg het geld van de klant in het goede <b>vakje</b> van de kassalade. Tik daarna op vakjes om het <b>wisselgeld</b> in het bakje te leggen, en tik op <b>Geven</b>.', '#drawer', 'Snap ik!'); if (!alive(tok)) return;
+      S.seen.ctl = 1; save();
+    }
+  } else {
+    // Vooruit gesprongen (⏩)? Dan eerst de uitleg die je in de overgeslagen levels zou krijgen (nieuwe munten e.d.).
+    if (!testPassed(G.wid) && !S.unlockAll) for (let k = 1; k < G.n; k++) {
+      const L = G.world.levels[k - 1], kk = 'intro-' + G.wid + '-' + k;
+      if (!L.intro || S.seen[kk] || (prog(G.wid, k) || {}).done || !S.unl[pkey(G.wid, k)]) continue;
+      for (const [i, line] of L.intro.entries()) { await coach((i ? '' : `⏩ Even wat je in level ${k} gemist hebt: `) + line); if (!alive(tok)) return; }
+      S.seen[kk] = 1; save();
+    }
+    if (lv.intro && !S.seen[key]) {
+      for (const line of lv.intro) { await coach(line); if (!alive(tok)) return; }
+      S.seen[key] = 1; save();
+    }
   }
   serveCustomer(tok);
 }
@@ -1333,9 +1676,9 @@ function pickCustomer(style) {
   const fresh = pool.filter(c => !G.used.has(c.id)), p2 = fresh.length ? fresh : pool, unseen = p2.filter(c => !S.cust[c.id]);
   const c = pickOne(unseen.length && Math.random() < .6 ? unseen : p2); G.used.add(c.id); return c;
 }
-function fallbackTx() { // zou nooit nodig moeten zijn (tests controleren dit)
+function fallbackTx(lvx) { // zou nooit nodig moeten zijn (tests controleren dit)
   G.fallbacks = (G.fallbacks || 0) + 1;
-  return makeTransaction(G.world, G.lv, G.drawer, 5000) || (() => {
+  return makeTransaction(G.world, lvx, G.drawer, 5000) || (() => {
     const it = G.world.products[0], P = it.p, nxt = G.lv.drawer.find(v => v > P) || Math.max.apply(null, G.lv.drawer);
     const opt = optimalChange(nxt - P, G.drawer, G.lv.drawer) || []; return { items: [it], price: P, pay: [nxt], change: nxt - P, style: 'normal', opt, cfg: G.lv };
   })();
@@ -1348,7 +1691,8 @@ async function serveCustomer(tok) {
   if (!alive(tok)) return;
   G.phase = 'enter'; G.tray = []; G.tries = 0; G.scanned = 0; G.received = 0; G.tx = null; G.sel = 0; hideTip(); clearCounter();
   if (restock() && G.idx > 0) toast('🧑‍💼 De chef heeft de kassa bijgevuld.');
-  const tx = makeTransaction(G.world, G.lv, G.drawer) || fallbackTx();
+  const txLv = G.test ? testTxLevel() : G.lv;
+  const tx = makeTransaction(G.world, txLv, G.drawer) || fallbackTx(txLv);
   G.tx = tx; G.help = Object.assign({}, G.lv.help);
   const c = pickCustomer(tx.style); G.cust = c;
   renderDots(); renderAll();
@@ -1357,7 +1701,7 @@ async function serveCustomer(tok) {
   $('#cFace').textContent = c.face; $('#cName').textContent = c.name; $('#cust').style.setProperty('--cc', c.col);
   const cu = $('#cust'); cu.className = 'cust out'; void cu.offsetWidth;
   stepbar('Klant!', 'Er komt een klant aan…');
-  cu.className = 'cust walk'; SFX.walk(); await wait(750); if (!alive(tok)) return; cu.className = 'cust';
+  cu.className = 'cust walk'; SFX.door(); SFX.walk(); await wait(750); if (!alive(tok)) return; cu.className = 'cust';
   bubble(`${c.hi} ${orderText(tx.items)}`); await wait(1100); if (!alive(tok)) return;
   // scannen
   G.phase = 'scan'; stepbar('Scannen', 'De kassa scant de spullen… piep!');
@@ -1382,7 +1726,7 @@ async function serveCustomer(tok) {
   startStash(tok);
 }
 async function startStash(tok) {
-  G.phase = 'stash'; renderAll(); selectPiece(0);
+  G.phase = 'stash'; renderAll(); selectPiece(0); SFX.drawer(true);
   if (G.lv.tutorial && !S.seen.tut && G.idx === 0) {
     await coach(`De klant geeft je ${words(sum(G.tx.pay))}. Eerst leg je het geld <b>in de kassa</b>. Tik op het vakje waar het hoort. Of sleep het geld erheen.`, '#counter'); if (!alive(tok)) return;
   }
@@ -1441,7 +1785,7 @@ function takeFromSlot(v) {
   if (!(G.drawer[v] > 0)) { toast('Dit vakje is leeg!'); SFX.oops(); return; }
   G.drawer[v]--; G.tray.push(v); updateSlot(v); SFX.money(v);
   const tok = G.token; renderTray(); renderLine(); renderLCD();
-  const tm = $(`#tray .tm[data-tv="${v}"]`); if (tm) { tm.style.visibility = 'hidden'; fly(v, slotEl(v), tm, 300).then(() => { if (alive(tok)) tm.style.visibility = ''; }); }
+  const tm = $(`#tray .tm[data-tv="${v}"]`); if (tm) { tm.style.visibility = 'hidden'; fly(v, slotEl(v), tm, 300).then(() => { if (alive(tok)) { tm.style.visibility = ''; SFX.drop(v); } }); }
   refreshTip(); hideBubbleSoon();
 }
 function returnFromTray(v) {
@@ -1471,11 +1815,12 @@ async function give() {
   const best = optimalChange(tx.change, avail, G.lv.drawer) || G.tray, slim = G.tray.length <= best.length;
   const secs = (performance.now() - G.t0) / 1000 * SNEL;
   const fast = !!(G.lv.speed && first && secs <= 8 + 3 * best.length);
-  let gain = (first ? 2 : 1) + (slim ? 1 : 0) + (fast ? 1 : 0);
+  // Sprongtest: geen fooi per klant (de beloning is de sprong zelf), voortgang blijft onaangeroerd.
+  let gain = G.test ? 0 : (first ? 2 : 1) + (slim ? 1 : 0) + (fast ? 1 : 0);
   G.results[G.idx] = first ? 'ok' : 'meh'; if (first) G.firstOk++; if (slim) G.slim++; if (fast) G.fast++;
   G.crowns += gain; S.crowns += gain;
   S.stats.served++; if (first) S.stats.first++; if (slim) S.stats.slim++; if (fast) S.stats.fast++;
-  const isNew = !S.cust[G.cust.id]; S.cust[G.cust.id] = (S.cust[G.cust.id] || 0) + 1;
+  const isNew = !G.test && !S.cust[G.cust.id]; if (!G.test) S.cust[G.cust.id] = (S.cust[G.cust.id] || 0) + 1;
   if (G.lv.tutorial && G.idx === 0) S.seen.tut = 1;
   save(); renderDots();
   SFX.kaching(); const cu = $('#cust'); cu.className = 'cust happy';
@@ -1483,7 +1828,7 @@ async function give() {
   const trayEls = $$('#tray .tm');
   trayEls.forEach((el, i) => { const v = +el.dataset.tv; el.style.visibility = 'hidden'; setTimeout(() => fly(v, el, $('#cust'), 420), i * 70 / SNEL); });
   stepbar('Kaching!', first ? (slim ? '🧠 Slim gewisseld! Precies goed in één keer.' : '✅ Precies goed!') : '👍 Gelukt!');
-  crownsFly(gain, $('#cust'));
+  if (gain) crownsFly(gain, $('#cust'));
   if (slim && G.tray.length > 1) setTimeout(() => G && floatText('🧠 Slim gewisseld!'), 200 / SNEL);
   if (fast) setTimeout(() => G && floatText('⚡ Bliksemsnel!'), 900 / SNEL);
   if (isNew) setTimeout(() => toast(`📖 Nieuwe sticker: ${G ? G.cust.name : ''}!`), 1200 / SNEL);
@@ -1518,16 +1863,24 @@ function showResult(first, slim, best, gain, fast) {
   });
 }
 function levelDone() {
+  if (G.test) return testDone();
   const N = G.total, ok = G.firstOk, stars = ok === N ? 3 : ok >= Math.ceil(N * .6) ? 2 : 1;
-  const k = pkey(G.wid, G.n), prev = S.prog[k] || {};
+  const w = G.world, k = pkey(G.wid, G.n), prev = S.prog[k] || {};
   const nextWorld = WORLDS[G.wid], wasOpen = nextWorld && worldOpen(nextWorld);
   S.prog[k] = { stars: Math.max(stars, prev.stars || 0), done: true, plays: (prev.plays || 0) + 1 };
+  S.streak = stars === 3 ? (S.streak || 0) + 1 : 0;
   S.crowns += stars; G.crowns += stars; S.stats.levels++; save(); syncCrowns();
   const unlocked = G.n === 8 && nextWorld && !nextWorld.soon && !wasOpen && worldOpen(nextWorld);
+  // Snelle route: 3 sterren -> mag 1 level overslaan (2 verder; het level ertussen gaat ook open)
+  const skipTo = G.n + 2, canSkip = stars === 3 && skipTo <= w.levels.length && !levelOpen(w, skipTo);
+  // 3 perfecte levels op rij -> stel de sprongtest voor
+  const suggestTest = S.streak >= 3 && S.streak % 3 === 0 && sprongAvailable(w);
   const msg = stars === 3 ? 'Perfect! Alle klanten in één keer goed geholpen!' : stars === 2 ? 'Heel goed gedaan!' : 'Goed geoefend! Speel nog eens voor meer sterren.';
   let banner = '';
   if (unlocked) banner = `<div class="unlockbanner">🎉 Nieuwe winkel open: ${nextWorld.emoji} ${nextWorld.name}!</div>`;
   else if (G.n === 8 && G.wid === 3) banner = `<div class="unlockbanner">👑 Je bent een echte Kassakoning! Nieuwe winkels komen binnenkort.</div>`;
+  if (canSkip) banner += `<div class="skipoffer">⏩ <b>Knap!</b> Omdat je alles in één keer goed had, mag je een level overslaan: meteen naar <b>level ${skipTo}: ${w.levels[skipTo - 1].t}</b>.</div>`;
+  if (suggestTest) banner += `<div class="sprongoffer">🔥 ${S.streak}× perfect op rij! Kun je ${w.name} al helemaal? Doe de <b>⚡ Sprongtest</b>!</div>`;
   const hasNext = G.n < 8;
   $('#doneCard').innerHTML = `<h2>${G.lv.busy ? 'Drukke dag voorbij!' : 'Level klaar!'}</h2>
     <div class="bigstars">${[1, 2, 3].map(i => `<span class="${i <= stars ? 'star-on' : 'star-off'}">★</span>`).join('')}</div>
@@ -1535,15 +1888,18 @@ function levelDone() {
     <div>${ok} van de ${N} klanten in één keer goed · 🧠 ${G.slim}× slim gewisseld${G.lv.speed ? ` · ⚡ ${G.fast}× snel` : ''}</div>
     <div class="gain">👑 +${G.crowns} kroontjes</div>${banner}
     <div class="btnrow">${hasNext ? '<button class="btn green big" id="dNext">▶ Volgende level</button>' : unlocked ? '<button class="btn green big" id="dWorld">🏪 Naar de nieuwe winkel</button>' : ''}
+    ${canSkip ? `<button class="btn purple" id="dSkip">⏩ Sla een level over</button>` : ''}${suggestTest ? '<button class="btn yellow" id="dSprong">⚡ Sprongtest</button>' : ''}
     <button class="btn white" id="dAgain">🔁 Nog een keer</button><button class="btn" id="dMap">🗺️ Kaart</button></div>`;
-  $('#mdDone').classList.add('show'); SFX.fanfare(); confetti(stars * 30);
-  $$('#doneCard .bigstars span').forEach((s, i) => setTimeout(() => s.classList.add('in'), 250 + i * 280));
+  $('#mdDone').classList.add('show'); if (unlocked) SFX.unlock(); else SFX.fanfare(); confetti(stars * 30 + (unlocked ? 40 : 0));
+  $$('#doneCard .bigstars span').forEach((s, i) => setTimeout(() => { s.classList.add('in'); if (i < stars) SFX.star(i); }, (250 + i * 280) / Math.min(SNEL, 3)));
   const wid = G.wid, n = G.n;
   const close = () => $('#mdDone').classList.remove('show');
   $('#dAgain').onclick = () => { close(); startLevel(wid, n); };
   $('#dMap').onclick = () => { close(); curWorld = wid; show('scrLevels'); };
   if ($('#dNext')) $('#dNext').onclick = () => { close(); startLevel(wid, n + 1); };
   if ($('#dWorld')) $('#dWorld').onclick = () => { close(); curWorld = wid + 1; show('scrLevels'); };
+  if ($('#dSkip')) $('#dSkip').onclick = () => { close(); skipAhead(wid, n); };
+  if ($('#dSprong')) $('#dSprong').onclick = () => { close(); curWorld = wid; show('scrLevels'); sprongIntro(wid); };
 }
 async function helpMe() { // na 3 pogingen: Juf Kassa legt de beste combinatie klaar
   if (G.phase !== 'change' || G.busy) return;
@@ -1556,11 +1912,109 @@ async function helpMe() { // na 3 pogingen: Juf Kassa legt de beste combinatie k
 }
 function helpNow() {
   if (!G) return;
+  if (G.test) return helpNowTest();
   const ph = G.phase;
   if (ph === 'stash') coach('Leg het geld van de klant in de kassalade. Briefjes achterin, munten voorin. Op elk vakje staat wat erin hoort. Tik eerst op het geld (als je wilt) en dan op het vakje.', '#drawer');
   else if (ph === 'change') coach(G.help.displays && !G.help.line ? `Geef samen <b>TERUG</b>: ${fmt(G.tx.change)}. Kijk bij <b>NOG TE GEVEN</b> hoeveel er nog bij moet.` :
     `Tel op zoals een kassier: begin bij de prijs <b>${fmt(G.tx.price)}</b> en leg geld in het bakje tot je bij <b>${fmt(sum(G.tx.pay))}</b> bent. Maak eerst een mooi rond bedrag, dan grotere stappen.`, G.help.line ? '#cline' : '#lcd');
   else coach('Wacht even tot de klant betaald heeft. Daarna leg je het geld in de kassa en geef je wisselgeld terug.');
+}
+function helpNowTest() {
+  coach('Dit is de <b>⚡ Sprongtest</b>: nu even zonder tips. Leg het geld in de kassa en geef het wisselgeld terug. Tel op vanaf de prijs tot het betaalde bedrag. Jij kunt dit!');
+}
+
+/* =========================================================
+   Snelle route: ⚡ Sprongtest per winkel en ⏩ level overslaan
+   ========================================================= */
+const TEST_N = 5, TEST_PASS = 4;
+const TEST_BONUS = { 1: 10, 2: 15, 3: 25 };
+// Testlevel: 5 klanten uit de moeilijkste levels (2× level 6, 2× level 7, 1× Drukke-dag-mix), zonder hulp.
+function testLevel(w) {
+  const L7 = w.levels[6], L8 = w.levels[7], disp = !!L7.help.displays;
+  return { t: 'Sprongtest', s: `${TEST_N} klanten zonder hulp`, test: true, customers: TEST_N, drawer: L8.drawer,
+    help: { tip: 'off', line: false, slotHint: false, explain: false, displays: disp },   // winkel 3: schermen zoals in level 7, geen tel-lijn
+    displayIntro: disp && !S.seen.disp };
+}
+function testPlan() { return shuffle([6, 7, 6, 7, 8]); }
+function testTxLevel() {
+  const base = G.world.levels[(G.plan[G.idx] || 7) - 1];
+  return Object.assign({}, base, { drawer: G.lv.drawer, help: G.lv.help });
+}
+function testGoal(w) { const nx = WORLDS[w.id]; return nx && !nx.soon ? nx : null; }
+function badgeOf(wid) { return wid === lastPlayable() ? 'diploma' : 'sprong-' + wid; }
+const BADGES = () => WORLDS.filter(w => !w.soon).map(w => w.id === lastPlayable()
+  ? { id: 'diploma', e: '🎓', n: 'Kassakoning-diploma', s: `Sprongtest ${w.name} gehaald` }
+  : { id: 'sprong-' + w.id, e: '⚡', n: `Sprong-medaille ${w.name}`, s: `Sprongtest ${w.name} gehaald`, wc: w.color, we: w.emoji });
+
+async function sprongIntro(wid) {
+  const w = WORLDS[wid - 1], nx = testGoal(w);
+  SFX.click();
+  const goal = nx ? `Dan gaat ${nx.emoji} <b>${nx.name}</b> meteen open, en alle levels van ${w.name} ook.` : 'Dan krijg je het 🎓 <b>Kassakoning-diploma</b>!';
+  const a = await info(`<h2>⚡ Sprongtest ${w.emoji} ${w.name}</h2>
+    <div class="sprongbig">⚡</div>
+    <div>Ben jij al een kassa-pro? Help <b>${TEST_N} klanten</b> uit de moeilijkste levels, <b>zonder tips</b>${w.levels[6].help.displays ? ' en zonder tel-lijn (de slimme kassa helpt wel)' : ' en zonder tel-lijn'}.</div>
+    <div class="explain">Heb je er <b>${TEST_PASS} van de ${TEST_N}</b> in één keer goed? ${goal}<br>👑 +${TEST_BONUS[wid] || 10} bonus-kroontjes en een prijs in je Klantenboek.</div>
+    <div class="small-note">Lukt het nog niet? Geen probleem: je verliest niks en je mag het altijd opnieuw proberen.</div>`,
+    [['go', '⚡ Start de test', 'yellow'], ['no', 'Nee, nog niet', 'white']]);
+  if (a === 'go') { S.stats.tests = (S.stats.tests || 0) + 1; save(); startLevel(wid, 0, true); }
+}
+function suggestLevel(w) {
+  // het eerste open level dat nog niet klaar is; anders het level met de minste sterren uit 6-8
+  for (let n = 1; n <= 8; n++) if (levelOpen(w, n) && !(prog(w.id, n) || {}).done) return n;
+  let best = 7, bs = 9; for (const n of [6, 7, 8]) { const st = (prog(w.id, n) || {}).stars || 0; if (levelOpen(w, n) && st < bs) { bs = st; best = n; } }
+  return best;
+}
+function testDone() {
+  const w = G.world, wid = G.wid, ok = G.firstOk, N = G.total, passed = ok >= TEST_PASS;
+  const nx = testGoal(w), close = () => $('#mdDone').classList.remove('show');
+  let html, btns;
+  if (passed) {
+    const first = !testPassed(wid), bonus = first ? (TEST_BONUS[wid] || 10) : 0;
+    S.skip[wid] = { passed: 1, score: ok, date: new Date().toISOString().slice(0, 10) };
+    const b = badgeOf(wid); if (!S.badges.includes(b)) S.badges.push(b);
+    S.crowns += bonus; S.streak = 0; save(); syncCrowns();
+    const bd = BADGES().find(x => x.id === b);
+    html = `<h2>${nx ? '⚡ Sprongtest gehaald!' : '🎓 Kassakoning-diploma!'}</h2>
+      <div class="medal">${bd.e}</div>
+      <div><b>${ok} van de ${N} klanten in één keer goed.</b> Jij bent echt een kassa-pro!</div>
+      ${nx ? `<div class="unlockbanner">🎉 Nieuwe winkel open: ${nx.emoji} ${nx.name}!<br><span class="small-note">Alle levels van ${w.name} staan ook open. Sterren kun je daar nog steeds verdienen.</span></div>`
+        : `<div class="unlockbanner">👑 Je hebt alle winkels onder de knie! Nieuwe winkels komen binnenkort.</div>`}
+      <div class="gain">${bonus ? `👑 +${bonus} bonus-kroontjes · ` : ''}🏅 ${bd.n} in je Klantenboek</div>`;
+    btns = (nx ? `<button class="btn green big" id="tGo">🏪 Naar ${nx.name}</button>` : `<button class="btn green big" id="tBook">🏅 Bekijk je prijzen</button>`) + '<button class="btn" id="tMap">🗺️ Kaart</button>';
+    $('#mdDone').classList.add('show'); $('#doneCard').innerHTML = html + `<div class="btnrow">${btns}</div>`;
+    SFX.unlock(); confetti(140); setTimeout(() => confetti(80), 900);
+  } else {
+    const sn = suggestLevel(w), sl = w.levels[sn - 1];
+    html = `<h2>Goed geprobeerd! 💪</h2>
+      <div class="sprongbig">🙂</div>
+      <div>Je had er <b>${ok} van de ${N}</b> in één keer goed. Voor de sprong heb je er ${TEST_PASS} nodig.</div>
+      <div class="explain"><b>Probeer later nog eens!</b> Oefen eerst even met <b>${w.name} ${sn}: ${sl.t}</b>. Je verliest niks: al je sterren en kroontjes blijven van jou.</div>`;
+    btns = `<button class="btn green big" id="tPlay">▶ Oefen level ${sn}</button><button class="btn yellow" id="tAgain">🔁 Nog een keer proberen</button><button class="btn" id="tMap">🗺️ Kaart</button>`;
+    $('#mdDone').classList.add('show'); $('#doneCard').innerHTML = html + `<div class="btnrow">${btns}</div>`;
+    SFX.aww();
+  }
+  const go = (fn) => () => { SFX.click(); close(); fn(); };
+  if ($('#tGo')) $('#tGo').onclick = go(() => { curWorld = nx.id; show('scrLevels'); });
+  if ($('#tBook')) $('#tBook').onclick = go(() => show('scrBook'));
+  if ($('#tPlay')) $('#tPlay').onclick = go(() => startLevel(wid, suggestLevel(w)));
+  if ($('#tAgain')) $('#tAgain').onclick = go(() => startLevel(wid, 0, true));
+  $('#tMap').onclick = go(() => { curWorld = wid; show(passed ? 'scrMap' : 'scrLevels'); });
+}
+function skipAhead(wid, n) {
+  const w = WORLDS[wid - 1], to = n + 2;
+  S.unl[pkey(wid, n + 1)] = 1; S.unl[pkey(wid, to)] = 1; save();
+  SFX.whoosh(); startLevel(wid, to);
+  setTimeout(() => toast(`⏩ Gesprongen! Level ${n + 1} staat ook open: daar kun je later nog sterren halen.`, 2600), 300);
+}
+// Nieuw spel: kies je start
+function isFresh() { return !Object.keys(S.prog).length && !Object.keys(S.skip).length && !S.stats.served && !S.seen.kies; }
+async function kiesStart() {
+  const a = await info(`<h2>👋 Kies je start</h2><div>Welkom bij Kassakoning! Ben je nieuw achter de kassa, of kun je al een beetje wisselgeld teruggeven?</div>`,
+    [['begin', '🐣 Ik begin bij het begin', 'green'], ['pro', '😎 Ik ben al een beetje een kassa-pro', 'purple'], ['map', '🗺️ Eerst rondkijken', 'white']]);
+  S.seen.kies = 1; save();
+  if (a === 'begin') startLevel(1, 1);
+  else if (a === 'pro') { curWorld = 1; show('scrLevels'); sprongIntro(1); }
+  else show('scrMap');
 }
 
 /* ---------------- Mijn winkel ---------------- */
@@ -1594,6 +2048,9 @@ function equipItem(id, silent) {
 
 /* ---------------- Klantenboek ---------------- */
 RENDER.scrBook = () => {
+  $('#trophies').innerHTML = `<div class="trtitle">🏅 Mijn prijzen</div><div class="trgrid">` + BADGES().map(b => S.badges.includes(b.id)
+    ? `<div class="trophy got"><span class="te">${b.e}</span><span class="tn">${b.n}</span><span class="ts">${b.s} ✔</span></div>`
+    : `<div class="trophy"><span class="te">🔒</span><span class="tn">${b.n}</span><span class="ts">Haal de ⚡ Sprongtest</span></div>`).join('') + `</div>`;
   const met = CUSTOMERS.filter(c => S.cust[c.id]).length;
   $('#bookCount').textContent = `📖 ${met}/${CUSTOMERS.length}`;
   $('#bookGrid').innerHTML = CUSTOMERS.map(c => {
@@ -1607,9 +2064,14 @@ RENDER.scrBook = () => {
 function renderOuders() {
   $$('#segUnlock button').forEach(b => b.classList.toggle('on', (b.dataset.v === '1') === !!S.unlockAll));
   $$('#segVoice button').forEach(b => b.classList.toggle('on', (b.dataset.v === '1') === !!S.voice));
+  $$('#segMusic button').forEach(b => b.classList.toggle('on', (b.dataset.v === '1') === !!S.music));
+  $$('#segSfx button').forEach(b => b.classList.toggle('on', (b.dataset.v === '1') === !!S.sfx));
+  $('#volMusic').value = S.musicVol; $('#volSfx').value = S.sfxVol;
+  $('#volMusicVal').textContent = S.musicVol + '%'; $('#volSfxVal').textContent = S.sfxVol + '%';
   const st = S.stats, pct = st.served ? Math.round(st.first / st.served * 100) : 0;
   $('#ouderStats').innerHTML = `${st.served} klanten geholpen, waarvan ${st.first} in één keer goed (${pct}%) · ${st.slim}× met zo weinig mogelijk munten/briefjes · ${st.levels} levels gespeeld · ${S.crowns} kroontjes.<br>` +
-    WORLDS.filter(w => !w.soon).map(w => `${w.emoji} ${w.name}: ⭐ ${worldStars(w)}/24`).join(' · ');
+    WORLDS.filter(w => !w.soon).map(w => `${w.emoji} ${w.name}: ⭐ ${worldStars(w)}/24${testPassed(w.id) ? ' (⚡ sprongtest gehaald)' : ''}`).join(' · ') +
+    (st.tests ? `<br>⚡ Sprongtest ${st.tests}× gestart, ${Object.keys(S.skip).filter(k => S.skip[k].passed).length}× gehaald.` : '');
   const rb = $('#btnReset'); rb.dataset.armed = ''; rb.textContent = 'Voortgang wissen';
 }
 function holdButton(el, ms, cb) {
@@ -1696,7 +2158,7 @@ $('#btnTip').onclick = () => { if (!G) return; SFX.click(); if ($('#btnTip').dat
 $('#btnHelp').onclick = () => { SFX.click(); helpNow(); };
 $('#btnExit').onclick = async () => {
   SFX.click(); if (!G) return show('scrMap');
-  const a = await info('<h2>Stoppen?</h2><div>Wil je stoppen met dit level? Je kunt het later opnieuw spelen.</div>', [['stop', '🗺️ Ja, stoppen', 'orange'], ['door', '▶ Nee, doorgaan', 'green']]);
+  const a = await info(G.test ? '<h2>Stoppen?</h2><div>Wil je stoppen met de sprongtest? Dat is niet erg: je kunt hem altijd opnieuw doen.</div>' : '<h2>Stoppen?</h2><div>Wil je stoppen met dit level? Je kunt het later opnieuw spelen.</div>', [['stop', '🗺️ Ja, stoppen', 'orange'], ['door', '▶ Nee, doorgaan', 'green']]);
   if (a === 'stop' && G) { const w = G.wid; stopGame(); curWorld = w; show('scrLevels'); }
 };
 $('#btnEasy').onclick = async () => {
@@ -1712,11 +2174,13 @@ $('#btnEasy').onclick = async () => {
 document.addEventListener('click', e => {
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.go) { SFX.click(); show(t.dataset.go); return; }
-  if (t.classList.contains('mutebtn')) { S.muted = !S.muted; save(); syncMute(); if (!S.muted) SFX.click(); return; }
+  if (t.classList.contains('mutebtn')) { openSndMenu(t); SFX.click(); return; }
+  if (t.dataset.snd) { setSound(t.dataset.snd, !S[t.dataset.snd]); return; }
+  if (t.dataset.sprong) { const wid = +t.dataset.sprong; curWorld = wid; if (!$('#scrLevels').classList.contains('show')) show('scrLevels'); sprongIntro(wid); return; }
   if (t.dataset.world) {
     const w = WORLDS[+t.dataset.world - 1];
     if (w.soon) { SFX.click(); info(`<h2>${w.emoji} ${w.name}</h2><div>${w.desc}</div><div class="small-note">Deze winkel komt binnenkort!</div>`); return; }
-    if (!worldOpen(w)) { SFX.oops(); t.animate([{ transform: 'rotate(-2deg)' }, { transform: 'rotate(2deg)' }, { transform: 'none' }], { duration: 300 }); toast(`🔒 Speel eerst level 8 van ${WORLDS[w.id - 2].name}.`); return; }
+    if (!worldOpen(w)) { SFX.oops(); t.animate([{ transform: 'rotate(-2deg)' }, { transform: 'rotate(2deg)' }, { transform: 'none' }], { duration: 300 }); toast(`🔒 Speel eerst level 8 van ${WORLDS[w.id - 2].name}.` + (sprongAvailable(WORLDS[w.id - 2]) ? ' Of doe de ⚡ Sprongtest!' : '')); return; }
     SFX.click(); curWorld = w.id; show('scrLevels'); return;
   }
   if (t.dataset.level) {
@@ -1728,9 +2192,15 @@ document.addEventListener('click', e => {
   if (t.dataset.buy) { buyItem(t.dataset.buy); return; }
   if (t.dataset.equip) { equipItem(t.dataset.equip); return; }
   if (t.parentElement && t.parentElement.id === 'segUnlock') { S.unlockAll = t.dataset.v === '1'; save(); renderOuders(); return; }
+  if (t.parentElement && t.parentElement.id === 'segMusic') { setSound('music', t.dataset.v === '1'); renderOuders(); return; }
+  if (t.parentElement && t.parentElement.id === 'segSfx') { setSound('sfx', t.dataset.v === '1'); renderOuders(); return; }
   if (t.parentElement && t.parentElement.id === 'segVoice') { S.voice = t.dataset.v === '1'; save(); renderOuders(); if (S.voice) say('Hallo! Ik lees voor wat de klanten zeggen.'); return; }
 });
-$('#btnPlay').onclick = () => { SFX.click(); show('scrMap'); };
+$('#btnPlay').onclick = () => { SFX.click(); if (isFresh()) kiesStart(); else show('scrMap'); };
+$('#volMusic').addEventListener('input', e => { S.musicVol = +e.target.value; $('#volMusicVal').textContent = S.musicVol + '%'; applyVolumes(); });
+$('#volMusic').addEventListener('change', () => { save(); if (!S.music && S.musicVol > 0) { setSound('music', true); renderOuders(); } });
+$('#volSfx').addEventListener('input', e => { S.sfxVol = +e.target.value; $('#volSfxVal').textContent = S.sfxVol + '%'; applyVolumes(); });
+$('#volSfx').addEventListener('change', () => { save(); SFX.coin(50); });
 $('#btnShop').onclick = () => { SFX.click(); show('scrShop'); };
 $('#btnBook').onclick = () => { SFX.click(); show('scrBook'); };
 $('#btnHow').onclick = () => { SFX.click(); howItWorks(); };
@@ -1738,7 +2208,7 @@ $('#btnOudersClose').onclick = () => { $('#mdOuders').classList.remove('show'); 
 $('#btnReset').onclick = e => {
   const b = e.currentTarget;
   if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = '⚠️ Echt alles wissen? Tik nog een keer'; return; }
-  const muted = S.muted; S = defaultSave(); S.muted = muted; save(); applyLook(); renderOuders(); syncCrowns(); b.textContent = '✅ Gewist';
+  const keep = { music: S.music, sfx: S.sfx, musicVol: S.musicVol, sfxVol: S.sfxVol }; S = Object.assign(defaultSave(), keep); save(); musicSync(); applyLook(); renderOuders(); syncCrowns(); b.textContent = '✅ Gewist';
 };
 holdButton($('#btnParent'), 2000, () => {
   SFX.click(); renderOuders();
@@ -1752,7 +2222,7 @@ document.addEventListener('dblclick', e => e.preventDefault());
 document.addEventListener('contextmenu', e => { if (e.target.closest('#scrGame')) e.preventDefault(); });
 
 /* ---------------- start ---------------- */
-applyLook(); syncMute(); syncCrowns(); RENDER.scrMenu();
+applyLook(); syncSound(); syncCrowns(); RENDER.scrMenu(); musicWant('menu');
 if (Q.get('w') && Q.get('l')) { const w = +Q.get('w'), l = +Q.get('l'); if (WORLDS[w - 1] && !WORLDS[w - 1].soon && levelOpen(WORLDS[w - 1], l)) startLevel(w, l); }
 
 // test-haakjes
@@ -1760,6 +2230,9 @@ window.__kk = {
   get S() { return S; }, set S(v) { S = v; }, get G() { return G; }, WORLDS, CUSTOMERS, STOCK, LADDER, COINS, NOTES,
   optimalChange, realism, choosePayment, makeTransaction, fmt, words, startLevel, stopGame, save, load, applyLook, show,
   give, takeFromSlot, returnFromTray, placeAttempt, coachOk: () => coach.current && $('#coach').classList.contains('show') && coach.current(),
+  migrate, levelOpen, worldOpen, say, sprongIntro, skipAhead, testDone, TRACKS, renderTrack, musicWant, SFX,
+  audio: () => ({ gestured: AUD.gestured, state: AUD.ac ? AUD.ac.state : null, time: AUD.ac ? AUD.ac.currentTime : 0, cur: MUS.cur, bars: MUS.bars,
+    duck: AUD.g ? AUD.g.duck.gain.value : null, musicGain: AUD.g ? AUD.g.musicVol.gain.value : null, sfxGain: AUD.g ? AUD.g.sfx.gain.value : null, log: AUD.log.slice() }),
 };
 
 </script>
